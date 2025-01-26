@@ -1,0 +1,26 @@
+#!/usr/bin/env python3
+import sys
+import io
+
+def main():
+    if len(sys.argv) != 2:
+        print(f"Usage: {sys.argv[0]} <topic>")
+        sys.exit(1)
+
+    topic = sys.argv[1]
+    
+    # Capture the output of the help function
+    captured_output = io.StringIO()
+    sys.stdout = captured_output
+    try:
+        help(topic)
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        sys.stdout = sys.__stdout__
+
+    # Print the captured output
+    print(captured_output.getvalue())
+
+if __name__ == "__main__":
+    main()

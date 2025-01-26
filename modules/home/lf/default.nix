@@ -1,0 +1,148 @@
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+
+# this assumes that kitty is your default terminal emulator
+
+# There is much more to be implemented here:
+# https://github.com/gokcehan/lf/wiki/Tips
+# https://github.com/gokcehan/lf/wiki/Integrations
+
+let
+  cfg = config.programs.lf;
+
+  inherit (lib) mkDefault mkIf;
+in
+{
+  config = mkIf config.programs.kitty.enable {
+    home.packages = with pkgs; [
+      font-awesome
+      jq # used in vidthumb
+      bat
+      hexyl
+      glow
+      chafa
+      poppler
+      w3m
+      ffmpeg
+      ffmpegthumbnailer # used by pistol
+      trash-cli
+      xdg-utils
+      perl540Packages.MIMETypes # used by commands
+    ];
+
+    programs.lf = {
+      commands = {
+        bulk-rename = builtins.readFile ./commands/bulk-rename.sh;
+        extract = builtins.readFile ./commands/extract.sh;
+        open = builtins.readFile ./commands/open.sh;
+        paste = builtins.readFile ./commands/paste.sh;
+        trash = "%trash-put -- $fx";
+        zip = builtins.readFile ./commands/zip.sh;
+      };
+      settings = {
+        autoquit = mkDefault true;
+        #cleaner = "~/.config/lf/cleaner";
+        dircache = mkDefault true;
+        globsearch = mkDefault true;
+        icons = mkDefault true;
+        incfilter = mkDefault true;
+        number = mkDefault false;
+        #previewer = "~/.config/lf/previewer";
+        ratios = mkDefault [
+          1
+          1
+          2
+        ];
+        shell = mkDefault "zsh";
+        shellopts = mkDefault "-eu";
+        wrapscroll = mkDefault true;
+      };
+      keybindings = import ./keybindings.nix;
+      extraConfig = mkDefault ''
+        $mkdir -p ~/.trash
+        set previewer ~/.config/lf/previewer
+        set cleaner ~/.config/lf/cleaner
+      '';
+    };
+
+    programs.pistol = mkIf cfg.enable {
+      enable = mkDefault true;
+      associations = mkDefault [
+        {
+          fpath = ".*.log$";
+          command = "less %pistol-filename%";
+        }
+        {
+          fpath = ".*.md$";
+          command = "sh: glow %pistol-filename% | head -8";
+        }
+        {
+          fpath = ".*.sh$";
+          command = "bat %pistol-filename%";
+        }
+        {
+          mime = "application/*";
+          command = "hexyl %pistol-filename%";
+        }
+        {
+          mime = "application/json";
+          command = "bat %pistol-filename%";
+        }
+        {
+          mime = "application/pdf";
+          command = "pdftoppm -png %pistol-filename% -singlefile -scale-to 1024 -";
+        }
+        {
+          mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+          command = "libreoffice --headless --convert-to pdf %pistol-filename% && pdftoppm -png %pistol-filename%.pdf -singlefile -scale-to 1024 -";
+        }
+        {
+          mime = "audio/*";
+          command = "ffmpeg -i %pistol-filename% -f wav -";
+        }
+        {
+          mime = "image/*";
+          command = "chafa %pistol-filename%";
+        }
+        {
+          mime = "text/*";
+          command = "bat %pistol-filename%";
+        }
+        {
+          mime = "text/html";
+          command = "w3m -dump %pistol-filename%";
+        }
+        {
+          mime = "video/*";
+          command = "ffmpegthumbnailer -i %pistol-filename% -o -";
+        }
+      ];
+    };
+
+    xdg.configFile = {
+      "lf/icons" = mkDefault {
+        enable = true;
+        source = ./icons;
+      };
+      "lf/cleaner" = mkDefault {
+        enable = true;
+        executable = true;
+        source = ./cleaner;
+      };
+      "lf/previewer" = mkDefault {
+        enable = true;
+        executable = true;
+        source = ./previewer;
+      };
+    };
+    home.file.".local/bin/vidthumb" = mkDefault {
+      enable = true;
+      executable = true;
+      source = ./vidthumb;
+    };
+  };
+}

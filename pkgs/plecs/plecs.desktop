@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=4.8.3
+Name=PLECS Standalone
+Icon=plecs
+Comment=Circuit Simulator for Power Electronics
+Path=/opt/plecs
+Exec=/usr/bin/plecs %U
+Terminal=false
+Categories=Development
