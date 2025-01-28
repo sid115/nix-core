@@ -37,10 +37,6 @@ in
         assertion = cfg.package != null;
         message = "The baibot package is not specified. Please set the services.baibot.package option to a valid baibot package.";
       }
-      {
-        assertion = builtins.pathExists cfg.configFile;
-        message = "The baibot configuration file does not exist at ${cfg.configFile}. Please ensure the file is present.";
-      }
     ];
 
     users = {
