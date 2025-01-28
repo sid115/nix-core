@@ -3,6 +3,7 @@
 let
   cfg = config.services.baibot;
   defaultConfigPath = "/etc/baibot/config.yml";
+  defaultDataDir = "/var/lib/baibot/data";
 
   inherit (lib)
     mkEnableOption
@@ -19,6 +20,11 @@ in
         type = types.path;
         default = defaultConfigPath;
         description = "Path to the baibot configuration file.";
+      };
+      dataDir = mkOption {
+        type = types.path;
+        default = defaultDataDir;
+        description = "Path to the baibot data directory.";
       };
       package = mkOption {
         type = types.nullOr types.package;
@@ -50,14 +56,21 @@ in
       groups.baibot = { };
     };
 
+    systemd.tmpfiles.rules = [
+      "d ${cfg.dataDir} 0755 baibot baibot -"
+    ];
+
     systemd.services.baibot = {
       description = "Baibot Service";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
+      environment = [
+        "BAIBOT_CONFIG_FILE_PATH=${cfg.configFile}"
+        "BAIBOT_PERSISTENCE_DATA_DIR_PATH=${cfg.dataDir}"
+      ];
 
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/baibot";
-        Environment = "BAIBOT_CONFIG_FILE_PATH=${cfg.configFile}";
         Restart = "always";
         User = "baibot";
         Group = "baibot";
