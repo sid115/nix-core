@@ -49,10 +49,9 @@ in
         description = "Baibot system user";
         home = "/var/lib/baibot";
         createHome = true;
+        group = "baibot";
       };
-      groups.baibot = {
-        members = [ "baibot" ];
-      };
+      groups.baibot = { };
     };
 
     systemd.services.baibot = {
