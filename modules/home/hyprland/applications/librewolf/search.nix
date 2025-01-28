@@ -22,7 +22,7 @@ in
           ];
         }
       ];
-      #iconUpdateURL = "";
+      #iconUpdateURL = ""; # TODO
       #updateInterval = every_day;
       definedAliases = [ "@gh" ];
     };
@@ -90,6 +90,16 @@ in
       iconUpdateURL = "https://wiki.nixos.org/favicon.png";
       updateInterval = every_day;
       definedAliases = [ "@nw" ];
+    };
+
+    "Nixpkgs Issues" = {
+      urls = [
+        {
+          template = "https://github.com/NixOS/nixpkgs/issues?q=is%3Aissue%20state%3Aopen%20{searchTerms}";
+        }
+      ];
+      icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+      definedAliases = [ "@ni" ];
     };
 
     "NuschtOS Search" = {
