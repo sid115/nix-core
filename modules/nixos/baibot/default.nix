@@ -64,10 +64,10 @@ in
       description = "Baibot Service";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
-      environment = [
-        "BAIBOT_CONFIG_FILE_PATH=${cfg.configFile}"
-        "BAIBOT_PERSISTENCE_DATA_DIR_PATH=${cfg.dataDir}"
-      ];
+      environment = {
+        BAIBOT_CONFIG_FILE_PATH = "${cfg.configFile}";
+        BAIBOT_PERSISTENCE_DATA_DIR_PATH = "${cfg.dataDir}";
+      };
 
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/baibot";
