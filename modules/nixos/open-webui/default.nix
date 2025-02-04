@@ -56,7 +56,7 @@ in
     };
 
     environment.systemPackages = [
-      pkgs.ffmpeg_7-headless # FIXME: ffprobe not available
+      pkgs.ffmpeg-full
     ];
 
     services.nginx.virtualHosts."${fqdn}" = {
