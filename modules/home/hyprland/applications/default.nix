@@ -112,9 +112,9 @@ in
     };
 
     calculator = mkAppAttrs {
-      default = "insect";
+      default = "sage";
       bind = [
-        ", XF86Calculator, exec, ${terminal} -T ${calculator} -e ${pkgs.nodePackages.insect}/bin/insect"
+        ", XF86Calculator, exec, ${terminal} -T ${calculator} -e ${pkgs.sageWithDoc}/bin/sage"
       ];
     };
 
