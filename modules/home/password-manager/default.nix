@@ -97,6 +97,7 @@ in
 
     home.sessionVariables.PASSWORD_STORE_MENU = if cfg.wayland then "bemenu" else "dmenu";
 
+    # FIXME: passff does not autofill OTPs
     programs.librewolf = mkIf config.programs.librewolf.enable {
       package = mkDefault (with pkgs; librewolf.override { nativeMessagingHosts = [ passff-host ]; });
       profiles.default.extensions =
