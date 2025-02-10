@@ -78,17 +78,20 @@ in
     services.gpg-agent.pinentryPackage = mkOverride 1001 pkgs.pinentry-qt; # mkDefault collides with gpg home module
 
     home.packages =
-      with pkgs;
-      (
+      [
+        passmenuScript
+        pkgs.zbar
+      ]
+      ++ (
         if cfg.wayland then
           [
-            bemenu
-            ydotool
+            pkgs.bemenu
+            pkgs.ydotool
           ]
         else
           [
-            dmenu
-            xdotool
+            pkgs.dmenu
+            pkgs.xdotool
           ]
       );
 
