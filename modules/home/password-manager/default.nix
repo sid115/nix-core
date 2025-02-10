@@ -58,6 +58,7 @@ in
   config = mkIf cfg.enable {
     programs.password-store = {
       enable = true;
+      package = pkgs.pass.withExtensions (exts: [ exts.pass-otp ]);
       settings = {
         PASSWORD_STORE_DIR = mkDefault "${config.xdg.dataHome}/password-store";
         PASSWORD_STORE_KEY = mkIf (cfg.key != "") cfg.key;
@@ -78,13 +79,7 @@ in
 
     home.packages =
       with pkgs;
-      [
-        (pass.withExtensions (ext: [
-          ext.pass-otp
-        ]))
-        passmenuScript
-      ]
-      ++ (
+      (
         if cfg.wayland then
           [
             bemenu
