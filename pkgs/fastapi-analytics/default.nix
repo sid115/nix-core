@@ -35,9 +35,9 @@ python3.pkgs.buildPythonApplication rec {
     ];
   };
 
-  # pythonImportsCheck = [
-  #   "fastapi_analytics"
-  # ];
+  pythonImportsCheck = [
+    "fastapi"
+  ];
 
   meta = {
     description = "Monitoring and analytics for FastAPI applications";

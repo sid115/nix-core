@@ -6,7 +6,7 @@
 }:
 
 let
-  fastapi-analytics = import ./fastapi-analytics.nix { inherit lib python3 fetchPypi; };
+  fastapi-analytics = import ../fastapi-analytics { inherit lib python3 fetchPypi; };
 in
 python3.pkgs.buildPythonApplication {
   pname = "gitingest";
