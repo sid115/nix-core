@@ -7,6 +7,7 @@
   chatbox = pkgs.callPackage ./chatbox { };
   corryvreckan = pkgs.callPackage ./corryvreckan { };
   cppman = pkgs.callPackage ./cppman { };
+  fastapi-analytics = pkgs.callPackage ./fastapi-analytics { };
   gitingest = pkgs.callPackage ./gitingest { };
   google-genai = pkgs.callPackage ./google-genai { };
   marker-pdf = pkgs.callPackage ./marker-pdf { };
