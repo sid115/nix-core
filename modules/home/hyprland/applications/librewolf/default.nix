@@ -30,6 +30,7 @@ in
   config = mkIf (cfg.enable && app == "librewolf") {
     programs.librewolf = {
       enable = true;
+      policies.Homepage.StartPage = lib.mkDefault "previous-session";
       profiles.default = {
         extensions = import ./extensions.nix { inherit inputs pkgs; };
         search = import ./search.nix { inherit pkgs; };
