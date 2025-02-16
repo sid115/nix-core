@@ -8,8 +8,8 @@ version = "0.1" # FIXME: Change this to your package version
 requires-python = ">=3.12" # FIXME: Change this to your Python version
 
 # FIXME: Add your dependencies
-# depenedencies = [
-# ]
+dependencies = [
+]
 
 [project.scripts]
 hello = "hello.__main__:main" # FIXME: Change this to your entry point
