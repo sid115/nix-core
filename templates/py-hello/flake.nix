@@ -42,6 +42,19 @@
         in
         {
           default = import ./shell.nix { inherit pkgs; };
+
+          venv = pkgs.mkShell {
+            buildInputs = [
+              pkgs.python3
+              pkgs.python3Packages.pip
+            ];
+
+            shellHook = ''
+              python -m venv .venv
+              source .venv/bin/activate
+              pip install .
+            '';
+          };
         }
       );
     };
