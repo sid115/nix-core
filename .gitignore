@@ -1,2 +1,2 @@
 result
-templates/c-hello/flake.lock
+templates/**/*.lock

@@ -1,23 +1,15 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "hello-world"
-version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.12"
-dependencies = [
-    "urllib3>=2.2.3",
-]
+name = "hello" # FIXME: Change this to your package name
+version = "0.1" # FIXME: Change this to your package version
+requires-python = ">=3.12" # FIXME: Change this to your Python version
+
+# FIXME: Add your dependencies
+# depenedencies = [
+# ]
 
 [project.scripts]
-hello = "hello_world:hello"
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[dependency-groups]
-dev = [
-    "ruff>=0.6.7",
-]
-
-
+hello = "hello.__main__:main" # FIXME: Change this to your entry point
