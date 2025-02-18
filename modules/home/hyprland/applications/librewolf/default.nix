@@ -24,13 +24,13 @@ let
     in
     genMimeAssociations desktop mimeTypes;
 
-  inherit (lib) mkIf;
+  inherit (lib) mkDefault mkIf;
 in
 {
   config = mkIf (cfg.enable && app == "librewolf") {
     programs.librewolf = {
       enable = true;
-      policies.Homepage.StartPage = lib.mkDefault "previous-session";
+      policies.Homepage.StartPage = mkDefault "previous-session";
       profiles.default = {
         extensions = import ./extensions.nix { inherit inputs pkgs; };
         search = import ./search.nix { inherit pkgs; };
