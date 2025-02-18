@@ -1,10 +1,10 @@
 {
   lib,
-  python3,
+  python312,
   fetchPypi,
 }:
 
-python3.pkgs.buildPythonApplication rec {
+python312.pkgs.buildPythonApplication rec {
   pname = "gitingest";
   version = "0.1.3";
   pyproject = true;
@@ -15,11 +15,11 @@ python3.pkgs.buildPythonApplication rec {
   };
 
   build-system = [
-    python3.pkgs.setuptools
-    python3.pkgs.wheel
+    python312.pkgs.setuptools
+    python312.pkgs.wheel
   ];
 
-  dependencies = with python3.pkgs; [
+  dependencies = with python312.pkgs; [
     click
     fastapi
     python-dotenv
