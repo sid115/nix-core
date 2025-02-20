@@ -19,6 +19,7 @@ in
   config = mkIf (cfg.enable && app == "zathura") {
     programs.zathura = {
       enable = true;
+      extraConfig = "unmap q";  
       options = {
         guiptions = "none";
         selection-clipboard = "clipboard";
