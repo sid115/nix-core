@@ -5,7 +5,6 @@
 
 {
   chatbox = pkgs.callPackage ./chatbox { };
-  corryvreckan = pkgs.callPackage ./corryvreckan { };
   cppman = pkgs.callPackage ./cppman { };
   # gitingest = pkgs.callPackage ./gitingest { }; # Hotfix for https://github.com/sid115/nix-core/issues/6
   google-genai = pkgs.callPackage ./google-genai { };
@@ -15,5 +14,6 @@
   surya-ocr = pkgs.callPackage ./surya-ocr { };
   synapse_change_display_name = pkgs.callPackage ./synapse_change_display_name { };
 
+  # corryvreckan = pkgs.callPackage ./corryvreckan { }; # FIXME
   # plecs = pkgs.callPackage ./plecs { }; # FIXME
 }
