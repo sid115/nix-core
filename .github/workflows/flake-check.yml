@@ -1,4 +1,4 @@
-name: Build Packages
+name: Flake Check
 
 on:
   pull_request:
@@ -6,11 +6,8 @@ on:
       - master
 
 jobs:
-  build-packages:
+  flake-check:
     runs-on: ubuntu-latest
-
-    env:
-      NIXPKGS_ALLOW_UNFREE: 1
 
     steps:
       - name: Checkout repository
@@ -21,5 +18,5 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
 
-      - name: Build packages on x64
-        run: nix flake show --json | jq '.packages."x86_64-linux"|keys[]' | xargs -I {} nix build .#{} --impure
+      - name: Run nix flake check
+        run: nix flake check
