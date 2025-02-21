@@ -1,34 +1,27 @@
 {
   lib,
-  python3,
-  fetchFromGitHub,
+  python312,
   fetchPypi,
 }:
 
-let
-  fastapi-analytics = import ../fastapi-analytics { inherit lib python3 fetchPypi; };
-in
-python3.pkgs.buildPythonApplication {
+python312.pkgs.buildPythonApplication rec {
   pname = "gitingest";
-  version = "unstable-2025-01-24";
+  version = "0.1.3";
   pyproject = true;
 
-  src = fetchFromGitHub {
-    owner = "cyclotruc";
-    repo = "gitingest";
-    rev = "b34b7f47a1dd7abb809ce8d1facff22c617acdb1";
-    hash = "sha256-VYUWywfkBybQGAuR0nWnwUUQzbZuRd6COYvdbxZxB1E=";
+  src = fetchPypi {
+    inherit pname version;
+    hash = "sha256-5U4qIzkdBs7w7vzTR5OX19htCy/12+LfdNwYn8MlVig=";
   };
 
   build-system = [
-    python3.pkgs.setuptools
-    python3.pkgs.wheel
+    python312.pkgs.setuptools
+    python312.pkgs.wheel
   ];
 
-  dependencies = with python3.pkgs; [
+  dependencies = with python312.pkgs; [
     click
     fastapi
-    fastapi-analytics
     python-dotenv
     slowapi
     starlette
@@ -41,9 +34,10 @@ python3.pkgs.buildPythonApplication {
   ];
 
   meta = {
-    description = "Replace 'hub' with 'ingest' in any github url to get a prompt-friendly extract of a codebase";
-    homepage = "https://github.com/cyclotruc/gitingest";
+    description = "CLI tool to analyze and create text dumps of codebases for LLMs";
+    homepage = "https://pypi.org/project/gitingest";
     license = lib.licenses.mit;
+    maintainers = with lib.maintainers; [ ];
     mainProgram = "gitingest";
   };
 }
