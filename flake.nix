@@ -56,12 +56,17 @@
         }
       );
 
-      packages =
-        forAllSystems (system: import ./pkgs unstable.legacyPackages.${system})
-        # Hotfix for https://github.com/sid115/nix-core/issues/6
-        // forAllSystems (system: {
-          gitingest = self.inputs.nixpkgs-gitingest.legacyPackages.${system}.callPackage ./pkgs/gitingest { };
-        });
+      # Hotfix for https://github.com/sid115/nix-core/issues/6
+      packages = forAllSystems (
+        system:
+        let
+          basePackages = import ./pkgs unstable.legacyPackages.${system};
+          additionalPackages = {
+            gitingest = inputs.nixpkgs-gitingest.legacyPackages.${system}.callPackage ./pkgs/gitingest { };
+          };
+        in
+        inputs.nixpkgs.legacyPackages.${system}.lib.attrsets.recursiveUpdate basePackages additionalPackages
+      );
 
       overlays = import ./overlays { inherit inputs; };
 
