@@ -7,7 +7,7 @@
   chatbox = pkgs.callPackage ./chatbox { };
   corryvreckan = pkgs.callPackage ./corryvreckan { };
   cppman = pkgs.callPackage ./cppman { };
-  gitingest = pkgs.callPackage ./gitingest { };
+  # gitingest = pkgs.callPackage ./gitingest { }; # Hotfix for https://github.com/sid115/nix-core/issues/6
   google-genai = pkgs.callPackage ./google-genai { };
   marker-pdf = pkgs.callPackage ./marker-pdf { };
   pdftext = pkgs.callPackage ./pdftext { };
