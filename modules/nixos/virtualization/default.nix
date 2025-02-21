@@ -8,10 +8,11 @@ in
 
   virtualisation.libvirtd = {
     enable = mkDefault true;
-    qemu.ovmf.enable = mkDefault true;
-    qemu.runAsRoot = mkDefault false;
     onBoot = mkDefault "ignore";
     onShutdown = mkDefault "shutdown";
+    qemu.ovmf.enable = mkDefault true;
+    qemu.runAsRoot = mkDefault false;
+    spiceUSBRedirection.enable = mkDefault true;
   };
 
   environment.systemPackages = [
