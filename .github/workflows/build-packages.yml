@@ -1,4 +1,4 @@
-name: Build All Packages
+name: Build Packages
 
 on:
   pull_request:
@@ -9,9 +9,12 @@ jobs:
   build-packages:
     runs-on: ubuntu-latest
 
+    env:
+      NIXPKGS_ALLOW_UNFREE: 1
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Set up Nix
         uses: cachix/install-nix-action@v18
