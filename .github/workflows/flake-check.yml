@@ -9,6 +9,9 @@ jobs:
   flake-check:
     runs-on: ubuntu-latest
 
+    env:
+      NIXPKGS_ALLOW_UNFREE: 1
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -19,4 +22,4 @@ jobs:
           nix_path: nixpkgs=channel:nixos-unstable
 
       - name: Run nix flake check
-        run: nix flake check
+        run: nix flake check --impure
