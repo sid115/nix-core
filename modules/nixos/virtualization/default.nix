@@ -6,12 +6,14 @@ in
 {
   programs.virt-manager.enable = mkDefault true;
 
-  virtualisation.libvirtd = {
-    enable = mkDefault true;
-    onBoot = mkDefault "ignore";
-    onShutdown = mkDefault "shutdown";
-    qemu.ovmf.enable = mkDefault true;
-    qemu.runAsRoot = mkDefault false;
+  virtualisation = {
+    libvirtd = {
+      enable = mkDefault true;
+      onBoot = mkDefault "ignore";
+      onShutdown = mkDefault "shutdown";
+      qemu.ovmf.enable = mkDefault true;
+      qemu.runAsRoot = mkDefault false;
+    };
     spiceUSBRedirection.enable = mkDefault true;
   };
 
