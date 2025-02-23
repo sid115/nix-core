@@ -39,7 +39,7 @@ let
           provider = "openai";
           config = {
             base_url = "https://api.openai.com/v1";
-            api-key = ""; # placeholder
+            api_key = ""; # placeholder
             text_generation = {
               model_id = "gpt-4o";
               prompt = ''
