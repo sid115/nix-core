@@ -84,16 +84,16 @@ let
     logging = "warn,mxlink=debug,baibot=debug";
   };
 
-  finalConfig = mergeAttrs defaultConfig cfg.config;
+  finalConfig = recursiveUpdate defaultConfig cfg.config;
 
   configFile = (pkgs.formats.yaml { }).generate "baibot-config.yml" finalConfig;
 
   inherit (lib)
-    mergeAttrs
     mkEnableOption
     mkIf
     mkOption
     optional
+    recursiveUpdate
     types
     ;
 in
