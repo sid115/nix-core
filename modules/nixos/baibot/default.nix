@@ -100,9 +100,6 @@ in
             - BAIBOT_ENCRYPTION_RECOVERY_PASSPHRASE: A secure passphrase used for encryption key recovery. Required for secure message storage.
             - BAIBOT_PERSISTENCE_SESSION_ENCRYPTION_KEY: A 64-character hex key (generated using `openssl rand -hex 32`) for encrypting session data.
             - BAIBOT_PERSISTENCE_CONFIG_ENCRYPTION_KEY: Another 64-character hex key for encrypting configuration data.
-
-          Optional secrets include:
-            - BAIBOT_AGENTS_OPENAI_API_KEY: API key for OpenAI services if you intend to use text generation, speech-to-text, or other integrations.
         '';
         type = lib.types.nullOr lib.types.path;
         default = null;
