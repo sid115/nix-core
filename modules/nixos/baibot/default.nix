@@ -177,7 +177,7 @@ in
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       environment = {
-        BAIBOT_CONFIG_FILE_PATH = "${configFile}";
+        BAIBOT_CONFIG_FILE_PATH = configFile;
         BAIBOT_PERSISTENCE_DATA_DIR_PATH = "${finalConfig.persistence.data_dir_path}";
       };
       serviceConfig = {
