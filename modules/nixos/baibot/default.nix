@@ -17,7 +17,9 @@ let
     user = {
       mxid_localpart = "baibot";
       name = "baibot";
+      password = "baibot";
       encryption = {
+        recovery_passphrase = "super-secret-key";
         recovery_reset_allowed = false;
       };
     };
@@ -27,6 +29,8 @@ let
     ];
     persistence = {
       data_dir_path = "${homeDir}/data";
+      session_encryption_key = "super-secret-key";
+      config_encryption_key = "super-secret-key";
     };
     agents = {
       static_definitions = [
