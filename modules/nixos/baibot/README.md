@@ -90,6 +90,13 @@ Set `openai-agent` as the default for any purpose you like:
 !bai config global speech-to-text set-flow-type only_transcribe
 ```
 
+### Set user access
+```
+!bai access set-users SPACE_SEPARATED_PATTERNS
+```
+
+> For example: `@*:example.com`
+
 ## Todo
 
 1. Set up a local LLM for speech-to-text with Ollama.
