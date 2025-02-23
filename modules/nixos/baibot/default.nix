@@ -29,8 +29,8 @@ let
     ];
     persistence = {
       data_dir_path = "${homeDir}/data";
-      session_encryption_key = "super-secret-key";
-      config_encryption_key = "super-secret-key";
+      session_encryption_key = "9701cd109ed56770687dd8410f7d7371a4390dd3feb8ed721f189a0756c40098";
+      config_encryption_key = "a9f1df98d288802ead20a8be2c701a627eabd31cf3d9e2aea28867ccd7a4ded7";
     };
     agents = {
       static_definitions = [
@@ -39,6 +39,7 @@ let
           provider = "openai";
           config = {
             base_url = "https://api.openai.com/v1";
+            api-key = ""; # placeholder
             text_generation = {
               model_id = "gpt-4o";
               prompt = ''
