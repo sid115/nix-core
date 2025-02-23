@@ -1,0 +1,25 @@
+name: Flake Check
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  flake-check:
+    runs-on: ubuntu-latest
+
+    env:
+      NIXPKGS_ALLOW_UNFREE: 1
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Nix
+        uses: cachix/install-nix-action@v18
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Run nix flake check
+        run: nix flake check --impure

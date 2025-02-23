@@ -27,7 +27,7 @@
   torrenting = import ./torrenting;
   tt-rss = import ./tt-rss;
   vaultwarden = import ./vaultwarden;
-  virtualisation = import ./virtualisation;
+  virtualization = import ./virtualization;
   webPage = import ./webPage;
   xrdp = import ./xrdp;
 }

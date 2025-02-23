@@ -58,6 +58,7 @@ in
   config = mkIf cfg.enable {
     programs.password-store = {
       enable = true;
+      package = pkgs.pass.withExtensions (exts: [ exts.pass-otp ]);
       settings = {
         PASSWORD_STORE_DIR = mkDefault "${config.xdg.dataHome}/password-store";
         PASSWORD_STORE_KEY = mkIf (cfg.key != "") cfg.key;
@@ -78,8 +79,8 @@ in
 
     home.packages =
       [
-        pkgs.pass
         passmenuScript
+        pkgs.zbar
       ]
       ++ (
         if cfg.wayland then
@@ -96,6 +97,7 @@ in
 
     home.sessionVariables.PASSWORD_STORE_MENU = if cfg.wayland then "bemenu" else "dmenu";
 
+    # FIXME: passff does not autofill OTPs
     programs.librewolf = mkIf config.programs.librewolf.enable {
       package = mkDefault (with pkgs; librewolf.override { nativeMessagingHosts = [ passff-host ]; });
       profiles.default.extensions =
