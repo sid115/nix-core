@@ -104,7 +104,7 @@ in
 
       config = mkOption {
         type = types.attrs;
-        default = defaultConfig;
+        default = { };
         description = ''
           Configuration for the baibot service. This will be merged with the default configuration.
           For static configuration options, see:
