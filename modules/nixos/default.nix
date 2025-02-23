@@ -1,4 +1,5 @@
 {
+  baibot = import ./baibot;
   cifsMount = import ./cifsMount;
   common = import ./common;
   device = import ./device;
