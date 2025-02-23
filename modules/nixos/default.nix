@@ -5,6 +5,7 @@
   firefly-iii = import ./firefly-iii;
   ftp-webserver = import ./ftp-webserver;
   gitea = import ./gitea;
+  grafana = import ./grafana;
   guacamole = import ./guacamole;
   hyprland = import ./hyprland;
   jellyfin = import ./jellyfin;
