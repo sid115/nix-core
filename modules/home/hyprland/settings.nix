@@ -10,7 +10,7 @@ in
   "$mod" = cfg.modifier;
 
   windowrulev2 = [
-    "center, floating:1", ot class:^(Gimp)$, not class:^(Steam)$" # center all floating windows without steam and gimp
+    "center, floating:1, ot class:^(Gimp)$, not class:^(Steam)$" # center all floating windows without steam and gimp
 
     # https://wiki.hyprland.org/Useful-Utilities/Screen-Sharing/#xwayland
     "opacity 0.0 override, class:^(xwaylandvideobridge)$"
