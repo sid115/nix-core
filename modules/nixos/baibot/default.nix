@@ -79,13 +79,12 @@ let
     logging = "warn,mxlink=debug,baibot=debug";
   };
 
-  finalConfig = lib.mergeAttrs defaultConfig cfg.config;
+  finalConfig = mergeAttrs defaultConfig cfg.config;
 
-  configFile = (pkgs.formats.yaml { }).generate "baibot-config" {
-    config = finalConfig;
-  };
+  configFile = (pkgs.formats.yaml { }).generate "baibot-config.yml" finalConfig;
 
   inherit (lib)
+    mergeAttrs
     mkEnableOption
     mkIf
     mkOption
