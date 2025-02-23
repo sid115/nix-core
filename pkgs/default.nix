@@ -4,6 +4,7 @@
 }:
 
 {
+  baibot = pkgs.callPackage ./baibot { };
   chatbox = pkgs.callPackage ./chatbox { };
   cppman = pkgs.callPackage ./cppman { };
   # gitingest = pkgs.callPackage ./gitingest { }; # Hotfix for https://github.com/sid115/nix-core/issues/6
