@@ -64,7 +64,6 @@ let
         }
       ];
     };
-
     initial_global_config = {
       handler = {
         catch_all = null;
@@ -80,8 +79,10 @@ let
     logging = "warn,mxlink=debug,baibot=debug";
   };
 
+  finalConfig = lib.mergeAttrs defaultConfig cfg.config;
+
   configFile = (pkgs.formats.yaml { }).generate "baibot-config" {
-    inherit (cfg) config;
+    config = finalConfig;
   };
 
   inherit (lib)
@@ -100,23 +101,25 @@ in
       config = mkOption {
         type = types.attrs;
         default = defaultConfig;
-        description = "TODO";
+        merge = lib.mergeAttrs;
+        description = ''
+          Configuration for the baibot service. This will be merged with the default configuration.
+          For static configuration options, see:
+          https://github.com/etkecc/baibot/blob/main/etc/app/config.yml.dist
+        '';
       };
 
       environmentFile = lib.mkOption {
         description = ''
           Path to an environment file that is passed to the systemd service for securely handling secrets.
           This file should contain key-value pairs in the format `KEY="value"` and must include the following required secrets:
-
-          - BAIBOT_USER_PASSWORD: The password for the Matrix user "baibot". This is required to authenticate the bot with the homeserver.
-          - BAIBOT_ENCRYPTION_RECOVERY_PASSPHRASE: A secure passphrase used for encryption key recovery. Required for secure message storage.
-          - BAIBOT_PERSISTENCE_SESSION_ENCRYPTION_KEY: A 64-character hex key (generated using `openssl rand -hex 32`) for encrypting session data.
-          - BAIBOT_PERSISTENCE_CONFIG_ENCRYPTION_KEY: Another 64-character hex key for encrypting configuration data.
+            - BAIBOT_USER_PASSWORD: The password for the Matrix user "baibot". This is required to authenticate the bot with the homeserver.
+            - BAIBOT_ENCRYPTION_RECOVERY_PASSPHRASE: A secure passphrase used for encryption key recovery. Required for secure message storage.
+            - BAIBOT_PERSISTENCE_SESSION_ENCRYPTION_KEY: A 64-character hex key (generated using `openssl rand -hex 32`) for encrypting session data.
+            - BAIBOT_PERSISTENCE_CONFIG_ENCRYPTION_KEY: Another 64-character hex key for encrypting configuration data.
 
           Optional secrets include:
-
-          - BAIBOT_AGENTS_OPENAI_API_KEY: API key for OpenAI services if you intend to use text generation, speech-to-text, or other integrations.
-
+            - BAIBOT_AGENTS_OPENAI_API_KEY: API key for OpenAI services if you intend to use text generation, speech-to-text, or other integrations.
         '';
         type = lib.types.nullOr lib.types.path;
         default = null;
@@ -154,7 +157,7 @@ in
     };
 
     systemd.tmpfiles.rules = [
-      "d ${cfg.config.persistence.data_dir_path} 0755 baibot baibot -"
+      "d ${finalConfig.persistence.data_dir_path} 0755 baibot baibot -"
     ];
 
     systemd.services.baibot = {
@@ -163,7 +166,7 @@ in
       wantedBy = [ "multi-user.target" ];
       environment = {
         BAIBOT_CONFIG_FILE_PATH = "${configFile}";
-        BAIBOT_PERSISTENCE_DATA_DIR_PATH = "${cfg.config.persistence.data_dir_path}";
+        BAIBOT_PERSISTENCE_DATA_DIR_PATH = "${finalConfig.persistence.data_dir_path}";
       };
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/baibot";
