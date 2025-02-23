@@ -165,9 +165,9 @@ in
         BAIBOT_CONFIG_FILE_PATH = "${configFile}";
         BAIBOT_PERSISTENCE_DATA_DIR_PATH = "${cfg.config.persistence.data_dir_path}";
       };
-      EnvironmentFile = optional (cfg.environmentFile != null) cfg.environmentFile;
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/baibot";
+        EnvironmentFile = optional (cfg.environmentFile != null) cfg.environmentFile;
         Restart = "always";
         User = "baibot";
         Group = "baibot";
