@@ -17,22 +17,10 @@ Baibot requires specific configuration options and secrets to function correctly
 - **Session Encryption Key**: A 64-character hex key (generated using `openssl rand -hex 32`) for encrypting session data. Set it as `BAIBOT_PERSISTENCE_SESSION_ENCRYPTION_KEY` in your `.env` file.
 - **Config Encryption Key**: A 64-character hex key for encrypting configuration data. Set it as `BAIBOT_PERSISTENCE_CONFIG_ENCRYPTION_KEY` in your `.env` file.
 
-#### Optional Settings
-- **OpenAI API Key**: If you intend to use OpenAI integrations, provide your API key as `BAIBOT_AGENTS_OPENAI_API_KEY` in your `.env` file.
-
-#### How to Create the `.env` File
-Create a file (e.g., `/var/lib/secrets/baibot.env`) with the following content, replacing placeholders with your actual secrets:
-
 ```bash
 BAIBOT_USER_PASSWORD="your-secure-password-for-baibot"
 BAIBOT_ENCRYPTION_RECOVERY_PASSPHRASE="your-long-and-secure-recovery-passphrase"
 ...
-```
-
-Set secure permissions for the `.env` file:
-```bash
-sudo chown baibot:baibot /var/lib/secrets/baibot.env
-sudo chmod 600 /var/lib/secrets/baibot.env
 ```
 
 #### Configure the `environmentFile` Option
@@ -51,14 +39,51 @@ register_new_matrix_user
 
 Set the `user localpart` and `password` according to your configuration.
 
-## Tips
+Restart both `matrix-synapse.service` and `baibot.service`. You can then invite Baibot to any room you like.
 
-### Set Handlers Dynamically
-You can set handlers dynamically in a Matrix chat with Baibot. For example:
+### OpenAI API
+
+Send this message in a room where Baibot has joined:
+
 ```
-!bai config global set-handler speech-to-text static/openai
+!bai agent create-global openai openai-agent
 ```
-This expects a static definition of an OpenAI agent in the configuration file. Handlers in the command must be specified with dashes instead of underscores as in the configuration file.
+
+The bot will reply with a YAML configuration which you need to edit and send back:
+
+```yaml
+base_url: https://api.openai.com/v1
+api_key: YOUR_API_KEY_HERE
+text_generation:
+  model_id: gpt-4o
+  prompt: 'You are a brief, but helpful bot called {{ baibot_name }} powered by the {{ baibot_model_id }} model. The date/time of this conversation''s start is: {{ baibot_conversation_start_time_utc }}.'
+  temperature: 1.0
+  max_response_tokens: 16384
+  max_context_tokens: 128000
+speech_to_text:
+  model_id: whisper-1
+text_to_speech:
+  model_id: tts-1-hd
+  voice: onyx
+  speed: 1.0
+  response_format: opus
+image_generation:
+  model_id: dall-e-3
+  style: vivid
+  size: 1024x1024
+  quality: standard
+```
+
+Set `openai-agent` as the default for any purpose you like:
+
+```
+!bai config global set-handler text-generation global/openai-agent
+!bai config global set-handler speech-to-text global/openai-agent
+!bai config global set-handler text-to-speech global/openai-agent
+!bai config global set-handler image-generation global/openai-agent
+```
+
+## Tips
 
 ### Set STT to Transcribe Only
 ```

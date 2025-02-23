@@ -33,41 +33,7 @@ let
       config_encryption_key = "a9f1df98d288802ead20a8be2c701a627eabd31cf3d9e2aea28867ccd7a4ded7";
     };
     agents = {
-      static_definitions = [
-        {
-          id = "openai";
-          provider = "openai";
-          config = {
-            base_url = "https://api.openai.com/v1";
-            api_key = ""; # placeholder
-            text_generation = {
-              model_id = "gpt-4o";
-              prompt = ''
-                You are a brief, but helpful bot called {{ baibot_name }} powered by the {{ baibot_model_id }} model.
-                The date/time of this conversation's start is: {{ baibot_conversation_start_time_utc }}.
-              '';
-              temperature = 1.0;
-              max_response_tokens = 16384;
-              max_context_tokens = 128000;
-            };
-            speech_to_text = {
-              model_id = "whisper-1";
-            };
-            text_to_speech = {
-              model_id = "tts-1-hd";
-              voice = "onyx";
-              speed = 1.0;
-              response_format = "opus";
-            };
-            image_generation = {
-              model_id = "dall-e-3";
-              style = "vivid";
-              size = "1024x1024";
-              quality = "standard";
-            };
-          };
-        }
-      ];
+      static_definitions = [ ];
     };
     initial_global_config = {
       handler = {
