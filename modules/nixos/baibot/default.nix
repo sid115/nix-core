@@ -101,12 +101,25 @@ in
       config = mkOption {
         type = types.attrs;
         default = defaultConfig;
-        merge = lib.mergeAttrs;
         description = ''
           Configuration for the baibot service. This will be merged with the default configuration.
           For static configuration options, see:
           https://github.com/etkecc/baibot/blob/main/etc/app/config.yml.dist
         '';
+        example = {
+          access.admin_patterns = [ "@you:example.com" ];
+          initial_global_config = {
+            handler = {
+              text_generation = "static/openai";
+              text_to_speed = "static/openai";
+              speech_to_text = "static/openai";
+              image_generation = "static/openai";
+            };
+            user_patterns = [
+              "@you:example.com"
+            ];
+          };
+        };
       };
 
       environmentFile = lib.mkOption {
