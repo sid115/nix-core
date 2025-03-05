@@ -53,15 +53,7 @@
         }
       );
 
-      packages = forAllSystems (
-        system:
-        let
-          basePackages = import ./pkgs unstable.legacyPackages.${system};
-          additionalPackages = {
-          };
-        in
-        inputs.nixpkgs.legacyPackages.${system}.lib.attrsets.recursiveUpdate basePackages additionalPackages
-      );
+      packages = forAllSystems (system: import ./pkgs unstable.legacyPackages.${system});
 
       overlays = import ./overlays { inherit inputs; };
 
