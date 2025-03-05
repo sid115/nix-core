@@ -7,7 +7,7 @@
   baibot = pkgs.callPackage ./baibot { };
   chatbox = pkgs.callPackage ./chatbox { };
   cppman = pkgs.callPackage ./cppman { };
-  # gitingest = pkgs.callPackage ./gitingest { }; # Hotfix for https://github.com/sid115/nix-core/issues/6
+  gitingest = pkgs.callPackage ./gitingest { };
   google-genai = pkgs.callPackage ./google-genai { };
   marker-pdf = pkgs.callPackage ./marker-pdf { };
   pdftext = pkgs.callPackage ./pdftext { };

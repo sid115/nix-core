@@ -4,9 +4,6 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-zoom.url = "github:nixos/nixpkgs/nixos-24.05";
 
-    # Hotfix for https://github.com/sid115/nix-core/issues/6
-    nixpkgs-gitingest.url = "github:nixos/nixpkgs/76c80aa77c543c51c78b69afe8d1367d2404b1ba";
-
     home-manager.url = "github:nix-community/home-manager/release-24.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -56,17 +53,7 @@
         }
       );
 
-      # Hotfix for https://github.com/sid115/nix-core/issues/6
-      packages = forAllSystems (
-        system:
-        let
-          basePackages = import ./pkgs unstable.legacyPackages.${system};
-          additionalPackages = {
-            gitingest = inputs.nixpkgs-gitingest.legacyPackages.${system}.callPackage ./pkgs/gitingest { };
-          };
-        in
-        inputs.nixpkgs.legacyPackages.${system}.lib.attrsets.recursiveUpdate basePackages additionalPackages
-      );
+      packages = forAllSystems (system: import ./pkgs unstable.legacyPackages.${system});
 
       overlays = import ./overlays { inherit inputs; };
 
