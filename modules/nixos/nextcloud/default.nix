@@ -44,6 +44,11 @@ in
       };
       configureRedis = mkDefault true;
       extraAppsEnable = mkDefault true;
+      extraApps = {
+        onlyoffice = pkgs.nextcloud-apps.onlyoffice;
+        files_markdown = pkgs.nextcloud-apps.files_markdown;
+        polls = pkgs.nextcloud-apps.polls;
+      };
       appstoreEnable = mkDefault false;
       webfinger = mkDefault true;
       settings = {
