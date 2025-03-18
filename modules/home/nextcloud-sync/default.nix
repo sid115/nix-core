@@ -25,8 +25,6 @@ let
       echo "Starting sync service: nextcloud-sync-${baseNameOf dir.local}"
       systemctl --user start nextcloud-sync-${baseNameOf dir.local}
     '') cfg.connections}
-
-    ${pkgs.libnotify}/bin/notify-send "Nextcloud Manual Sync" "Completed manual sync of all configured directories."
   '';
 
   inherit (lib)
