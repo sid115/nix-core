@@ -29,4 +29,5 @@
   virtualisation = import ./virtualisation;
   webPage = import ./webPage;
   xrdp = import ./xrdp;
+  home-assistant-oci = import ./home-assistant-oci;
 }
