@@ -58,6 +58,7 @@ in
               installRustc = mkDefault true;
             };
             texlab.enable = mkDefault true;
+            vhdl_ls.enable = mkDefault true;
             yamlls.enable = mkDefault true;
           };
         };
