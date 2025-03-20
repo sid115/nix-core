@@ -1,17 +1,18 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  config,
+  ...
+}:
 
 with lib;
 
 let
-  cfg = config.services.homeAssistantModule;
-in {
+  cfg = config.services.home-assistant-oci;
+in
+{
 
-  options.services.homeAssistantModule = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Enable the Home Assistant container with Podman.";
-    };
+  options.services.home-assistant-oci = {
+    enable = mkEnableOption "Enable the Home Assistant container with Podman.";
 
     image = mkOption {
       type = types.str;
@@ -49,11 +50,13 @@ in {
     };
 
     # Enable DNS for all Podman networks.
-    networking.firewall.interfaces = let
-      matchAll = if !config.networking.nftables.enable then "podman+" else "podman*";
-    in {
-      "${matchAll}".allowedUDPPorts = [ 53 ];
-    };
+    networking.firewall.interfaces =
+      let
+        matchAll = if !config.networking.nftables.enable then "podman+" else "podman*";
+      in
+      {
+        "${matchAll}".allowedUDPPorts = [ 53 ];
+      };
 
     virtualisation.oci-containers.backend = "podman";
 
