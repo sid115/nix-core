@@ -7,14 +7,10 @@ Open source home automation that puts local control and privacy first. Powered b
 
 ## Setup
 
-## Sops
+Import `inputs.core.nixosModule.home-assistant-oci`, set `services.home-assistant-oci.enable = true` in your config and access the webUI with `http://<ip-of-your-device>:8123` locally. There should be an option for creating an account.
 
-## Config
-
-### Auto-discovery
+## Auto-discovery
 
 In case you cannot get your home devices discovered in your network, you might need to open tcp ports on your server that are required by your services via `networking.firewall.allowedTCPPorts` and add the services via `Settings >> Devices & Services >> Integrations >> Add Integration` manually in home-assistant
 
-
-
-
+#TODO: let docker image update automatically
