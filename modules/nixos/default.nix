@@ -1,4 +1,5 @@
 {
+  baibot = import ./baibot;
   cifsMount = import ./cifsMount;
   common = import ./common;
   device = import ./device;
@@ -26,7 +27,7 @@
   torrenting = import ./torrenting;
   tt-rss = import ./tt-rss;
   vaultwarden = import ./vaultwarden;
-  virtualisation = import ./virtualisation;
+  virtualization = import ./virtualization;
   webPage = import ./webPage;
   xrdp = import ./xrdp;
   home-assistant-oci = import ./home-assistant-oci;
