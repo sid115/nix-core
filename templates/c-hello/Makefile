@@ -1,7 +1,6 @@
 CC = gcc
 
-# FIXME: Set to `pname` in package.nix
-PNAME = hello
+PNAME = hello-world
 
 BUILD_DIR = build
 INCLUDE_DIR = include

@@ -1,59 +1,126 @@
 {
+  description = "A hello world template in Python";
+
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "nixpkgs/nixos-unstable";
+    pre-commit-hooks = {
+      url = "github:cachix/pre-commit-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
-    { self, nixpkgs }:
+    {
+      self,
+      nixpkgs,
+      ...
+    }:
     let
+      pname = "hello-world";
+      version = "0.1.0";
+
       supportedSystems = [
         "x86_64-linux"
+        "aarch64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
       ];
+
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+
+      nixpkgsFor = forAllSystems (
+        system:
+        import nixpkgs {
+          inherit system;
+          overlays = [ self.overlays.default ];
+        }
+      );
     in
     {
-      apps = forAllSystems (
-        system:
+      overlays.default =
+        final: prev:
         let
-          pkg = self.outputs.packages.${system}.default;
+          python = final.python312;
         in
         {
-          default = {
-            type = "app";
-            program = "${pkg}/bin/${pkg.pname}";
+          "${pname}" = python.pkgs.buildPythonApplication {
+            inherit pname version;
+            pyproject = true;
+            src = ./.;
+            build-system = [
+              python.pkgs.setuptools
+              python.pkgs.wheel
+            ];
+            dependencies = with python.pkgs; [
+            ];
+            pythonImportsCheck = [
+              "hello_world"
+            ];
           };
-        }
-      );
+        };
 
-      packages = forAllSystems (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          default = pkgs.callPackage ./package.nix { };
-        }
-      );
+      packages = forAllSystems (system: {
+        default = nixpkgsFor.${system}."${pname}";
+        "${pname}" = nixpkgsFor.${system}."${pname}";
+      });
 
       devShells = forAllSystems (
         system:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = nixpkgsFor.${system};
+          python = pkgs.python312;
         in
         {
-          default = import ./shell.nix { inherit pkgs; };
+          default = pkgs.mkShell {
+            inherit (self.checks.${system}.pre-commit-check) shellHook;
+            buildInputs = self.checks.${system}.pre-commit-check.enabledPackages ++ [
+              (python.withPackages (
+                p: with p; [
+                ]
+              ))
+            ];
+          };
 
           venv = pkgs.mkShell {
-            buildInputs = [
-              pkgs.python3
-              pkgs.python3Packages.pip
-            ];
-
+            buildInputs =
+              [
+                python
+              ]
+              ++ [
+                (python.withPackages (
+                  p: with p; [
+                    pip
+                  ]
+                ))
+              ];
             shellHook = ''
               python -m venv .venv
               source .venv/bin/activate
               pip install .
             '';
+          };
+        }
+      );
+
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
+
+      checks = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgsFor.${system};
+        in
+        {
+          # TODO: Add integration test
+
+          pre-commit-check = self.inputs.pre-commit-hooks.lib.${system}.run {
+            src = ./.;
+            hooks = {
+              nixfmt-rfc-style = {
+                enable = true;
+                package = pkgs.nixfmt-rfc-style;
+              };
+              # TODO: Add Python format check
+            };
           };
         }
       );

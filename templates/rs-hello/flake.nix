@@ -1,5 +1,5 @@
 {
-  description = "A hello world template in C";
+  description = "A hello world template in Rust";
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
@@ -38,13 +38,11 @@
     in
     {
       overlays.default = final: prev: {
-        "${pname}" = final.stdenv.mkDerivation rec {
+        "${pname}" = final.rustPlatform.buildRustPackage {
           inherit pname version;
           src = ./.;
-          installPhase = ''
-            mkdir -p $out/bin
-            cp build/${pname} $out/bin/
-          '';
+          cargoLock.lockFile = ./Cargo.lock;
+          nativeBuildInputs = with final; [ pkg-config ];
         };
       };
 
@@ -64,10 +62,11 @@
             buildInputs =
               self.checks.${system}.pre-commit-check.enabledPackages
               ++ (with pkgs; [
-                coreutils
-                gcc
-                gdb
-                gnumake
+                cargo
+                pkg-config
+                pre-commit
+                rust-analyzer
+                rustc
               ]);
           };
         }
@@ -92,8 +91,8 @@
               ''
                 output=$(hello-world)
 
-                echo "$output" | grep -q "Hello, world!" || {
-                  echo "Test failed: Expected 'Hello, world!' but got: $output"
+                echo "$output" | grep -q "Hello, World!" || {
+                  echo "Test failed: Expected 'Hello, World!' but got: $output"
                   exit 1
                 }
 
@@ -107,9 +106,9 @@
                 enable = true;
                 package = pkgs.nixfmt-rfc-style;
               };
-              clang-format = {
+              rustfmt = {
                 enable = true;
-                types_or = nixpkgs.lib.mkForce [ "c" ];
+                package = pkgs.rustfmt;
               };
             };
           };

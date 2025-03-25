@@ -3,13 +3,12 @@ requires = ["setuptools>=75", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "hello" # FIXME: Change this to your package name
-version = "0.1" # FIXME: Change this to your package version
-requires-python = ">=3.12" # FIXME: Change this to your Python version
+name = "hello-world"
+version = "0.1.0"
+requires-python = ">=3.12"
 
-# FIXME: Add your dependencies
 dependencies = [
 ]
 
 [project.scripts]
-hello = "hello.__main__:main" # FIXME: Change this to your entry point
+hello-world = "hello_world.__main__:main"
