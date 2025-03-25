@@ -80,6 +80,18 @@
           path = ./templates/server;
           description = "Minimal NixOS server configuration.";
         };
+        c-hello = {
+          path = ./templates/c-hello;
+          description = "C hello world project.";
+        };
+        py-hello = {
+          path = ./templates/py-hello;
+          description = "Python hello world project.";
+        };
+        rs-hello = {
+          path = ./templates/rs-hello;
+          description = "Rust hello world project.";
+        };
       };
     };
 }
