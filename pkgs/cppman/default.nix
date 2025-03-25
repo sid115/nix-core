@@ -1,8 +1,7 @@
 {
   lib,
   python3,
-  fetchFromGitHub,
-  groff,
+  fetchPypi,
 }:
 
 python3.pkgs.buildPythonApplication rec {
@@ -10,32 +9,34 @@ python3.pkgs.buildPythonApplication rec {
   version = "0.5.7";
   pyproject = true;
 
-  src = fetchFromGitHub {
-    owner = "aitjcize";
-    repo = "cppman";
-    rev = version;
-    hash = "sha256-dqLYYYIqcAdhcn2iRXv7YmYrJAM4w8H57Lu0B2p54cM=";
+  src = fetchPypi {
+    inherit pname version;
+    hash = "sha256-AIcpQW51TdL0tZ34NJbLNsgXRgX17QKBPH0ow2xWDxo=";
   };
 
-  nativeBuildInputs = [
+  build-system = [
     python3.pkgs.setuptools
     python3.pkgs.wheel
   ];
 
-  propagatedBuildInputs = [
-    python3.pkgs.beautifulsoup4
-    python3.pkgs.html5lib
-    groff
+  dependencies = with python3.pkgs; [
+    beautifulsoup4
+    distutils
+    html5lib
   ];
 
-  pythonImportsCheck = [ "cppman" ];
+  pythonImportsCheck = [
+    "cppman"
+  ];
 
-  meta = with lib; {
-    description = "C++ 98/11/14 manual pages for Linux/MacOS";
-    homepage = "https://github.com/aitjcize/cppman";
-    changelog = "https://github.com/aitjcize/cppman/blob/${src.rev}/ChangeLog";
-    license = licenses.gpl3Only;
-    maintainers = with maintainers; [ ];
+  meta = {
+    description = "C++ 98/11/14/17/20 manual pages for Linux/MacOS";
+    homepage = "https://pypi.org/project/cppman";
+    license = with lib.licenses; [
+      gpl3Only
+      gpl2Only
+    ];
+    maintainers = with lib.maintainers; [ ];
     mainProgram = "cppman";
   };
 }

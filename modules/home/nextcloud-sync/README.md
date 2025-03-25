@@ -40,6 +40,16 @@ This is an example home config:
 }
 ```
 
+## Usage
+
+You can manually sync by running:
+
+```bash
+nextcloud-sync-all
+```
+
+This will synchronize all defined connections.
+
 ## Troubleshooting
 
 Each listed connection spawns a systemd user service and timer. Using the example above, we get:
