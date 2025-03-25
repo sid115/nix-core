@@ -1,0 +1,26 @@
+name: Rust Nix Pipeline
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Nix
+      uses: cachix/install-nix-action@v18
+      with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+    - name: Run cargo tests in dev shell
+      run: nix develop --command bash -c "cargo test"
+    
+    - name: Run nix flake check
+      run: nix flake check
