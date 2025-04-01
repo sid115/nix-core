@@ -73,6 +73,12 @@ in
         serviceConfig = {
           Restart = mkOverride 90 "always";
         };
+          after = [ 
+            "systemd-tmpfiles-setup.service" 
+          ];
+          wants = [ 
+            "systemd-tmpfiles-setup.service" 
+          ];
         partOf = [
           "podman-compose-hadc2nix-root.target"
         ];
