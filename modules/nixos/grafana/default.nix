@@ -42,7 +42,7 @@ in
           http_addr = mkDefault "127.0.0.1";
           http_port = mkDefault 3142;
           serve_from_sub_path = mkDefault false;
-          root_url = "https://${fqdn}/";
+          root_url = if cfg.forceSSL then "https://${fqdn}/" else "http://${fqdn}";
         };
         security = {
           disable_initial_admin_creation = mkDefault true;
