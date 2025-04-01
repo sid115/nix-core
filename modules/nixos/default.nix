@@ -7,6 +7,7 @@
   ftp-webserver = import ./ftp-webserver;
   gitea = import ./gitea;
   guacamole = import ./guacamole;
+  home-assistant-oci = import ./home-assistant-oci;
   hyprland = import ./hyprland;
   jellyfin = import ./jellyfin;
   jirafeau = import ./jirafeau;
@@ -30,5 +31,4 @@
   virtualization = import ./virtualization;
   webPage = import ./webPage;
   xrdp = import ./xrdp;
-  home-assistant-oci = import ./home-assistant-oci;
 }
