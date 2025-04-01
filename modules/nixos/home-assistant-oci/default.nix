@@ -12,6 +12,8 @@ let
     mkEnableOption
     mkOverride
     mkIf
+    mkOption
+    types
     ;
 in
 {
@@ -19,7 +21,19 @@ in
   options.services.home-assistant-oci = {
     enable = mkEnableOption "Enable the Home Assistant container with Podman.";
 
+   options.services.home-assistant-oci = {
+    dataDir = mkOption {
+      type = types.path;
+      default = "/data/home-assistant";
+      description = "Directory path for Home Assistant data storage.";
+    };
+    };
+
     config = mkIf cfg.enable {
+
+        systemd.tmpfiles.rules = [
+      "d ${cfg.dataDir} 0755 root root -"
+    ];
 
       # Enable the Podman service.
       virtualisation.podman = {
@@ -43,7 +57,7 @@ in
       virtualisation.oci-containers.containers."homeassistant" = {
         image = mkDefault "ghcr.io/home-assistant/home-assistant:stable";
         volumes = mkDefault [
-          "/data/home-assistant:/config:rw"
+          "${cfg.dataDir}:/config:rw"
           "/etc/localtime:/etc/localtime:ro"
           "/run/dbus:/run/dbus:ro"
         ];
@@ -74,6 +88,8 @@ in
         };
         wantedBy = [ "multi-user.target" ];
       };
+
+
 
     };
   };
