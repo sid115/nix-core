@@ -4,43 +4,36 @@
   ...
 }:
 
-with lib;
-
 let
+
   cfg = config.services.home-assistant-oci;
+  inherit (lib)
+    mkDefault
+    mkEnableOption
+    mkOverride
+    mkIf
+    mkOption
+    types
+    ;
 in
 {
 
   options.services.home-assistant-oci = {
     enable = mkEnableOption "Enable the Home Assistant container with Podman.";
-
-    image = mkOption {
-      type = types.str;
-      default = "ghcr.io/home-assistant/home-assistant:stable";
-      description = "Docker image to use for the Home Assistant container.";
-    };
-
-    volumes = mkOption {
-      type = types.listOf types.str;
-      default = [
-        "/data/home-assistant:/config:rw"
-        "/etc/localtime:/etc/localtime:ro"
-        "/run/dbus:/run/dbus:ro"
-      ];
-      description = "List of volumes to mount in the container.";
-    };
-
-    extraOptions = mkOption {
-      type = types.listOf types.str;
-      default = [
-        "--network=host"
-        "--privileged"
-      ];
-      description = "Extra options to pass to the Podman container.";
+  };
+  options.services.home-assistant-oci = {
+    dataDir = mkOption {
+      type = types.path;
+      default = "/data/home-assistant";
+      description = "Directory path for Home Assistant data storage.";
     };
   };
 
   config = mkIf cfg.enable {
+
+    systemd.tmpfiles.rules = [
+      "d ${cfg.dataDir} 0755 root root -"
+    ];
 
     # Enable the Podman service.
     virtualisation.podman = {
@@ -62,17 +55,30 @@ in
 
     # Configure the Home Assistant container
     virtualisation.oci-containers.containers."homeassistant" = {
-      image = cfg.image;
-      volumes = cfg.volumes;
-      log-driver = "journald";
-      extraOptions = cfg.extraOptions;
+      image = mkDefault "ghcr.io/home-assistant/home-assistant:stable";
+      volumes = mkDefault [
+        "${cfg.dataDir}:/config:rw"
+        "/etc/localtime:/etc/localtime:ro"
+        "/run/dbus:/run/dbus:ro"
+      ];
+      log-driver = mkDefault "journald";
+      extraOptions = mkDefault [
+        "--network=host"
+        "--privileged"
+      ];
     };
 
     # Define systemd service to manage the Home Assistant container
     systemd.services."podman-homeassistant" = {
       serviceConfig = {
-        Restart = lib.mkOverride 90 "always";
+        Restart = mkOverride 90 "always";
       };
+      after = [
+        "systemd-tmpfiles-setup.service"
+      ];
+      wants = [
+        "systemd-tmpfiles-setup.service"
+      ];
       partOf = [
         "podman-compose-hadc2nix-root.target"
       ];
@@ -90,5 +96,4 @@ in
     };
 
   };
-
 }
