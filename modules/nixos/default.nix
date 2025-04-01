@@ -8,6 +8,7 @@
   gitea = import ./gitea;
   grafana = import ./grafana;
   guacamole = import ./guacamole;
+  home-assistant-oci = import ./home-assistant-oci;
   hyprland = import ./hyprland;
   jellyfin = import ./jellyfin;
   jirafeau = import ./jirafeau;
