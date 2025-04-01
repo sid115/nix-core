@@ -50,7 +50,7 @@ in
       };
 
       provision = {
-        dashboards = import ./dashboards.nix { inherit config lib pkgs; };
+        dashboards = import ./dashboards.nix;
         datasources = import ./datasources.nix { inherit config lib pkgs; };
       };
     };
