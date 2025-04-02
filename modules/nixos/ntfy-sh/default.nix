@@ -10,10 +10,7 @@ let
 
   check-domain = pkgs.writeShellApplication {
     name = "check-domain";
-    runtimeInputs = [
-      pkgs.curl
-      cfg.package
-    ];
+    runtimeInputs = [ pkgs.curl ];
     text = builtins.readFile ./check-domain.sh;
   };
 

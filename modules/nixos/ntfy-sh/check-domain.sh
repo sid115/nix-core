@@ -21,7 +21,7 @@ check_website() {
 
 # send notification via ntfy
 send_notification() {
-  ntfy "$NTFY_TOPIC" "$1" && return 0 || return 1
+  curl -s -d "$1" http://127.0.0.1:2586/"$NTFY_TOPIC" && return 0 || return 1
 }
 
 # perform checks
