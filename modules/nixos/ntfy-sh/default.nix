@@ -8,6 +8,21 @@
 let
   cfg = config.services.ntfy-sh;
 
+  stripProtocol =
+    str:
+    let
+      http = "http://";
+      https = "https://";
+    in
+    if hasPrefix http str then
+      substring (lengthOf http) (lengthOf str - lengthOf http) str
+    else if hasPrefix https str then
+      substring (lengthOf https) (lengthOf str - lengthOf https) str
+    else
+      str;
+
+  fqdn = stripProtocol cfg.settings.base-url;
+
   check-domain = pkgs.writeShellApplication {
     name = "check-domain";
     runtimeInputs = [ pkgs.curl ];
@@ -38,44 +53,66 @@ let
   inherit (lib)
     escapeShellArg
     foldl'
+    hasPrefix
+    lengthOf
+    mkEnableOption
+    mkIf
     mkOption
+    substring
     types
     ;
 in
 {
-  options.services.ntfy-sh.notifiers = {
-    monitor-domains = mkOption {
-      type = types.listOf (
-        types.submodule {
-          options = {
-            fqdn = mkOption {
-              type = types.str;
-              description = "The domain to monitor.";
+  options.services.ntfy-sh = {
+    reverseProxy = {
+      enable = mkEnableOption "Enable an Nginx reverse proxy for `settings.base-url`.";
+      forceSSL = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Force SSL for Nginx virtual host.";
+      };
+    };
+    notifiers = {
+      monitor-domains = mkOption {
+        type = types.listOf (
+          types.submodule {
+            options = {
+              fqdn = mkOption {
+                type = types.str;
+                description = "The domain to monitor.";
+              };
+              topic = mkOption {
+                type = types.str;
+                description = "The ntfy-sh topic to send notifications to.";
+              };
             };
-            topic = mkOption {
-              type = types.str;
-              description = "The ntfy-sh topic to send notifications to.";
-            };
-          };
-        }
-      );
-      default = [ ];
-      description = ''
-        A list of domains to monitor and the ntfy-sh topic to send notifications to.
-        Each element requires:
-          - `fqdn`: The domain to monitor.
-          - `topic`: The ntfy-sh topic to send notifications to.
-      '';
-      example = [
-        {
-          fqdn = "my.domain.tld";
-          topic = "my-topic";
-        }
-      ];
+          }
+        );
+        default = [ ];
+        description = ''
+          A list of domains to monitor and the ntfy-sh topic to send notifications to.
+          Each element requires:
+            - `fqdn`: The domain to monitor.
+            - `topic`: The ntfy-sh topic to send notifications to.
+        '';
+        example = [
+          {
+            fqdn = "my.domain.tld";
+            topic = "my-topic";
+          }
+        ];
+      };
     };
   };
 
   config = {
+    services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
+      "${fqdn}" = {
+        enableACME = cfg.reverseProxy.forceSSL;
+        forceSSL = cfg.reverseProxy.forceSSL;
+      };
+    };
+
     systemd.services = foldl' (
       acc: domainCfg:
       let
