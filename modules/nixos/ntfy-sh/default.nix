@@ -15,9 +15,9 @@ let
       https = "https://";
     in
     if hasPrefix http str then
-      substring (lengthOf http) (lengthOf str - lengthOf http) str
+      substring (length http) (length str - length http) str
     else if hasPrefix https str then
-      substring (lengthOf https) (lengthOf str - lengthOf https) str
+      substring (length https) (length str - length https) str
     else
       str;
 
@@ -26,7 +26,7 @@ let
   check-domain = pkgs.writeShellApplication {
     name = "check-domain";
     runtimeInputs = [ pkgs.curl ];
-    text = builtins.readFile ./check-domain.sh;
+    text = readFile ./check-domain.sh;
   };
 
   mkMonitorDomainService =
@@ -54,13 +54,14 @@ let
     escapeShellArg
     foldl'
     hasPrefix
-    lengthOf
+    length
     mkEnableOption
     mkIf
     mkOption
-    substring
     types
     ;
+
+  inherit (builtins) readFile substring;
 in
 {
   options.services.ntfy-sh = {
