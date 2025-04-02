@@ -15,9 +15,9 @@ let
       https = "https://";
     in
     if hasPrefix http str then
-      substring (length http) (length str - length http) str
+      substring (stringLength http) (stringLength str - stringLength http) str
     else if hasPrefix https str then
-      substring (length https) (length str - length https) str
+      substring (stringLength https) (stringLength str - stringLength https) str
     else
       str;
 
@@ -54,14 +54,17 @@ let
     escapeShellArg
     foldl'
     hasPrefix
-    length
     mkEnableOption
     mkIf
     mkOption
     types
     ;
 
-  inherit (builtins) readFile substring;
+  inherit (builtins)
+    readFile
+    stringLength
+    substring
+    ;
 in
 {
   options.services.ntfy-sh = {
