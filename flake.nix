@@ -63,14 +63,22 @@
 
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 
-      checks = forAllSystems (system: {
-        pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
-          src = ./.;
-          hooks = {
-            nixfmt-rfc-style.enable = true;
+      checks = forAllSystems (
+        system:
+        let
+          pkgs = unstable.legacyPackages.${system};
+          flakePkgs = self.packages.${system};
+        in
+        {
+          pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
+            src = ./.;
+            hooks = {
+              nixfmt-rfc-style.enable = true;
+            };
           };
-        };
-      });
+          build-packages = pkgs.linkFarm "flake-packages-${system}" flakePkgs;
+        }
+      );
 
       templates = {
         hyprland = {
