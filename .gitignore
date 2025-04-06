@@ -1,2 +1,4 @@
+.pre-commit-config.yaml
 result
-templates/**/flake.lock
+templates/**/*.lock
+templates/**/.pre-commit-config.yaml

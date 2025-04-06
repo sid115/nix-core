@@ -8,6 +8,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     pre-commit-hooks.url = "github:cachix/git-hooks.nix";
+    pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -62,14 +63,22 @@
 
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 
-      checks = forAllSystems (system: {
-        pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
-          src = ./.;
-          hooks = {
-            nixfmt-rfc-style.enable = true;
+      checks = forAllSystems (
+        system:
+        let
+          pkgs = unstable.legacyPackages.${system};
+          flakePkgs = self.packages.${system};
+        in
+        {
+          pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
+            src = ./.;
+            hooks = {
+              nixfmt-rfc-style.enable = true;
+            };
           };
-        };
-      });
+          build-packages = pkgs.linkFarm "flake-packages-${system}" flakePkgs;
+        }
+      );
 
       templates = {
         hyprland = {
@@ -79,6 +88,18 @@
         server = {
           path = ./templates/server;
           description = "Minimal NixOS server configuration.";
+        };
+        c-hello = {
+          path = ./templates/c-hello;
+          description = "C hello world project.";
+        };
+        py-hello = {
+          path = ./templates/py-hello;
+          description = "Python hello world project.";
+        };
+        rs-hello = {
+          path = ./templates/rs-hello;
+          description = "Rust hello world project.";
         };
       };
     };

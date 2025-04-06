@@ -6,7 +6,9 @@
   firefly-iii = import ./firefly-iii;
   ftp-webserver = import ./ftp-webserver;
   gitea = import ./gitea;
+  grafana = import ./grafana;
   guacamole = import ./guacamole;
+  home-assistant-oci = import ./home-assistant-oci;
   hyprland = import ./hyprland;
   jellyfin = import ./jellyfin;
   jirafeau = import ./jirafeau;
@@ -16,6 +18,7 @@
   nextcloud = import ./nextcloud;
   nginx = import ./nginx;
   normalUsers = import ./normalUsers;
+  ntfy-sh = import ./ntfy-sh;
   open-webui = import ./open-webui;
   openssh = import ./openssh;
   peertube = import ./peertube;
