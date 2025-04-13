@@ -74,6 +74,7 @@ in
     };
 
     systemd.services.podman-comfyui-flux = {
+      path = [ pkgs.podman ];
       serviceConfig = {
         Restart = mkOverride 90 "always";
         ExecStartPre = [
