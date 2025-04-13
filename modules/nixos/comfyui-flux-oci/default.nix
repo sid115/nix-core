@@ -81,14 +81,9 @@ in
       serviceConfig = {
         Restart = mkOverride 90 "always";
         ExecStartPre = [
-          ''
-            bash -c '
-              until podman network inspect comfyui-flux-oci_default >/dev/null 2>&1; do
-                echo "Waiting for network comfyui-flux-oci_default to be created..."
-                sleep 5
-              done
-            '
-          ''
+          (pkgs.writeShellScriptBin "podman-comfyui-flux-pre-start" (
+            builtins.readFile ./podman-comfyui-flux-pre-start.sh
+          ))
         ];
       };
       after = [
