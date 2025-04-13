@@ -76,6 +76,18 @@ in
     systemd.services.podman-comfyui-flux = {
       serviceConfig = {
         Restart = mkOverride 90 "always";
+        ExecStartPre = [
+          ''
+            network_exists() {
+              podman network inspect comfyui-flux-oci_default >/dev/null 2>&1
+              return $?
+            }
+            until network_exists; do
+              echo "Waiting for network 'comfyui-flux-oci_default' to be created..."
+              sleep 1
+            done
+          ''
+        ];
       };
       after = [
         "podman-network-comfyui-flux-oci_default.service"
