@@ -1,6 +1,7 @@
 {
   baibot = import ./baibot;
   cifsMount = import ./cifsMount;
+  comfyui-flux-oci = import ./comfyui-flux-oci;
   common = import ./common;
   device = import ./device;
   firefly-iii = import ./firefly-iii;
