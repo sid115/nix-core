@@ -80,11 +80,15 @@ in
       ];
       serviceConfig = {
         Restart = mkOverride 90 "always";
-        ExecStartPre = [
-          (pkgs.writeShellScriptBin "podman-comfyui-flux-pre-start" (
-            builtins.readFile ./podman-comfyui-flux-pre-start.sh
-          ))
-        ];
+        ExecStartPre =
+          let
+            podman-comfyui-flux-pre-start = pkgs.writeShellScriptBin "podman-comfyui-flux-pre-start" (
+              builtins.readFile ./podman-comfyui-flux-pre-start.sh
+            );
+          in
+          [
+            "${podman-comfyui-flux-pre-start}/bin/podman-comfyui-flux-pre-start"
+          ];
       };
       after = [
         "podman-network-comfyui-flux-oci_default.service"
