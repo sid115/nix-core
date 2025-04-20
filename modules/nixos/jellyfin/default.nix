@@ -49,10 +49,13 @@ in
       jellyfin-ffmpeg
     ];
 
-    systemd.tmpfiles.rules = [
-      "d ${cfg.dataDir} 0770 ${cfg.user} ${cfg.group} -"
-      "z ${cfg.dataDir} 0770 ${cfg.user} ${cfg.group} -"
-    ];
+    systemd.tmpfiles.rules =
+      (map (
+        library: "d ${cfg.dataDir}/libraries/${library} 0770 ${cfg.user} ${cfg.group} -"
+      ) cfg.libraries)
+      ++ [
+        "Z ${cfg.dataDir} 0770 ${cfg.user} ${cfg.group} -"
+      ];
 
     services.nginx.virtualHosts."${fqdn}" = {
       forceSSL = cfg.forceSSL;
