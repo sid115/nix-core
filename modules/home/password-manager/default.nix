@@ -100,7 +100,7 @@ in
     # FIXME: passff does not autofill OTPs
     programs.librewolf = mkIf config.programs.librewolf.enable {
       package = mkDefault (with pkgs; librewolf.override { nativeMessagingHosts = [ passff-host ]; });
-      profiles.default.extensions =
+      profiles.default.extensions.packages =
         with inputs.nur.legacyPackages."${pkgs.system}".repos.rycee.firefox-addons; [ passff ];
     };
   };

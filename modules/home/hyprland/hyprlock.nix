@@ -3,7 +3,7 @@
 let
   cfg = config.wayland.windowManager.hyprland;
 
-  inherit (lib) mkIf mkForce;
+  inherit (lib) mkIf;
 in
 {
   programs.hyprlock = mkIf cfg.enable {
@@ -17,11 +17,6 @@ in
       };
 
       animations.enabled = false;
-
-      background = {
-        path = mkForce null; # override stylix
-        color = "rgb(0, 0, 0)";
-      };
 
       label = {
         text = "$TIME";

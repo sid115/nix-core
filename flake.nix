@@ -1,7 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-zoom.url = "github:nixos/nixpkgs/nixos-24.05";
 
     home-manager.url = "github:nix-community/home-manager/release-24.11";
@@ -19,12 +18,12 @@
       ...
     }@inputs:
     let
+      inherit (self) outputs;
       supportedSystems = [
         "x86_64-linux"
         "aarch64-linux"
       ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-      unstable = inputs.nixpkgs-unstable;
     in
     {
       apps = forAllSystems (
@@ -54,19 +53,36 @@
         }
       );
 
-      packages = forAllSystems (system: import ./pkgs unstable.legacyPackages.${system});
+      packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
 
       overlays = import ./overlays { inherit inputs; };
 
       nixosModules = import ./modules/nixos;
       homeModules = import ./modules/home;
 
+      # TODO
+      # nixosConfigurations = {
+      #   nixos-test = nixpkgs.lib.nixosSystem {
+      #     specialArgs = { inherit inputs outputs; };
+      #     modules = [ ./tests/nixos-test ];
+      #   };
+      # };
+
+      # TODO
+      # homeConfigurations = {
+      #   hm-test = home-manager.lib.homeManagerConfiguration {
+      #     pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      #     extraSpecialArgs = { inherit inputs outputs; };
+      #     modules = [ ./tests/hm-test ];
+      #   };
+      # };
+
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 
       checks = forAllSystems (
         system:
         let
-          pkgs = unstable.legacyPackages.${system};
+          pkgs = nixpkgs.legacyPackages.${system};
           flakePkgs = self.packages.${system};
         in
         {

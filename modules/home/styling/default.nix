@@ -49,6 +49,8 @@ in
       enable = true;
       autoEnable = true;
       targets = {
+        librewolf.profileNames = [ "default" ];
+
         # stylix sucks with these:
         bemenu.enable = false;
         kde.enable = false;
