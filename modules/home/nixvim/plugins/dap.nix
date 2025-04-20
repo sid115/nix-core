@@ -14,8 +14,8 @@ in
 {
   config = {
     programs.nixvim = {
-      plugins.dap = {
-        enable = mkDefault true;
+      plugins = {
+        dap.enable = mkDefault true;
         # extensions
         dap-ui.enable = mkDefault true;
         dap-virtual-text.enable = mkDefault true;
