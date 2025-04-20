@@ -2,49 +2,114 @@
   lib,
   python3,
   fetchFromGitHub,
+  fetchurl,
+
+  packageOverrides ? self: super: { },
 }:
 
 let
-  google-genai = import ../google-genai { inherit lib python3 fetchFromGitHub; };
-  pdftext = import ../pdftext { inherit lib python3 fetchFromGitHub; };
-  surya-ocr = import ../surya-ocr { inherit lib python3 fetchFromGitHub; };
+  fontFileName = "GoNotoCurrent-Regular.ttf";
+
+  fetchFont = fetchurl {
+    url = "https://models.datalab.to/artifacts/${fontFileName}";
+    hash = "sha256-iCr7q5ZWCMLSvGJ/2AFrliqlpr4tNY+d4kp7WWfFYy4=";
+  };
+
+  defaultOverrides = [
+    (self: super: {
+      pillow = super.pillow.overridePythonAttrs (oldAttrs: rec {
+        version = "10.2.0";
+        src = fetchFromGitHub {
+          owner = "python-pillow";
+          repo = "pillow";
+          tag = version;
+          hash = "sha256-1oK1MgDjAVpXs8nMm5MgAt/J0binIFbdVf7omsNUPm4=";
+        };
+      });
+    })
+  ];
+
+  python = python3.override {
+    self = python;
+    packageOverrides = lib.composeManyExtensions (defaultOverrides ++ [ packageOverrides ]);
+  };
+
+  google-genai = import ./google-genai.nix { inherit lib python fetchFromGitHub; };
+  pdftext = import ./pdftext.nix { inherit lib python fetchFromGitHub; };
+  surya-ocr = import ./surya-ocr.nix { inherit lib python fetchFromGitHub; };
 in
-python3.pkgs.buildPythonApplication rec {
+
+python.pkgs.buildPythonApplication rec {
   pname = "marker-pdf";
-  version = "unstable-2025-02-13";
+  version = "1.6.2";
   pyproject = true;
 
   src = fetchFromGitHub {
-    owner = "sid115";
-    repo = "marker-pdf";
-    rev = "776b5183c6d3f75b9bd314349e78a452ffd84981";
-    hash = "sha256-68anNvURs5jxNb6p405iHmEJc3UnZ5hUMwfyF3nLofo=";
+    owner = "VikParuchuri";
+    repo = "marker";
+    rev = "v${version}";
+    hash = "sha256-tZxD+sosYazNJNZAn9gTp97Ho81xFInD9aQv5H8rspw=";
   };
 
-  build-system = [
-    python3.pkgs.poetry-core
+  patches = [
+    ./skip-font-download.patch
   ];
 
-  dependencies = with python3.pkgs; [
-    click
-    filetype
-    ftfy
-    google-genai
-    markdown2
-    markdownify
-    pdftext
-    pillow
-    pydantic
-    pydantic-settings
-    python-dotenv
-    rapidfuzz
-    regex
-    scikit-learn
-    surya-ocr
-    torch
-    tqdm
-    transformers
+  postPatch = ''
+    substituteInPlace pyproject.toml \
+      --replace 'Pillow = "^10.1.0"' 'Pillow = "^10.2.0"' \
+      --replace 'anthropic = "^0.46.0"' 'anthropic = "^0.49.0"' \
+      --replace 'markdownify = "^0.13.1"' 'markdownify = "^0.14.1"' \
+      --replace 'pre-commit = "^4.2.0"' '#pre-commit = "^4.2.0"'
+  '';
+
+  postInstall = ''
+    FONT_DEST_DIR="$out/lib/${python.libPrefix}/site-packages/static/fonts"
+    mkdir -p $FONT_DEST_DIR
+    cp ${fetchFont} "$FONT_DEST_DIR/${fontFileName}"
+    echo "Installed font to $FONT_DEST_DIR/${fontFileName}"
+  '';
+
+  build-system = [
+    python.pkgs.poetry-core
   ];
+
+  dependencies =
+    [
+      google-genai
+      pdftext
+      surya-ocr
+    ]
+    ++ (with python.pkgs; [
+      anthropic
+      click
+      filetype
+      ftfy
+      markdown2
+      markdownify
+      openai
+      pillow
+      pydantic
+      pydantic-settings
+      python-dotenv
+      rapidfuzz
+      regex
+      requests
+      scikit-learn
+      torch
+      tqdm
+      transformers
+    ]);
+
+  optional-dependencies = with python.pkgs; {
+    full = [
+      ebooklib
+      mammoth
+      openpyxl
+      python-pptx
+      weasyprint
+    ];
+  };
 
   pythonImportsCheck = [
     "marker"
@@ -52,7 +117,7 @@ python3.pkgs.buildPythonApplication rec {
 
   meta = {
     description = "Convert PDF to markdown + JSON quickly with high accuracy";
-    homepage = "https://github.com/sid115/marker-pdf";
+    homepage = "https://github.com/VikParuchuri/marker";
     license = lib.licenses.gpl3Only;
     maintainers = with lib.maintainers; [ ];
     mainProgram = "marker-pdf";

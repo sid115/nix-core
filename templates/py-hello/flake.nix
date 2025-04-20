@@ -104,25 +104,18 @@
 
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 
-      checks = forAllSystems (
-        system:
-        let
-          pkgs = nixpkgsFor.${system};
-        in
-        {
-          # TODO: Add integration test
+      checks = forAllSystems (system: {
+        # TODO: Add integration test
 
-          pre-commit-check = self.inputs.pre-commit-hooks.lib.${system}.run {
-            src = ./.;
-            hooks = {
-              nixfmt-rfc-style = {
-                enable = true;
-                package = pkgs.nixfmt-rfc-style;
-              };
-              # TODO: Add Python format check
+        pre-commit-check = self.inputs.pre-commit-hooks.lib.${system}.run {
+          src = ./.;
+          hooks = {
+            nixfmt-rfc-style = {
+              enable = true;
             };
+            # TODO: Add Python format check
           };
-        }
-      );
+        };
+      });
     };
 }

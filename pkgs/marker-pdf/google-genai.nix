@@ -1,28 +1,30 @@
 {
   lib,
-  python3,
+  python,
   fetchFromGitHub,
 }:
 
-python3.pkgs.buildPythonApplication rec {
+python.pkgs.buildPythonApplication rec {
   pname = "google-genai";
-  version = "1.2.0";
+  version = "1.9.0";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "googleapis";
     repo = "python-genai";
     rev = "v${version}";
-    hash = "sha256-aoD2dSv35yZQt+4QTc1lP5koCEroY3Wu3p4fP2xTyq8=";
+    hash = "sha256-93y+ScBaeUYl15apu47pTAvJVrF0PWRmMxRHz4MLGZA=";
   };
 
   build-system = [
-    python3.pkgs.setuptools
-    python3.pkgs.wheel
+    python.pkgs.setuptools
+    python.pkgs.wheel
   ];
 
-  dependencies = with python3.pkgs; [
+  dependencies = with python.pkgs; [
+    anyio
     google-auth
+    httpx
     pydantic
     requests
     typing-extensions

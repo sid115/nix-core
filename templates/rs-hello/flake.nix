@@ -104,11 +104,9 @@
             hooks = {
               nixfmt-rfc-style = {
                 enable = true;
-                package = pkgs.nixfmt-rfc-style;
               };
               rustfmt = {
                 enable = true;
-                package = pkgs.rustfmt;
               };
             };
           };

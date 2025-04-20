@@ -105,7 +105,6 @@
             hooks = {
               nixfmt-rfc-style = {
                 enable = true;
-                package = pkgs.nixfmt-rfc-style;
               };
               clang-format = {
                 enable = true;
