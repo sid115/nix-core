@@ -22,7 +22,7 @@ in
           ];
         }
       ];
-      #iconUpdateURL = ""; # TODO
+      #icon = ""; # TODO
       #updateInterval = every_day;
       definedAliases = [ "@gh" ];
     };
@@ -87,7 +87,7 @@ in
           ];
         }
       ];
-      iconUpdateURL = "https://wiki.nixos.org/favicon.png";
+      icon = "https://wiki.nixos.org/favicon.png";
       updateInterval = every_day;
       definedAliases = [ "@nw" ];
     };
@@ -111,27 +111,27 @@ in
     "Startpage" = {
       # TODO: replace with Searx when instance on portuus.de is ready
       urls = [ { template = "https://www.startpage.com/do/dsearch?q={searchTerms}"; } ];
-      iconUpdateURL = "https://www.startpage.com/sp/cdn/favicons/favicon--default.ico";
+      icon = "https://www.startpage.com/sp/cdn/favicons/favicon--default.ico";
       updateInterval = every_day;
     };
 
     "Wikiless" = {
       urls = [ { template = "https://wikiless.metastem.su/wiki/{searchTerms}"; } ];
-      iconUpdateURL = "https://wikiless.metastem.su/wikiless-favicon.ico";
+      icon = "https://wikiless.metastem.su/wikiless-favicon.ico";
       updateInterval = every_day;
       definedAliases = [ "@wiki" ];
     };
 
-    "YouTube" = {
+    youtube = {
       urls = [ { template = "https://www.youtube.com/results?search_query={searchTerms}"; } ];
-      iconUpdateURL = "https://www.youtube.com/favicon.ico";
+      icon = "https://www.youtube.com/favicon.ico";
       updateInterval = every_day;
       definedAliases = [ "@yt" ];
     };
 
     # engines below are disabled
-    "Bing".metaData.hidden = true;
-    "DuckDuckGo".metaData.hidden = true;
-    "Google".metaData.hidden = true;
+    bing.metaData.hidden = true;
+    ddg.metaData.hidden = true;
+    google.metaData.hidden = true;
   };
 }
