@@ -54,6 +54,7 @@ in
         library: "d ${cfg.dataDir}/libraries/${library} 0770 ${cfg.user} ${cfg.group} -"
       ) cfg.libraries)
       ++ [
+        "z ${cfg.dataDir} 0770 ${cfg.user} ${cfg.group} -"
         "Z ${cfg.dataDir}/libraries 0770 ${cfg.user} ${cfg.group} -"
       ];
 
