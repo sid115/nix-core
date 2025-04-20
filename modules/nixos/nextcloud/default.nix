@@ -35,7 +35,7 @@ in
     environment.etc."secrets/nextcloud-initial-admin-pass".text = "nextcloud";
 
     services.nextcloud = {
-      package = pkgs.nextcloud30;
+      package = pkgs.nextcloud31;
       hostName = fqdn;
       https = cfg.forceSSL;
       config = {
