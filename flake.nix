@@ -18,6 +18,7 @@
       ...
     }@inputs:
     let
+      inherit (self) outputs;
       supportedSystems = [
         "x86_64-linux"
         "aarch64-linux"
@@ -58,6 +59,23 @@
 
       nixosModules = import ./modules/nixos;
       homeModules = import ./modules/home;
+
+      # TODO
+      # nixosConfigurations = {
+      #   nixos-test = nixpkgs.lib.nixosSystem {
+      #     specialArgs = { inherit inputs outputs; };
+      #     modules = [ ./tests/nixos-test ];
+      #   };
+      # };
+
+      # TODO
+      # homeConfigurations = {
+      #   hm-test = home-manager.lib.homeManagerConfiguration {
+      #     pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      #     extraSpecialArgs = { inherit inputs outputs; };
+      #     modules = [ ./tests/hm-test ];
+      #   };
+      # };
 
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 

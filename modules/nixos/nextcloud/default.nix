@@ -47,6 +47,8 @@ in
       appstoreEnable = mkDefault false;
       webfinger = mkDefault true;
       settings = {
+        dbtype = mkDefault "sqlite";
+
         # Logging
         log_type = mkDefault "file"; # systemd not available: https://github.com/NixOS/nixpkgs/issues/262142
         logfile = "${cfg.datadir}/data/nextcloud.log";
