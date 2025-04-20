@@ -54,7 +54,7 @@ in
         library: "d ${cfg.dataDir}/libraries/${library} 0770 ${cfg.user} ${cfg.group} -"
       ) cfg.libraries)
       ++ [
-        "Z ${cfg.dataDir} 0770 ${cfg.user} ${cfg.group} -"
+        "Z ${cfg.dataDir}/libraries 0770 ${cfg.user} ${cfg.group} -"
       ];
 
     services.nginx.virtualHosts."${fqdn}" = {
