@@ -18,5 +18,5 @@ with pkgs;
   # screen sharing for x11 apps
   grim
   slurp
-  xwaylandvideobridge
+  kdePackages.xwaylandvideobridge
 ]
