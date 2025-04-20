@@ -64,7 +64,7 @@
       checks = forAllSystems (
         system:
         let
-          pkgs = unstable.legacyPackages.${system};
+          pkgs = nixpkgs.legacyPackages.${system};
           flakePkgs = self.packages.${system};
         in
         {
