@@ -41,14 +41,13 @@ in
       config = {
         adminuser = mkDefault "nextcloud";
         adminpassFile = mkDefault "/etc/secrets/nextcloud-initial-admin-pass";
+        dbtype = mkDefault "sqlite";
       };
       configureRedis = mkDefault true;
       extraAppsEnable = mkDefault true;
       appstoreEnable = mkDefault false;
       webfinger = mkDefault true;
       settings = {
-        dbtype = mkDefault "sqlite";
-
         # Logging
         log_type = mkDefault "file"; # systemd not available: https://github.com/NixOS/nixpkgs/issues/262142
         logfile = "${cfg.datadir}/data/nextcloud.log";
