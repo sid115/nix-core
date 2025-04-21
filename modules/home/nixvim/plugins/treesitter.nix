@@ -11,12 +11,13 @@ in
     programs.nixvim = {
       plugins.treesitter = {
         enable = mkDefault true;
-        settings.ensure_installed = mkDefault "all";
         nixvimInjections = mkDefault true;
         settings = {
-          highlight.enable = true;
-          incremental_selection.enable = true;
-          indent.enable = true;
+          auto_install = mkDefault true;
+          ensure_installed = mkDefault "all";
+          highlight.enable = mkDefault true;
+          incremental_selection.enable = mkDefault true;
+          indent.enable = mkDefault true;
         };
       };
       plugins.treesitter-textobjects = mkIf plugin.enable { enable = mkDefault true; };
