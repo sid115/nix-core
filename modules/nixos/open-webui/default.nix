@@ -62,7 +62,10 @@ in
     services.nginx.virtualHosts."${fqdn}" = {
       enableACME = cfg.forceSSL;
       forceSSL = cfg.forceSSL;
-      locations."/".proxyPass = "http://localhost:${toString cfg.port}";
+      locations."/" = {
+        proxyPass = "http://localhost:${toString cfg.port}";
+        proxyWebsockets = true;
+      };
     };
   };
 }
