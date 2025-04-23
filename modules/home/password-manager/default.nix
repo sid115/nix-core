@@ -9,6 +9,7 @@
 let
   cfg = config.programs.passwordManager;
   passmenuScript = pkgs.writeShellScriptBin "passmenu-bemenu" (builtins.readFile ./passmenu); # TODO: override original passmenu script coming from pass itself
+  passff-host = pkgs.passff-host;
 
   inherit (lib)
     mkDefault
@@ -99,7 +100,13 @@ in
 
     # FIXME: passff does not autofill OTPs
     programs.librewolf = mkIf config.programs.librewolf.enable {
-      nativeMessagingHosts = [ pkgs.passff-host ];
+      package = pkgs.librewolf.override {
+        nativeMessagingHosts = [
+          passff-host
+        ];
+        hasMozSystemDirPatch = true;
+      };
+      nativeMessagingHosts = [ passff-host ];
       profiles.default.extensions.packages =
         with inputs.nur.legacyPackages."${pkgs.system}".repos.rycee.firefox-addons; [ passff ];
     };
