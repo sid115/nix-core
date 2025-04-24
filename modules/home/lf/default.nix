@@ -94,11 +94,11 @@ in
         }
         {
           mime = "application/pdf";
-          command = "pdftoppm -png %pistol-filename% -singlefile -scale-to 1024 -";
+          command = "pdftoppm -png %pistol-filename% -singlefile -scale-to 1024 | chafa";
         }
         {
           mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-          command = "libreoffice --headless --convert-to pdf %pistol-filename% && pdftoppm -png %pistol-filename%.pdf -singlefile -scale-to 1024 -";
+          command = "libreoffice --headless --convert-to png %pistol-filename% && chafa %pistol-filename%.png";
         }
         {
           mime = "audio/*";
