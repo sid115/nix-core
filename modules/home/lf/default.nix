@@ -25,7 +25,7 @@ in
       hexyl
       glow
       chafa
-      poppler
+      poppler_utils
       w3m
       ffmpeg
       ffmpegthumbnailer # used by pistol
