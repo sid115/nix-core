@@ -85,10 +85,6 @@ in
           command = "bat %pistol-filename%";
         }
         {
-          mime = "application/*";
-          command = "hexyl %pistol-filename%";
-        }
-        {
           mime = "application/json";
           command = "bat %pistol-filename%";
         }
@@ -100,6 +96,10 @@ in
           mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
           command = "libreoffice --headless --convert-to png %pistol-filename% && chafa %pistol-filename%.png";
         }
+        # {
+        #   mime = "application/*";
+        #   command = "hexyl %pistol-filename%";
+        # }
         {
           mime = "audio/*";
           command = "ffmpeg -i %pistol-filename% -f wav -";
@@ -109,16 +109,16 @@ in
           command = "chafa %pistol-filename%";
         }
         {
-          mime = "text/*";
-          command = "bat %pistol-filename%";
-        }
-        {
           mime = "text/html";
           command = "w3m -dump %pistol-filename%";
         }
         {
+          mime = "text/*";
+          command = "bat %pistol-filename%";
+        }
+        {
           mime = "video/*";
-          command = "ffmpegthumbnailer -i %pistol-filename% -o -";
+          command = "ffmpegthumbnailer -i %pistol-filename% -o - | chafa";
         }
       ];
     };
