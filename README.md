@@ -13,6 +13,7 @@ This is the directory structure of this repository:
 ├── modules
 │   ├── home
 │   └── nixos
+├── overlays
 ├── pkgs
 ├── templates
 │   ├── dev
@@ -26,6 +27,7 @@ This is the directory structure of this repository:
 - `docs`: documentation
 - `modules/home`: Home Manager modules
 - `modules/nixos`: NixOS modules
+- `overlays`: fixes for packages
 - `pkgs`: custom packages
 - `templates/dev`: development templates
 - `templates/nix-config`: templates to kickstart your first nix-config
@@ -81,7 +83,7 @@ cd DIR
 nix flake init -t "github:sid115/nix-core#templates.TEMPLATE"
 ```
 
-`TEMPLATE` has to be the template attribute, for example `dev.c-hello` or `nix-config.hyprland`. See [flake.nix](./flake.nix) for all available templates. Read more about our nix-config templates [here](./docs/create_flake.md).
+`TEMPLATE` has to be the template attribute, for example `c-hello` or `hyprland`. See [flake.nix](./flake.nix) for all available templates. Read more about our nix-config templates [here](./docs/create_flake.md).
 
 ## Contributing
 

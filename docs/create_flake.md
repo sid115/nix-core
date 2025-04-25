@@ -31,8 +31,6 @@ Options:
     -h, --help                 Show this help message
 ```
 
-> Remember to prefix your template with `nix-config`. For example: `-t nix-config.hyprland`.
-
 If you are already on your target machine running NixOS, it is recommended that you set the directory to `~/.config/nixos`, as the `rebuild` script (see below) expects your configuration in this directory.
 
 All templates work right out of the box. You only need to edit the disk partitioning script (`disks.sh`) or provide a [disko](https://github.com/nix-community/disko) configuration (`disko.nix`) in your host directory. A basic single disk partitioning script is provided. Set your disk by its ID, which comes from `ls -lAh /dev/disk/by-id`. When you are happy with your configuration, create a public Git repository to pass to the installation script (see below).
