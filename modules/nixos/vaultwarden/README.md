@@ -13,13 +13,7 @@ Unofficial Bitwarden compatible server written in Rust, formerly known as bitwar
 vaultwarden:
     admin-token: abc123
     smtp-password: abc123 # for email support
-    hashed-smtp-password: # see above
-```
-
-(Optional) Store your admin-token as argon2 PHC string with the OWASP minimum recommended settings in sops. Don't use special characters unless you know how to escape them correctly, just letters and numbers:
-
-```shell
-nix-shell -p openssl -p libargon2 --run 'echo -n "MyAdminToken" | argon2 "$(openssl rand -base64 32)" -e -id -k 19456 -t 2 -p 1'
+    hashed-smtp-password: abc123 # for email support
 ```
 
 Generate the hashed smtp password with:
@@ -29,6 +23,12 @@ nix-shell -p mkpasswd --run 'mkpasswd -sm bcrypt'
 ```
 
 > For more info, see our mailserver module.
+
+Optionally, you can store your admin token as an argon2 PHC string with the OWASP minimum recommended settings in sops. It is recommended to use an alphanumeric string only, as special characters may need to be escaped:
+
+```shell
+nix-shell -p openssl libargon2 --run 'echo -n "abc123" | argon2 "$(openssl rand -base64 32)" -e -id -k 19456 -t 2 -p 1'
+```
 
 ## Setup
 
