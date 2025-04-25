@@ -97,25 +97,29 @@
       );
 
       templates = {
-        hyprland = {
-          path = ./templates/hyprland;
-          description = "NixOS client configuration for Hyprland.";
+        nix-config = {
+          hyprland = {
+            path = ./templates/nix-config/hyprland;
+            description = "NixOS client configuration for Hyprland.";
+          };
+          server = {
+            path = ./templates/nix-config/server;
+            description = "Minimal NixOS server configuration.";
+          };
         };
-        server = {
-          path = ./templates/server;
-          description = "Minimal NixOS server configuration.";
-        };
-        c-hello = {
-          path = ./templates/c-hello;
-          description = "C hello world project.";
-        };
-        py-hello = {
-          path = ./templates/py-hello;
-          description = "Python hello world project.";
-        };
-        rs-hello = {
-          path = ./templates/rs-hello;
-          description = "Rust hello world project.";
+        dev = {
+          c-hello = {
+            path = ./templates/dev/c-hello;
+            description = "C hello world project.";
+          };
+          py-hello = {
+            path = ./templates/dev/py-hello;
+            description = "Python hello world project.";
+          };
+          rs-hello = {
+            path = ./templates/dev/rs-hello;
+            description = "Rust hello world project.";
+          };
         };
       };
     };
