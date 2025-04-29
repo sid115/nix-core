@@ -2,23 +2,20 @@
   lib,
   python3,
   fetchFromGitHub,
+  fetchurl,
 
   packageOverrides ? self: super: { },
 }:
 
 let
+  fontFileName = "GoNotoCurrent-Regular.ttf";
+
+  fetchFont = fetchurl {
+    url = "https://models.datalab.to/artifacts/${fontFileName}";
+    hash = "sha256-iCr7q5ZWCMLSvGJ/2AFrliqlpr4tNY+d4kp7WWfFYy4=";
+  };
+
   defaultOverrides = [
-    (self: super: {
-      pillow = super.pillow.overridePythonAttrs (oldAttrs: rec {
-        version = "10.2.0";
-        src = fetchFromGitHub {
-          owner = "python-pillow";
-          repo = "pillow";
-          tag = version;
-          hash = "sha256-1oK1MgDjAVpXs8nMm5MgAt/J0binIFbdVf7omsNUPm4=";
-        };
-      });
-    })
   ];
 
   python = python3.override {
@@ -43,12 +40,23 @@ python.pkgs.buildPythonApplication rec {
     hash = "sha256-tZxD+sosYazNJNZAn9gTp97Ho81xFInD9aQv5H8rspw=";
   };
 
+  patches = [
+    ./skip-font-download.patch
+  ];
+
   postPatch = ''
     substituteInPlace pyproject.toml \
-      --replace 'Pillow = "^10.1.0"' 'Pillow = "^10.2.0"' \
-      --replace 'anthropic = "^0.46.0"' 'anthropic = "^0.49.0"' \
-      --replace 'markdownify = "^0.13.1"' 'markdownify = "^0.14.1"' \
-      --replace 'pre-commit = "^4.2.0"' '#pre-commit = "^4.2.0"'
+      --replace-warn 'Pillow = "^10.1.0"' 'Pillow = "^11.2.0"' \
+      --replace-warn 'anthropic = "^0.46.0"' 'anthropic = "^0.49.0"' \
+      --replace-warn 'markdownify = "^0.13.1"' 'markdownify = "^0.14.1"' \
+      --replace-warn 'pre-commit = "^4.2.0"' '#pre-commit = "^4.2.0"'
+  '';
+
+  postInstall = ''
+    FONT_DEST_DIR="$out/lib/${python.libPrefix}/site-packages/static/fonts"
+    mkdir -p $FONT_DEST_DIR
+    cp ${fetchFont} "$FONT_DEST_DIR/${fontFileName}"
+    echo "Installed font to $FONT_DEST_DIR/${fontFileName}"
   '';
 
   build-system = [
@@ -75,6 +83,7 @@ python.pkgs.buildPythonApplication rec {
       python-dotenv
       rapidfuzz
       regex
+      requests
       scikit-learn
       torch
       tqdm

@@ -37,7 +37,12 @@ Rebuild_nixos() {
   [ "$SHOW_TRACE" = 1 ] && CMD="$CMD --show-trace"
 
   # Rebuild NixOS configuration
-  [ "$ROLLBACK" = 0 ] && echo "Rebuilding NixOS configuration with flake '$FLAKE'..." || echo "Rolling back to last NixOS generation..."
+  if [ "$ROLLBACK" = 0 ]; then 
+    echo "Rebuilding NixOS configuration '$FLAKE'..." 
+  else
+    echo "Rolling back to last NixOS generation..."
+  fi
+
   $CMD || { echo "NixOS rebuild failed"; exit 1; }
   echo "NixOS rebuild completed successfully."
 }
@@ -57,7 +62,11 @@ Rebuild_home() {
   fi
 
   # Rebuild Home Manager configuration
-  [ "$ROLLBACK" = 0 ] && echo "Rebuilding Home Manager configuration with flake '$FLAKE'..." || echo "Rolling back to last Home Manager generation..."
+  if [ "$ROLLBACK" = 0 ]; then 
+    echo "Rebuilding Home Manager configuration '$FLAKE'..." 
+  else
+    echo "Rolling back to last Home Manager generation..."
+  fi
   $CMD || { echo "Home Manager rebuild failed"; exit 1; }
   echo "Home Manager rebuild completed successfully."
 }

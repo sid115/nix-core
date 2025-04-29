@@ -9,7 +9,7 @@ in
   hardware.bluetooth.settings.General.Enable = mkDefault "Source,Sink,Media,Socket";
   hardware.bluetooth.settings.General.Experimental = mkDefault true;
 
-  hardware.pulseaudio.enable = mkDefault false;
+  services.pulseaudio.enable = mkDefault false;
 
   security.rtkit.enable = mkDefault true;
 

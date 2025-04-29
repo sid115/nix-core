@@ -21,6 +21,8 @@ in
           fzf-native.enable = mkDefault true;
         };
         keymaps = mkDefault {
+          "<space>fb" = "file_browser";
+          "<C-e>" = "file_browser";
           "<leader>ff" = "find_files";
           "<leader>fg" = "live_grep";
           "<leader>b" = "buffers";

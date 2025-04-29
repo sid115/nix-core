@@ -13,10 +13,10 @@ Visit the web interface and follow the on screen instructions. Create libraries 
 ## Upload files
 
 ```bash
-rsync -avzP -e "ssh -p SSH_PORT" --rsync-path="sudo rsync" LOCAL_PATH YOU@REMOTE:JELLYFIN_DATA_DIR/libraries/LIBRARY
+rsync -arvzP -e 'ssh -p SSH_PORT' LOCAL_PATH YOU@REMOTE:JELLYFIN_DATA_DIR/libraries/LIBRARY
 ```
 
-> the user `YOU` needs sudo privileges on the remote machine `REMOTE`
+> the user `YOU` has to be in the *jellyfin* group on the remote machine `REMOTE`
 
 - `SSH_PORT`: Your SSH port
 - `LOCAL_PATH`: Local path to your media file(s)

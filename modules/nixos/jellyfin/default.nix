@@ -49,24 +49,14 @@ in
       jellyfin-ffmpeg
     ];
 
-    systemd.tmpfiles.rules = map (
-      library: "d ${cfg.dataDir}/libraries/${library} 0700 ${cfg.user} ${cfg.group} -"
-    ) cfg.libraries;
-
-    # let users in group `wheel` run `rsync` without password to be able to upload files into library directories
-    security.sudo = {
-      extraRules = [
-        {
-          groups = [ "wheel" ];
-          commands = [
-            {
-              command = "/run/current-system/sw/bin/rsync";
-              options = [ "NOPASSWD" ];
-            }
-          ];
-        }
+    systemd.tmpfiles.rules =
+      (map (
+        library: "d ${cfg.dataDir}/libraries/${library} 0770 ${cfg.user} ${cfg.group} -"
+      ) cfg.libraries)
+      ++ [
+        "z ${cfg.dataDir} 0770 ${cfg.user} ${cfg.group} -"
+        "Z ${cfg.dataDir}/libraries 0770 ${cfg.user} ${cfg.group} -"
       ];
-    };
 
     services.nginx.virtualHosts."${fqdn}" = {
       forceSSL = cfg.forceSSL;

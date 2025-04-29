@@ -23,11 +23,6 @@ in
       default = true;
       description = "Force SSL for Nginx virtual host.";
     };
-    port = mkOption {
-      type = types.int;
-      default = 8080;
-      description = "Port for web interface used by Nginx proxy.";
-    };
   };
 
   config = mkIf cfg.enable {
@@ -41,7 +36,6 @@ in
         contact_url = mkDefault false;
         enable_metrics = mkDefault false;
         server = {
-          port = cfg.port;
           bind_address = mkDefault "127.0.0.1";
           secret_key = mkDefault "searx_secret_key"; # FIXME
           base_url = mkDefault "https://${fqdn}";
@@ -62,7 +56,7 @@ in
     services.nginx.virtualHosts."${fqdn}" = {
       enableACME = cfg.forceSSL;
       forceSSL = cfg.forceSSL;
-      locations."/".proxyPass = "http://localhost:${toString cfg.port}";
+      locations."/".proxyPass = "http://localhost:${toString cfg.settings.server.port}";
     };
   };
 }

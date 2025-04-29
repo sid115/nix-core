@@ -32,7 +32,7 @@ in
       enable = true;
       policies.Homepage.StartPage = mkDefault "previous-session";
       profiles.default = {
-        extensions = import ./extensions.nix { inherit inputs pkgs; };
+        extensions.packages = import ./extensions.nix { inherit inputs pkgs; };
         search = import ./search.nix { inherit pkgs; };
         settings = import ./settings.nix;
         userChrome = builtins.readFile ./userChrome.css;

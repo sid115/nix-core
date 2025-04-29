@@ -18,8 +18,9 @@ python.pkgs.buildPythonApplication rec {
 
   postPatch = ''
     substituteInPlace pyproject.toml \
-      --replace 'pypdfium2 = "=4.30.0"' 'pypdfium2 = "^4.30.0"' \
-      --replace 'opencv-python-headless = "^4.11.0.86"' 'opencv-python-headless = "^4.11.0"'
+      --replace-warn 'pillow = "^10.2.0"' 'pillow = "^11.2.0"' \
+      --replace-warn 'pypdfium2 = "=4.30.0"' 'pypdfium2 = "^4.30.0"' \
+      --replace-warn 'opencv-python-headless = "^4.11.0.86"' 'opencv-python-headless = "^4.11.0"'
   '';
 
   build-system = [
