@@ -106,6 +106,12 @@ if [[ -z "$HOSTNAME" ]]; then
   exit 1
 fi
 
+# Install git if not already installed
+if ! command -v git &> /dev/null; then
+  echo "Git is not installed. Installing..."
+  nix-env -iA nixos.git
+fi
+
 # Clone NixOS configuration to $CLONE_DIR
 mkdir -p "$CLONE_DIR"
 echo "$SEPARATOR"
