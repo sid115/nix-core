@@ -2,6 +2,8 @@
 
 The goal of this repository is to provide modules and packages for your NixOS and Home Manager configurations for client and server applications. Scripts are provided to automate the creation and installation of your own flake.
 
+Currently, only `x86_64` is supported. `aarch64` is in an experimental state.
+
 ## Directory Structure
 
 This is the directory structure of this repository:

@@ -18,10 +18,9 @@
       ...
     }@inputs:
     let
-      inherit (self) outputs;
       supportedSystems = [
         "x86_64-linux"
-        "aarch64-linux"
+        "aarch64-linux" # For testing only. Use at your own risk.
       ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
     in
