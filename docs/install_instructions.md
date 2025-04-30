@@ -123,3 +123,115 @@ sudo reboot now
 ```
 
 You may now log in. Your system is now fully configured.
+
+# Installing NixOS on Raspberry Pi 4 & 5
+
+## Prerequisites
+
+- Raspberry Pi 4 or 5 (This guide is specifically tested for Pi 4!)
+- SD card (min. 8GB)
+- Internet connection
+- Allready a nix-core configuration. Care! boot.nix and hardware.nix have to look like this:
+
+```nix
+#boot.nix
+{ pkgs, ...}:
+{
+  boot = {
+    kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
+    initrd.availableKernelModules = [ "xhci_pci" "usbhid" "usb_storage" ];
+    loader = {
+      grub.enable = false;
+      generic-extlinux-compatible.enable = true;
+    };
+  };
+}
+```
+
+```nix
+#hardware.nix
+{ pkgs, lib, ... }:
+
+{
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-label/NIXOS_SD";
+      fsType = "ext4";
+      options = [ "noatime" ];
+    };
+  };
+
+  nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
+  hardware.enableRedistributableFirmware = true;
+  system.stateVersion = "24.11";
+}
+```
+
+## Setup
+
+### 1. Flash SD Card
+
+```bash
+# Get required tools
+nix-shell -p wget zstd curl
+
+# Get latest image URL and download
+HYDRA_URL="https://hydra.nixos.org/job/nixos/release-23.11/nixos.sd_image.aarch64-linux"
+BUILD_URL=$(curl -s $HYDRA_URL | grep -o 'https://hydra.nixos.org/build/[0-9]*' | head -n1)
+IMAGE_URL=$(curl -s $BUILD_URL | grep -o 'https://hydra.nixos.org/build/[0-9]*/download/1/nixos-sd-image.*-aarch64-linux.img.zst' | head -n1)
+wget $IMAGE_URL
+
+# Extract image
+unzstd -d nixos-sd-image-*-aarch64-linux.img.zst
+
+# Flash to SD card (replace sdX with your device!)
+sudo dd if=nixos-sd-image-*-aarch64-linux.img of=/dev/sdX bs=4096 conv=fsync status=progress
+```
+
+### 2. Update Firmware
+
+```bash
+# Enter nix shell with eeprom tools
+nix-shell -p raspberrypi-eeprom
+
+# Mount firmware partition
+sudo mount /dev/disk/by-label/FIRMWARE /mnt
+
+# Update firmware
+sudo BOOTFS=/mnt FIRMWARE_RELEASE_STATUS=stable rpi-eeprom-update -d -a
+
+# Reboot to apply
+reboot
+```
+
+Note: Maybe you have to apply this a 2nd time if the firmware is to outdated.
+
+### 3. Clone Configuration
+
+```bash
+# Get git
+nix-shell -p git
+
+# Clone your repo
+git clone YOURGITURL /etc/nixos
+```
+
+### 4. Setup Hardware Config
+
+```bash
+# Fix permissions
+sudo chown -R nixos:wheel /etc/nixos
+
+# Generate and save hardware config
+nixos-generate-config --show-hardware-config > /etc/nixos/hosts/HOSTNAME/hardware.nix
+```
+
+### 5. Build System
+
+```bash
+# Build and switch to new configuration
+sudo nixos-rebuild switch --flake /etc/nixos#HOSTNAME
+```
+
+Note: You can manually get the latest image from [here](https://nixos.wiki/wiki/NixOS_on_ARM#Installation) if the automatic download fails.
+If you want an example you can look [here](https://github.com/stherm/nix-config/) for host PI4HM
