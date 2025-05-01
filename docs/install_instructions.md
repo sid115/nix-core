@@ -128,67 +128,87 @@ You may now log in. Your system is now fully configured.
 
 ## Prerequisites
 
-- Raspberry Pi 4 or 5 (This guide is specifically tested for Pi 4!)
-- SD card (min. 8GB)
-- Internet connection
-- Already a nix-core configuration. The [boot.nix](https://github.com/sid115/nix-core/blob/develop/templates/nix-config/pi/hosts/HOSTNAME/boot.nix) and [hardware.nix](https://github.com/sid115/nix-core/blob/develop/templates/nix-config/pi/hosts/HOSTNAME/hardware.nix) must have to look like here. You can also use the create script - use only the [pi](https://github.com/sid115/nix-core/tree/develop/templates/nix-config/pi) template!
+- **Raspberry Pi 4 or 5** (This guide has been specifically tested on the Pi 4!)
+- **SD card** (minimum 8GB)
+- **Internet connection**
+- **Existing nix-core configuration**:  
+  The [`boot.nix`](https://github.com/sid115/nix-core/blob/develop/templates/nix-config/pi/hosts/HOSTNAME/boot.nix) and [`hardware.nix`](https://github.com/sid115/nix-core/blob/develop/templates/nix-config/pi/hosts/HOSTNAME/hardware.nix) files must be set up as shown in the examples.  
+  Alternatively, you can use the create script — just make sure to use the [pi template](https://github.com/sid115/nix-core/tree/develop/templates/nix-config/pi)!
 
+---
 
 ## Setup
 
-### 0. Flash SD Card
+### 0. Flash the SD Card
 
-Take the lastet [nixos-am](https://hydra.nixos.org/job/nixos/trunk-combined/nixos.sd_image.aarch64-linux).
+Download the latest [nixos-am image](https://hydra.nixos.org/job/nixos/trunk-combined/nixos.sd_image.aarch64-linux) and flash it to your SD card.
+
 ```bash
-# Get required tools
+# Install required tools
 nix-shell -p wget zstd curl
 
-# Get latest image URL and download
+# Get the latest image URL and download it
 wget $IMAGE_URL
 
-# Extract image
+# Extract the image
 unzstd -d nixos-sd-image-*-aarch64-linux.img.zst
 
-# Flash to SD card (replace sdX with your device!)
+# Flash the image to SD card (replace sdX with your device!)
 sudo dd if=nixos-sd-image-*-aarch64-linux.img of=/dev/sdX bs=4096 conv=fsync status=progress
 ```
 
+---
 
-### 2. Update Firmware
-Boot the PI with the flashed SD card.
+### 1. Update Firmware
+
+Boot the Pi with the flashed SD card and update the firmware.
+
 ```bash
-# Enter nix shell with eeprom tools
+# Enter a nix-shell with EEPROM tools
 nix-shell -p raspberrypi-eeprom
 
-# Mount firmware partition
+# Mount the firmware partition
 sudo mount /dev/disk/by-label/FIRMWARE /mnt
 
 # Update firmware
 sudo BOOTFS=/mnt FIRMWARE_RELEASE_STATUS=stable rpi-eeprom-update -d -a
 
-# Reboot to apply
+# Reboot to apply changes
 reboot
 ```
 
-Note: Maybe you have to apply this a 2nd time if the firmware is to outdated.
+> **Note:**  
+> You may need to apply the firmware update a second time if the firmware is too outdated.
 
-### 3. Clone configuration
-Due to the not configured install script, you have to do the following steps manual.
+---
+
+### 2. Clone Configuration
+
+Manually clone your configuration repository.
 
 ```bash
-# Get git
+# Install Git
 nix-shell -p git
 
-# Clone your repo
+# Clone your repository
 git clone YOURGITURL /etc/nixos
 ```
 
-### 4. Build System
+---
+
+### 3. Build the System
+
+Build and switch to your new configuration:
 
 ```bash
-# Build and switch to new configuration
+# Build and apply the configuration
 sudo nixos-rebuild switch --flake /etc/nixos#HOSTNAME
 ```
-Now reboot your system and have fun with Nixos!
+
+Reboot your system and enjoy using **NixOS**!
+
 ---
-Note: If you want an example you can look [here](https://github.com/stherm/nix-config/) for host PI4HM
+
+> **Example:**  
+> If you want an example configuration, check [this repository](https://github.com/stherm/nix-config/) for the host **PI4HM**.
+
