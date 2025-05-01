@@ -100,6 +100,10 @@
         hyprland = {
           path = ./templates/nix-config/hyprland;
           description = "NixOS client configuration for Hyprland.";
+        };    
+        pi = {
+          path = ./templates/nix-config/pi;
+          description = "Minimal NixOS pi configuration.";
         };
         server = {
           path = ./templates/nix-config/server;
