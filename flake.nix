@@ -96,14 +96,9 @@
       );
 
       templates = {
-        # nix-config
-        hyprland = {
-          path = ./templates/nix-config/hyprland;
-          description = "NixOS client configuration for Hyprland.";
-        };
-        server = {
-          path = ./templates/nix-config/server;
-          description = "Minimal NixOS server configuration.";
+        nix-config = {
+          path = ./templates/nix-config;
+          description = "NixOS configuration with standalone Home Manager using nix-core.";
         };
 
         # dev
