@@ -1,7 +1,9 @@
+#!/usr/bin/env bash
+
 # Default values
 GIT_NAME=""
 GIT_EMAIL=""
-DIRECTORY=""
+FLAKE="$HOME/.config/nixos"
 TEMPLATE=""
 USERNAME=""
 HOSTNAME=""
@@ -9,19 +11,26 @@ HOSTNAME=""
 # Templates with Home Manager configurations
 HM_CONFIGS=("hyprland")
 
+# This will get overwritten by the derivation
+TEMPLATES_DIR=""
+
 # Print usage information
 usage() {
     cat <<EOF
-Usage: $0 -u|--user USERNAME -H|--host HOSTNAME -d|--directory PATH/TO/EMPTY/DIRECTORY -t|--template TEMPLATE [--git-name GIT_NAME] [--git-email GIT_EMAIL]
+Usage: $0 -t|--template TEMPLATE -u|--user USERNAME -H|--host HOSTNAME [-f|--flake PATH/TO/YOUR/NIX-CONFIG] [--git-name GIT_NAME] [--git-email GIT_EMAIL]
 
 Options:
+    -t, --template TEMPLATE    Configuration template to use (mandatory)
     -u, --user USERNAME        Specify the username (mandatory)
     -H, --host HOSTNAME        Specify the hostname (mandatory)
-    -d, --directory DIRECTORY  Path to an empty directory (mandatory)
-    -t, --template TEMPLATE    Template to use for nix flake init (mandatory)
+    -f, --flake FLAKE          Path to your flake directory (optional, default: $FLAKE)
     --git-name GIT_NAME        Specify the git name (optional, default: USERNAME)
     --git-email GIT_EMAIL      Specify the git email (optional, default: USERNAME@HOSTNAME)
     -h, --help                 Show this help message
+
+Available configuration templates:
+    hyprland
+    server
 EOF
 }
 
@@ -31,8 +40,44 @@ recursive_replace() {
     local replace=$2
     local dir=$3
 
-    # Recursively replace in all files in the directory
     find "$dir" -type f -exec sed -i "s/$search/$replace/g" {} +
+}
+
+# mv wrapper
+rename_files() {
+    local from=$1
+    local to=$2
+
+    if [[ -d "$from" ]]; then
+        mv "$from" "$to"
+    else
+        echo "Error: Directory $from not found."
+        exit 1
+    fi
+}
+
+# Find and apply diff files
+apply_diffs() {
+    find "$FLAKE" -type f -name '*.diff' | while read -r diff_file; do
+        original_file="${diff_file%.diff}"
+        dirpath=$(dirname "$diff_file")
+        echo "Applying patch $diff_file to $original_file"
+        patch --directory "$dirpath" --input "$diff_file" "$(basename "$original_file")"
+        rm "$diff_file"
+    done
+}
+
+# Returns true if template uses Home Manager 
+has_hm() {
+  local template="$1"
+
+  for hm_config in "${HM_CONFIGS[@]}"; do
+    if [[ "$template" == "$hm_config" ]]; then
+      return 0
+    fi
+  done
+
+  return 1
 }
 
 # Parse command-line arguments
@@ -44,8 +89,8 @@ while [[ $# -gt 0 ]]; do
         -H|--host)
             HOSTNAME=$2
             shift; shift ;;
-        -d|--directory)
-            DIRECTORY=$2
+        -f|--flake)
+            FLAKE=$2
             shift; shift ;;
         -t|--template)
             TEMPLATE=$2
@@ -67,9 +112,15 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Validate mandatory arguments
-if [[ -z $USERNAME ]] || [[ -z $HOSTNAME ]] || [[ -z $DIRECTORY ]] || [[ -z $TEMPLATE ]]; then
+if [[ -z $USERNAME ]] || [[ -z $HOSTNAME ]] || [[ -z $TEMPLATE ]]; then
     echo "Error: Missing mandatory arguments."
     usage
+    exit 1
+fi
+
+# Check if the flake exists
+if [[ ! -d $FLAKE ]]; then
+    echo "Flake directory does not exist: $FLAKE"
     exit 1
 fi
 
@@ -77,53 +128,26 @@ fi
 GIT_NAME=${GIT_NAME:-$USERNAME}
 GIT_EMAIL=${GIT_EMAIL:-"$USERNAME@$HOSTNAME"}
 
-# Check if the directory exists and is empty
-if [[ ! -d $DIRECTORY ]]; then
-    echo "Directory does not exist. Creating: $DIRECTORY"
-    mkdir -p "$DIRECTORY"
-elif [[ "$(ls -A "$DIRECTORY" 2>/dev/null)" ]]; then
-    echo "Error: Directory is not empty."
-    exit 1
-fi
-
-# Change to the directory
-cd "$DIRECTORY" || exit 1
-
-# Run nix flake init
-nix flake init -t "github:sid115/nix-core#templates.$TEMPLATE"
-
-# Move generated files
-if [[ -d "hosts/HOSTNAME" ]]; then
-    mv "hosts/HOSTNAME" "hosts/$HOSTNAME"
-else
-    echo "Error: Directory hosts/HOSTNAME not found."
-    exit 1
-fi
-
-if [[ -d "users/USERNAME" ]]; then
-    mv "users/USERNAME" "users/$USERNAME"
-else
-    echo "Error: Directory users/USERNAME not found."
-    exit 1
-fi
-
-# Only check for HM config if the template has one
-for hm_cfg in "${HM_CONFIGS[@]}"; do
-  if [[ "$TEMPLATE" = "$hm_cfg" ]]; then
-    if [[ -d "users/$USERNAME/home/hosts/HOSTNAME" ]]; then
-        mv "users/$USERNAME/home/hosts/HOSTNAME" "users/$USERNAME/home/hosts/$HOSTNAME"
-    else
-        echo "Error: Directory users/$USERNAME/home/hosts/HOSTNAME not found."
-        exit 1
-    fi
-    break
-  fi
+# Copy template to flake directory and fix permissions
+cp -n -r "$TEMPLATES_DIR"/"$TEMPLATE"/* "$FLAKE" || exit 1
+find "$FLAKE" -print0 | while IFS= read -r -d $'\0' file; do
+    chmod u+w "$file"
 done
 
-# Replace placeholders recursively
-recursive_replace "USERNAME" "$USERNAME" "."
-recursive_replace "HOSTNAME" "$HOSTNAME" "."
-recursive_replace "GIT_NAME" "$GIT_NAME" "."
-recursive_replace "GIT_EMAIL" "$GIT_EMAIL" "."
+# Move generated files
+rename_files "$FLAKE/hosts/HOSTNAME" "$FLAKE/hosts/$HOSTNAME"
+rename_files "$FLAKE/users/USERNAME" "$FLAKE/users/$USERNAME"
 
-echo "Setup completed successfully."
+# Only check for HM config if the template has one
+has_hm "$TEMPLATE" && rename_files "$FLAKE/users/$USERNAME/home/hosts/HOSTNAME" "$FLAKE/users/$USERNAME/home/hosts/$HOSTNAME"
+
+# Replace placeholders recursively
+recursive_replace "USERNAME" "$USERNAME" "$FLAKE"
+recursive_replace "HOSTNAME" "$HOSTNAME" "$FLAKE"
+recursive_replace "GIT_NAME" "$GIT_NAME" "$FLAKE"
+recursive_replace "GIT_EMAIL" "$GIT_EMAIL" "$FLAKE"
+
+# Apply diff files
+apply_diffs
+
+echo "Template $TEMPLATE successfully applied to $FLAKE."
