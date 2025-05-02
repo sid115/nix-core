@@ -1,5 +1,7 @@
 {
+  audio = import ./audio;
   baibot = import ./baibot;
+  bluetooth = import ./bluetooth;
   cifsMount = import ./cifsMount;
   comfyui-flux-oci = import ./comfyui-flux-oci;
   common = import ./common;
@@ -23,7 +25,6 @@
   open-webui = import ./open-webui;
   openssh = import ./openssh;
   peertube = import ./peertube;
-  pipewire = import ./pipewire;
   print-server = import ./print-server;
   rss-bridge = import ./rss-bridge;
   searx = import ./searx;
