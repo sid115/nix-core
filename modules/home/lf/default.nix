@@ -25,7 +25,7 @@ in
       hexyl
       glow
       chafa
-      poppler
+      poppler_utils
       w3m
       ffmpeg
       ffmpegthumbnailer # used by pistol
@@ -85,21 +85,21 @@ in
           command = "bat %pistol-filename%";
         }
         {
-          mime = "application/*";
-          command = "hexyl %pistol-filename%";
-        }
-        {
           mime = "application/json";
           command = "bat %pistol-filename%";
         }
         {
           mime = "application/pdf";
-          command = "pdftoppm -png %pistol-filename% -singlefile -scale-to 1024 -";
+          command = "pdftoppm -png %pistol-filename% -singlefile -scale-to 1024 | chafa";
         }
         {
           mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-          command = "libreoffice --headless --convert-to pdf %pistol-filename% && pdftoppm -png %pistol-filename%.pdf -singlefile -scale-to 1024 -";
+          command = "libreoffice --headless --convert-to png %pistol-filename% && chafa %pistol-filename%.png";
         }
+        # {
+        #   mime = "application/*";
+        #   command = "hexyl %pistol-filename%";
+        # }
         {
           mime = "audio/*";
           command = "ffmpeg -i %pistol-filename% -f wav -";
@@ -109,16 +109,16 @@ in
           command = "chafa %pistol-filename%";
         }
         {
-          mime = "text/*";
-          command = "bat %pistol-filename%";
-        }
-        {
           mime = "text/html";
           command = "w3m -dump %pistol-filename%";
         }
         {
+          mime = "text/*";
+          command = "bat %pistol-filename%";
+        }
+        {
           mime = "video/*";
-          command = "ffmpegthumbnailer -i %pistol-filename% -o -";
+          command = "ffmpegthumbnailer -i %pistol-filename% -o - | chafa";
         }
       ];
     };

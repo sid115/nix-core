@@ -3,7 +3,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-zoom.url = "github:nixos/nixpkgs/nixos-24.05";
 
-    home-manager.url = "github:nix-community/home-manager/release-24.11";
+    home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     pre-commit-hooks.url = "github:cachix/git-hooks.nix";
@@ -18,10 +18,9 @@
       ...
     }@inputs:
     let
-      inherit (self) outputs;
       supportedSystems = [
         "x86_64-linux"
-        "aarch64-linux"
+        "aarch64-linux" # For testing only. Use at your own risk.
       ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
     in
@@ -97,24 +96,27 @@
       );
 
       templates = {
+        # nix-config
         hyprland = {
-          path = ./templates/hyprland;
+          path = ./templates/nix-config/hyprland;
           description = "NixOS client configuration for Hyprland.";
         };
         server = {
-          path = ./templates/server;
+          path = ./templates/nix-config/server;
           description = "Minimal NixOS server configuration.";
         };
+
+        # dev
         c-hello = {
-          path = ./templates/c-hello;
+          path = ./templates/dev/c-hello;
           description = "C hello world project.";
         };
         py-hello = {
-          path = ./templates/py-hello;
+          path = ./templates/dev/py-hello;
           description = "Python hello world project.";
         };
         rs-hello = {
-          path = ./templates/rs-hello;
+          path = ./templates/dev/rs-hello;
           description = "Rust hello world project.";
         };
       };

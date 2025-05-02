@@ -6,6 +6,9 @@ TEMPLATE=""
 USERNAME=""
 HOSTNAME=""
 
+# Templates with Home Manager configurations
+HM_CONFIGS=("hyprland")
+
 # Print usage information
 usage() {
     cat <<EOF
@@ -104,12 +107,18 @@ else
     exit 1
 fi
 
-if [[ -d "users/$USERNAME/home/hosts/HOSTNAME" ]]; then
-    mv "users/$USERNAME/home/hosts/HOSTNAME" "users/$USERNAME/home/hosts/$HOSTNAME"
-else
-    echo "Error: Directory users/$USERNAME/home/hosts/HOSTNAME not found."
-    exit 1
-fi
+# Only check for HM config if the template has one
+for hm_cfg in "${HM_CONFIGS[@]}"; do
+  if [[ "$TEMPLATE" = "$hm_cfg" ]]; then
+    if [[ -d "users/$USERNAME/home/hosts/HOSTNAME" ]]; then
+        mv "users/$USERNAME/home/hosts/HOSTNAME" "users/$USERNAME/home/hosts/$HOSTNAME"
+    else
+        echo "Error: Directory users/$USERNAME/home/hosts/HOSTNAME not found."
+        exit 1
+    fi
+    break
+  fi
+done
 
 # Replace placeholders recursively
 recursive_replace "USERNAME" "$USERNAME" "."

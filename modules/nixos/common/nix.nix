@@ -25,6 +25,8 @@
 
       # Avoid copying unnecessary stuff over SSH
       builders-use-substitutes = true;
+
+      download-buffer-size = 524288000; # 500 MiB
     };
   };
 }
