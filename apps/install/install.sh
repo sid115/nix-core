@@ -1,4 +1,7 @@
+#!/usr/bin/env bash
+
 # NixOS install script
+
 
 ### VARIABLES ###
 

@@ -30,14 +30,5 @@
 
       nixosModules = import ./modules/nixos;
       homeModules = import ./modules/home;
-
-      nixosConfigurations = {
-        HOSTNAME = nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            inherit inputs outputs;
-          };
-          modules = [ ./hosts/HOSTNAME ];
-        };
-      };
     };
 }
