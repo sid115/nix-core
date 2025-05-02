@@ -32,7 +32,7 @@ This is the directory structure of this repository:
 - `overlays`: fixes for packages
 - `pkgs`: custom packages
 - `templates/dev`: development templates
-- `templates/nix-config`: templates to kickstart your first nix-config
+- `templates/nix-config`: kickstart your first nix-config flake
 - `CONTRIBUTING.md`: contribution guide
 - `README.md`: this file
 - `flake.nix`: entry point
@@ -45,11 +45,17 @@ The following guides will take you from scratch to a working configuration.
 
 ### 1. Create your own nix-config flake
 
+> FIXME
+
 Follow the [nix-config flake creation guide](./docs/create_flake.md) to create your own flake from one of the [nix-config templates](./templates/nix-config/).
 
 You might want to take a look at [my personal configuration](https://github.com/sid115/nix-config) to see how I use nix-core in my nix-config repository.
 
-### 2. Installation Guide
+### 2. Add NixOS and Home Manager configurations
+
+> TODO
+
+### 3. Installation Guide
 
 Follow the [installation instructions](./docs/install_instructions.md) to install an existing configuration. The hardware configuration can be generated automatically during installation.
 
