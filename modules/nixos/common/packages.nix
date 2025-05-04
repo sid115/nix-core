@@ -19,6 +19,7 @@
     psmisc
     rsync
     tldr
+    tree
     unzip
     usbutils
     wget
