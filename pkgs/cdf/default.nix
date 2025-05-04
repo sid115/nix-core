@@ -13,7 +13,7 @@ stdenv.mkDerivation rec {
 
   src = ./.;
 
-  nativeBuildInputs = [
+  buildInputs = [
     bash
     coreutils
     fzf
