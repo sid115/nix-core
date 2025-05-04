@@ -5,7 +5,6 @@
 
 {
   baibot = pkgs.callPackage ./baibot { };
-  cdf = pkgs.callPackage ./cdf { };
   cppman = pkgs.callPackage ./cppman { };
   gitingest = pkgs.callPackage ./gitingest { };
   marker-pdf = pkgs.callPackage ./marker-pdf { };
