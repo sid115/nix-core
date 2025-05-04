@@ -1,5 +1,8 @@
 {
-  stdenv,
+  writeShellScriptBin,
+  symlinkJoin,
+  makeWrapper,
+
   bash,
   coreutils,
   fzf,
@@ -7,23 +10,21 @@
   ...
 }:
 
-stdenv.mkDerivation rec {
-  pname = "cdf";
-  version = "0.1";
+let
+  cdf = writeShellScriptBin "cdf" (builtins.readFile ./cdf.sh);
+in
+symlinkJoin rec {
+  name = "cdf";
 
-  src = ./.;
+  buildInputs = [ makeWrapper ];
 
-  buildInputs = [
+  paths = [
     bash
+    cdf
     coreutils
     fzf
     tree
   ];
 
-  installPhase = ''
-    mkdir -p $out/bin
-
-    cp ${pname}.sh $out/bin/${pname}
-    chmod +x $out/bin/${pname}
-  '';
+  postBuild = "wrapProgram $out/bin/${name} --prefix PATH : $out/bin";
 }
