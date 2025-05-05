@@ -7,6 +7,8 @@
 }:
 
 let
+  isNotEmpty = str: builtins.isString str && str != ""; # TODO: put in lib overlay
+
   cfg = config.mailserver;
   fqdn = "${cfg.subdomain}.${config.networking.domain}";
 
@@ -29,6 +31,17 @@ in
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = isNotEmpty config.networking.domain;
+        message = "mailserver: config.networking.domain must be set.";
+      }
+      {
+        assertion = isNotEmpty cfg.subdomain;
+        message = "mailserver: config.mailserver.subdomain must be set.";
+      }
+    ];
+
     mailserver = {
       fqdn = fqdn;
       domains = mkDefault [ config.networking.domain ];

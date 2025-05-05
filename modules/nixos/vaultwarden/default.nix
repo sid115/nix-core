@@ -30,6 +30,13 @@ in
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = config.mailserver.enable;
+        message = "vaultwarden: config.mailserver.enable has to be true.";
+      }
+    ];
+
     services.vaultwarden = {
       config = {
         ADMIN_TOKEN_FILE = mkDefault config.sops.secrets."vaultwarden/admin-token".path;
