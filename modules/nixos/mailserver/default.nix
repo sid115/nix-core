@@ -45,7 +45,6 @@ in
     mailserver = {
       inherit fqdn;
 
-      enable = mkDefault true;
       domains = mkDefault [ config.networking.domain ];
       certificateScheme = mkDefault "acme-nginx";
     };

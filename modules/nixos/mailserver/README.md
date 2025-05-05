@@ -23,6 +23,7 @@ inputs = {
 imports = [ inputs.core.nixosModules.mailserver ]
 
 mailserver = {
+  enable = true;
   loginAccounts = {
     "ADMIN@${config.networking.domain}" = {
       # nix-shell -p mkpasswd --run 'mkpasswd -sm bcrypt'

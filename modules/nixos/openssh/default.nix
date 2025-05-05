@@ -5,7 +5,6 @@ let
 in
 {
   services.openssh = {
-    enable = mkDefault true;
     ports = mkDefault [ 2299 ];
     openFirewall = mkDefault true;
     settings = {
