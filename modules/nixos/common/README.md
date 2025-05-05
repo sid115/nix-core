@@ -1,4 +1,4 @@
-The common module sets some opinionated defaults. It is recommended to import it into your NixOS configuration:
+The common module sets some opinionated defaults. It is recommended to import it in your NixOS configuration as some nix-core modules may depend on it:
 
 ```nix
 { inputs, ... }:

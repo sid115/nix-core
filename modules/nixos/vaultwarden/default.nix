@@ -5,8 +5,7 @@ let
 
   cfg = config.services.vaultwarden;
   domain = config.networking.domain;
-  fqdn =
-    if (isNotEmpty cfg.subdomain && isNotEmpty domain) then "${cfg.subdomain}.${domain}" else domain;
+  fqdn = if (isNotEmpty cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkDefault
@@ -20,7 +19,7 @@ in
     subdomain = mkOption {
       type = types.str;
       default = "pass";
-      description = "Subdomain for Nginx virtual host. Leave empty to disable Nginx reverse proxy.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;
@@ -40,9 +39,7 @@ in
     services.vaultwarden = {
       config = {
         ADMIN_TOKEN_FILE = mkDefault config.sops.secrets."vaultwarden/admin-token".path;
-        DOMAIN = mkIf (isNotEmpty fqdn) (
-          if cfg.forceSSL then (mkDefault "https://${fqdn}") else (mkDefault "http://${fqdn}")
-        );
+        DOMAIN = if cfg.forceSSL then (mkDefault "https://${fqdn}") else (mkDefault "http://${fqdn}");
         ROCKET_ADDRESS = mkDefault "127.0.0.1";
         ROCKET_PORT = mkDefault 8222;
         SIGNUPS_ALLOWED = mkDefault false;
@@ -59,7 +56,7 @@ in
       };
     };
 
-    services.nginx.virtualHosts."${fqdn}" = mkIf (isNotEmpty fqdn) {
+    services.nginx.virtualHosts."${fqdn}" = mkIf config.nginx.enable {
       enableACME = cfg.forceSSL;
       forceSSL = cfg.forceSSL;
       locations."/".proxyPass = "http://127.0.0.1:${toString cfg.config.ROCKET_PORT}";
