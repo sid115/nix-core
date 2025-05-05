@@ -26,6 +26,7 @@ in
     ];
 
     services.nginx = {
+      enable = mkDefault true;
       recommendedOptimisation = mkDefault true;
       recommendedGzipSettings = mkDefault true;
       recommendedProxySettings = mkDefault true;

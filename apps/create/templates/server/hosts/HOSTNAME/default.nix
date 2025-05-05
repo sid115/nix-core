@@ -16,11 +16,6 @@
 
   networking.hostName = "HOSTNAME";
 
-  services = {
-    nginx.enable = true;
-    openssh.enable = true;
-  };
-
   normalUsers = {
     USERNAME = {
       name = "USERNAME";

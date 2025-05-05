@@ -12,18 +12,17 @@ Follow the [setup guide](https://nixos-mailserver.readthedocs.io/en/nixos-24.05/
 
 ```nix
 inputs = {
-  nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-24.11";
+  nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver";
   nixos-mailserver.inputs.nixpkgs.follows = "nixpkgs";
 };
 ```
 
-> Replace `24.11` with your `nixpkgs` version.
-
 ### Host configuration:
 
 ```nix
+imports = [ inputs.core.nixosModules.mailserver ]
+
 mailserver = {
-  enable = true;
   loginAccounts = {
     "ADMIN@${config.networking.domain}" = {
       # nix-shell -p mkpasswd --run 'mkpasswd -sm bcrypt'

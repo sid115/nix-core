@@ -36,12 +36,17 @@ in
         assertion = isNotEmpty cfg.subdomain;
         message = "nix-core/nixos/mailserver: config.mailserver.subdomain cannot be empty.";
       }
+      {
+        assertion = config.services.nginx.enable;
+        message = "nix-core/nixos/mailserver: config.services.nginx.enable has to be true.";
+      }
     ];
 
     mailserver = {
-      fqdn = fqdn;
-      domains = mkDefault [ config.networking.domain ];
+      inherit fqdn;
 
+      enable = mkDefault true;
+      domains = mkDefault [ config.networking.domain ];
       certificateScheme = mkDefault "acme-nginx";
     };
 
