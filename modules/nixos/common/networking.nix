@@ -4,7 +4,7 @@ let
   isNotEmpty = str: builtins.isString str && str != ""; # TODO: put in lib overlay
 in
 {
-  config.networking = {
+  config = {
     assertions = [
       {
         assertion = isNotEmpty config.networking.domain;
@@ -16,11 +16,13 @@ in
       }
     ];
 
-    domain = lib.mkDefault "${config.networking.hostName}.local";
+    networking = {
+      domain = lib.mkDefault "${config.networking.hostName}.local";
 
-    # NetworkManager
-    useDHCP = false;
-    wireless.enable = false;
-    networkmanager.enable = true;
+      # NetworkManager
+      useDHCP = false;
+      wireless.enable = false;
+      networkmanager.enable = true;
+    };
   };
 }
