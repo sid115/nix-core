@@ -56,7 +56,7 @@ in
       };
     };
 
-    services.nginx.virtualHosts."${fqdn}" = mkIf config.nginx.enable {
+    services.nginx.virtualHosts."${fqdn}" = mkIf config.services.nginx.enable {
       enableACME = cfg.forceSSL;
       forceSSL = cfg.forceSSL;
       locations."/".proxyPass = "http://127.0.0.1:${toString cfg.config.ROCKET_PORT}";
