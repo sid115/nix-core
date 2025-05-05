@@ -33,12 +33,8 @@ in
   config = mkIf cfg.enable {
     assertions = [
       {
-        assertion = isNotEmpty config.networking.domain;
-        message = "mailserver: config.networking.domain must be set.";
-      }
-      {
         assertion = isNotEmpty cfg.subdomain;
-        message = "mailserver: config.mailserver.subdomain must be set.";
+        message = "nix-core/nixos/mailserver: config.mailserver.subdomain cannot be empty.";
       }
     ];
 

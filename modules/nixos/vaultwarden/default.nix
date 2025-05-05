@@ -33,7 +33,7 @@ in
     assertions = [
       {
         assertion = config.mailserver.enable;
-        message = "vaultwarden: config.mailserver.enable has to be true.";
+        message = "nix-core/nixos/vaultwarden: config.mailserver.enable has to be true.";
       }
     ];
 
