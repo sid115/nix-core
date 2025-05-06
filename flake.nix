@@ -96,6 +96,12 @@
         }
       );
 
+      hydraJobs = {
+        inherit (self)
+          packages
+          ;
+      };
+
       templates = {
         nix-config = {
           path = ./templates/nix-config;
