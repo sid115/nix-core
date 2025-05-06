@@ -2,6 +2,8 @@
 
 {
   modifications = final: prev: {
+    comfyui = inputs.nixpkgs-comfyui.legacyPackages.${final.system}.comfyui;
+
     # https://github.com/NixOS/nixpkgs/issues/335003#issuecomment-2755803376
     kicad = (
       prev.kicad.override {
