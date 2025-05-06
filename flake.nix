@@ -95,6 +95,12 @@
         }
       );
 
+      hydraJobs = {
+        inherit (self)
+          packages
+          ;
+      };
+
       templates = {
         # nix-config
         hyprland = {
