@@ -2,7 +2,7 @@
 
 NixOS module that configures your Nvidia GPU with proprietary drivers.
 
-> Tested on Ampere.
+> Tested on Turing and Ampere. Should work with most modern Nvidia GPUs.
 
 ## Setup
 
