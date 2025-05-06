@@ -23,7 +23,6 @@ let
     packageOverrides = lib.composeManyExtensions (defaultOverrides ++ [ packageOverrides ]);
   };
 
-  google-genai = import ./google-genai.nix { inherit lib python fetchFromGitHub; };
   pdftext = import ./pdftext.nix { inherit lib python fetchFromGitHub; };
   surya-ocr = import ./surya-ocr.nix { inherit lib python fetchFromGitHub; };
 in
@@ -65,7 +64,6 @@ python.pkgs.buildPythonApplication rec {
 
   dependencies =
     [
-      google-genai
       pdftext
       surya-ocr
     ]
@@ -74,6 +72,7 @@ python.pkgs.buildPythonApplication rec {
       click
       filetype
       ftfy
+      google-genai
       markdown2
       markdownify
       openai
