@@ -22,6 +22,7 @@
   nginx = import ./nginx;
   normalUsers = import ./normalUsers;
   ntfy-sh = import ./ntfy-sh;
+  nvidia = import ./nvidia;
   open-webui = import ./open-webui;
   openssh = import ./openssh;
   peertube = import ./peertube;
