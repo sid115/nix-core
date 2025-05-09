@@ -1,29 +1,23 @@
 {
-  "title": "Single Metric",
-  "uid": "single-metric",
-  "time": {
-    "from": "now-1h",
-    "to": "now"
-  },
+  "title": "Prometheus Up Status",
+  "uid": "prometheus-up",
+  "time": { "from": "now-15m", "to": "now" },
+  "refresh": "5s",
   "schemaVersion": 16,
   "version": 1,
   "panels": [
     {
-      "type": "graph",
-      "title": "CPU Usage (%)",
-      "datasource": "null",
+      "type": "timeseries",
+      "title": "Up Metric",
+      "datasource": null,
       "targets": [
         {
-          "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\\\"idle\\\"}[5m])) * 100)",
-          "legendFormat": "CPU - {{instance}}"
+          "expr": "up",
+          "refId": "A"
         }
       ],
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      }
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 }
     }
   ]
 }
+
