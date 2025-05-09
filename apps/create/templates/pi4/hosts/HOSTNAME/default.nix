@@ -10,7 +10,7 @@
     outputs.nixosModules.common
 
     ./boot.nix
-    ./hardware.nix # care! take always the one from temples. don't generate a new one!
+    ./hardware.nix
     ./packages.nix
   ];
 

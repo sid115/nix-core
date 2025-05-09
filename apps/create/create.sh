@@ -31,7 +31,7 @@ Options:
 Available configuration templates:
     hyprland
     server
-    pi4-server
+    pi4
 EOF
 }
 
