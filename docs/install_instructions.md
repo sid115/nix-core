@@ -5,7 +5,7 @@ This guide will walk you through installing NixOS using the provided installatio
 ## Prerequisites
 
 1. **Bootable NixOS Installation Medium**: Make sure you have booted into NixOS live environment from the [Minimal ISO image](https://nixos.org/download/#nixos-iso). Read the [official NixOS installation guide](https://nixos.org/manual/nixos/unstable/#sec-obtaining) for more information on how to create a bootable NixOS USB drive.
-*Note: If you want to use a Rasberry PI you have to choose an special SD card image ([nixos-arm SD image](https://hydra.nixos.org/job/nixos/trunk-combined/nixos.sd_image.aarch64-linux)). Usually you have to extract it first with zstd.
+*Note: If you want to use a Rasberry PI you have to choose an special SD card image ([nixos-arm SD image](https://hydra.nixos.org/job/nixos/trunk-combined/nixos.sd_image.aarch64-linux)). Usually you have to extract it first with zstd.*
 1. **Network Connection**: Ensure the target machine is connected to the internet.
 1. **Host configuration**: The target machine needs to have a working NixOS configuration inside your own flake. A hardware configuration is not required as it can be generated automatically during installation.
 1. **Disks setup**: The target machine needs to have a working disk configuration or partitioning script inside `hosts/HOSTNAME`. Disko expects its configuration to be in `hosts/HOSTNAME/disks.nix`. Alternatively, a shell script can be provided at `hosts/HOSTNAME/disks.sh` that will format, partition, and mount disks.
