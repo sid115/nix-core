@@ -17,11 +17,7 @@
           "legendFormat": "Core {{cpu}}"
         }
       ],
-      "fieldConfig": {
-        "defaults": {
-          "stacking": { "mode": "none" }
-        }
-      },
+      "fieldConfig": { "defaults": { "stacking": { "mode": "none" } } },
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 }
     },
     {
@@ -35,30 +31,82 @@
           "legendFormat": "Used Memory (%)"
         }
       ],
-      "fieldConfig": {
-        "defaults": {
-          "stacking": { "mode": "none" }
-        }
-      },
+      "fieldConfig": { "defaults": { "stacking": { "mode": "none" } } },
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 }
     },
     {
       "type": "timeseries",
-      "title": "Memory Usage (Absolute)",
+      "title": "Memory Usage (MB)",
       "datasource": "Prometheus",
       "targets": [
         {
-          "expr": "node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes",
+          "expr": "(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / 1024 / 1024",
           "refId": "C",
-          "legendFormat": "Used Memory"
+          "legendFormat": "Used Memory (MB)"
         }
       ],
-      "fieldConfig": {
-        "defaults": {
-          "stacking": { "mode": "none" }
-        }
-      },
+      "fieldConfig": { "defaults": { "stacking": { "mode": "none" } } },
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 16 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Disk Usage (%)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "1 - (node_filesystem_avail_bytes{fstype!~\"tmpfs|rootfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|rootfs\"}) * 100",
+          "refId": "D",
+          "legendFormat": "{{mountpoint}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "stacking": { "mode": "none" } } },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 24 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Disk Free (GB)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "node_filesystem_avail_bytes{fstype!~\"tmpfs|rootfs\"} / 1024 / 1024 / 1024",
+          "refId": "E",
+          "legendFormat": "{{mountpoint}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "stacking": { "mode": "none" } } },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 32 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Network Traffic (KB/s)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "rate(node_network_receive_bytes_total[5m]) / 1024",
+          "refId": "F",
+          "legendFormat": "Receive"
+        },
+        {
+          "expr": "rate(node_network_transmit_bytes_total[5m]) / 1024",
+          "refId": "G",
+          "legendFormat": "Transmit"
+        }
+      ],
+      "fieldConfig": { "defaults": { "stacking": { "mode": "none" } } },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 40 }
+    },
+    {
+      "type": "timeseries",
+      "title": "System Load (1m, 5m, 15m)",
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "node_load1", "refId": "H", "legendFormat": "1m" },
+        { "expr": "node_load5", "refId": "I", "legendFormat": "5m" },
+        { "expr": "node_load15", "refId": "J", "legendFormat": "15m" }
+      ],
+      "fieldConfig": { "defaults": { "stacking": { "mode": "none" } } },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 48 }
     }
   ]
 }
+
