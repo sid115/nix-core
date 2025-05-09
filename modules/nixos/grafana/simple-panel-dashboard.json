@@ -9,7 +9,7 @@
     {
       "type": "timeseries",
       "title": "CPU Usage per Core (%)",
-      "datasource": null,
+      "datasource": "Prometheus",
       "targets": [
         {
           "expr": "100 - (rate(node_cpu_seconds_total{mode=\"idle\"}[1m]) * 100)",
@@ -27,7 +27,7 @@
     {
       "type": "timeseries",
       "title": "Memory Usage (%)",
-      "datasource": null,
+      "datasource": "Prometheus",
       "targets": [
         {
           "expr": "(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100",
@@ -41,29 +41,6 @@
         }
       },
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 }
-    }
-  ]
-}
-  "title": "Up Status Test",
-  "uid": "up-status-test",
-  "time": { "from": "now-5m", "to": "now" },
-  "refresh": "5s",
-  "schemaVersion": 41,
-  "version": 1,
-  "panels": [
-    {
-      "type": "timeseries",
-      "title": "Up Metric",
-      "datasource": null,
-      "targets": [
-        { "expr": "up{job=\"node\"}", "refId": "A" }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "stacking": { "mode": "none" }
-        }
-      },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 }
     }
   ]
 }
