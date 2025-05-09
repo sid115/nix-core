@@ -32,7 +32,7 @@
         {
           "expr": "(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100",
           "refId": "B",
-          "legendFormat": "Used Memory"
+          "legendFormat": "Used Memory (%)"
         }
       ],
       "fieldConfig": {
@@ -41,7 +41,24 @@
         }
       },
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Memory Usage (Absolute)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes",
+          "refId": "C",
+          "legendFormat": "Used Memory"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "stacking": { "mode": "none" }
+        }
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 16 }
     }
   ]
 }
-
