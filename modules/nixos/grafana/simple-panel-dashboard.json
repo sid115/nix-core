@@ -1,9 +1,9 @@
 {
-  "title": "Prometheus Up Status",
-  "uid": "prometheus-up",
-  "time": { "from": "now-15m", "to": "now" },
+  "title": "Up Status Test",
+  "uid": "up-status-test",
+  "time": { "from": "now-5m", "to": "now" },
   "refresh": "5s",
-  "schemaVersion": 16,
+  "schemaVersion": 41,
   "version": 1,
   "panels": [
     {
@@ -11,11 +11,13 @@
       "title": "Up Metric",
       "datasource": null,
       "targets": [
-        {
-          "expr": "up",
-          "refId": "A"
-        }
+        { "expr": "up{job=\"node\"}", "refId": "A" }
       ],
+      "fieldConfig": {
+        "defaults": {
+          "stacking": { "mode": "none" }
+        }
+      },
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 }
     }
   ]
