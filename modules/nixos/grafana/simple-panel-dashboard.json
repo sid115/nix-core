@@ -1,0 +1,22 @@
+{
+  "title": "Single Metric",
+  "uid": "single-metric",
+  "time": { "from": "now-1h", "to": "now" },
+  "schemaVersion": 16,
+  "version": 1,
+  "panels": [
+    {
+      "type": "graph",
+      "title": "CPU Usage (%)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+          "legendFormat": "CPU - {{instance}}"
+        }
+      ],
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 }
+    }
+  ]
+}
+
