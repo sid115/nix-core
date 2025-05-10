@@ -19,7 +19,6 @@ in
 {
   imports = [
     ./prometheus
-    ./dashboards.nix
   ];
 
   options.services.grafana = {
@@ -51,7 +50,7 @@ in
       };
 
       provision = {
-        #dashboards = import ./dashboards.nix;
+        dashboards = import ./dashboards;
         datasources = import ./datasources.nix { inherit config lib pkgs; };
       };
     };

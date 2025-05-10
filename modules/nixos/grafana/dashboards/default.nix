@@ -1,12 +1,5 @@
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-
-{
-  config.services.grafana.provision.dashboards.settings.providers = [
+  settings.providers = [
     {
       name = "single-metric";
       type = "file";
@@ -15,7 +8,7 @@
       disableDeletion = false;
       editable = true;
       options = {
-        path = ./simple-panel-dashboard.json;
+        path = ./htop-comparison.json;
       };
     }
   ];
