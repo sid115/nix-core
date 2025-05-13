@@ -36,10 +36,6 @@ in
         assertion = isNotEmpty cfg.subdomain;
         message = "nix-core/nixos/mailserver: config.mailserver.subdomain cannot be empty.";
       }
-      {
-        assertion = config.services.nginx.enable;
-        message = "nix-core/nixos/mailserver: config.services.nginx.enable has to be true.";
-      }
     ];
 
     mailserver = {

@@ -12,8 +12,8 @@ Unofficial Bitwarden compatible server written in Rust, formerly known as bitwar
 ```yaml
 vaultwarden:
     admin-token: abc123
-    smtp-password: abc123 # for email support
-    hashed-smtp-password: abc123 # for email support
+    smtp-password: abc123 # for email support (local or external mailserver)
+    hashed-smtp-password: abc123 # for email support (local mailserver only)
 ```
 
 Generate the hashed smtp password with:
@@ -35,4 +35,3 @@ nix-shell -p openssl libargon2 --run 'echo -n "abc123" | argon2 "$(openssl rand 
 - Visit `https://SUBDOMAIN.DOMAIN.TLD/admin` and enter the admin token.
 - Click on "Users" in the top row.
 - Invite users via email in the box at the bottom.
-

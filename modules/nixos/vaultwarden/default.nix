@@ -29,13 +29,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = config.mailserver.enable;
-        message = "nix-core/nixos/vaultwarden: config.mailserver.enable has to be true.";
-      }
-    ];
-
     services.vaultwarden = {
       config = {
         ADMIN_TOKEN_FILE = mkDefault config.sops.secrets."vaultwarden/admin-token".path;
@@ -50,13 +43,11 @@ in
         SMTP_PORT = mkDefault 587;
         SMTP_SECURITY = mkDefault "starttls";
         SMTP_USERNAME = mkDefault "vaultwarden@${domain}";
-        SMTP_PASSWORD_FILE =
-          mkIf config.mailserver.enable
-            config.sops.secrets."vaultwarden/smtp-password".path;
+        SMTP_PASSWORD_FILE = mkDefault config.sops.secrets."vaultwarden/smtp-password".path;
       };
     };
 
-    services.nginx.virtualHosts."${fqdn}" = mkIf config.services.nginx.enable {
+    services.nginx.virtualHosts."${fqdn}" = {
       enableACME = cfg.forceSSL;
       forceSSL = cfg.forceSSL;
       locations."/".proxyPass = "http://127.0.0.1:${toString cfg.config.ROCKET_PORT}";
@@ -76,7 +67,7 @@ in
         secrets."vaultwarden/admin-token" = {
           inherit owner group mode;
         };
-        secrets."vaultwarden/smtp-password" = mkIf config.mailserver.enable {
+        secrets."vaultwarden/smtp-password" = {
           inherit owner group mode;
         };
         secrets."vaultwarden/hashed-smtp-password" = mkIf config.mailserver.enable {
