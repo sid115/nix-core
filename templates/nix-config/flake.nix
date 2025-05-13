@@ -12,16 +12,16 @@
     {
       self,
       nixpkgs,
-      home-manager,
       ...
-    }@inputs:
+    }:
     let
-      inherit (self) outputs;
+      inherit (self) inputs outputs;
+      lib = nixpkgs.lib // self.inputs.core.lib;
       supportedSystems = [
         "x86_64-linux"
         "aarch64-linux"
       ];
-      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      forAllSystems = lib.genAttrs supportedSystems;
     in
     {
       packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
