@@ -1,13 +1,12 @@
 { config, lib, ... }:
 
 let
-  isNotEmpty = str: builtins.isString str && str != ""; # TODO: put in lib overlay
-
   cfg = config.services.vaultwarden;
   domain = config.networking.domain;
-  fqdn = if (isNotEmpty cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
+  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
+    isNotEmptyStr
     mkDefault
     mkIf
     mkOption
