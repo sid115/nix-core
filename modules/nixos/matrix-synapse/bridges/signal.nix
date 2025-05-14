@@ -68,7 +68,7 @@ in
           };
           mute_bridging = true;
           network = {
-            displayname_template = "{{or .ProfileName .PhoneNumber \"Unknown user\"}} (S)";
+            displayname_template = "{{or .ProfileName .PhoneNumber \"Unknown user\"}} (S)"; # TODO: consider .ContactName
           };
           permissions = {
             "*" = "relay";

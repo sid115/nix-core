@@ -61,7 +61,7 @@ in
             request_full_sync = true;
           };
           mute_bridging = true;
-          displayname_template = "{{or .BusinessName .PushName .JID}} (WA)";
+          displayname_template = "{{or .BusinessName .PushName .JID}} (WA)"; # TODO: consider .FullName
           user_avatar_sync = true;
           url_previews = false;
           permissions = {
