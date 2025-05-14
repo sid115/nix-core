@@ -43,6 +43,8 @@ python.pkgs.buildPythonApplication rec {
     ./skip-font-download.patch
   ];
 
+  # TODO: use `pythonRelaxDeps` instead
+  # https://github.com/NixOS/nixpkgs/blob/master/doc/languages-frameworks/python.section.md#using-pythonrelaxdepshook-using-pythonrelaxdepshook
   postPatch = ''
     substituteInPlace pyproject.toml \
       --replace-warn 'Pillow = "^10.1.0"' 'Pillow = "^11.2.0"' \
