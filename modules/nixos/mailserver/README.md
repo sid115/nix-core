@@ -1,6 +1,8 @@
 # Mail
 
-[docs](https://nixos-mailserver.readthedocs.io/en/latest/index.html)
+A simple NixOS mailserver.
+
+- [docs](https://nixos-mailserver.readthedocs.io/en/latest/index.html)
 
 ## Setup
 

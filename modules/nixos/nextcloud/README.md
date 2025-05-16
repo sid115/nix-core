@@ -20,8 +20,8 @@ Provide the following entries to your secrets.yaml for email support:
 
 ```yaml
 nextcloud:
-    smtp-password: abc123
-    hashed-smtp-password: abc123
+    smtp-password: abc123 # for email support (local or external mailserver)
+    hashed-smtp-password: abc123 # for email support (local mailserver only)
 ```
 
 Generate the hashed password with:

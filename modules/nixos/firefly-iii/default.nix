@@ -8,19 +8,18 @@
 let
   cfg = config.services.firefly-iii;
   importer-cfg = config.services.firefly-iii-data-importer;
-  fqdn =
-    if (cfg.subdomain != "") then
-      "${cfg.subdomain}.${config.networking.domain}"
-    else
-      config.networking.domain;
-  importer-fqdn =
-    if (cfg.importer-subdomain != "") then
-      "${cfg.importer-subdomain}.${config.networking.domain}"
-    else
-      throw "No subdomain specified for Firefly-III data importer.";
+  domain = config.networking.domain;
   mailserver = config.mailserver;
 
+  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
+  importer-fqdn =
+    if (isNotEmptyStr cfg.importer-subdomain) then
+      "${cfg.importer-subdomain}.${domain}"
+    else
+      throw "No subdomain specified for Firefly-III data importer.";
+
   inherit (lib)
+    isNotEmptyStr
     mkDefault
     mkIf
     mkOption
@@ -32,7 +31,7 @@ in
     subdomain = mkOption {
       type = types.str;
       default = "finance";
-      description = "Subdomain for Nginx virtual host (Firefly-III).";
+      description = "Subdomain for Nginx virtual host (Firefly-III). Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;
@@ -67,8 +66,8 @@ in
         MAIL_MAILER = "smtp";
         MAIL_HOST = mkDefault mailserver.fqdn;
         MAIL_PORT = mkDefault 465;
-        MAIL_FROM = mkDefault "${cfg.subdomain}@${config.networking.domain}";
-        MAIL_USERNAME = mkDefault "${cfg.subdomain}@${config.networking.domain}";
+        MAIL_FROM = mkDefault "${cfg.subdomain}@${domain}";
+        MAIL_USERNAME = mkDefault "${cfg.subdomain}@${domain}";
         MAIL_PASSWORD_FILE = config.sops.secrets."firefly-iii/smtp-password".path;
         MAIL_ENCRYPTION = mkDefault "ssl";
       };
@@ -123,30 +122,28 @@ in
       mkIf mailserver.enable
         config.sops.secrets."firefly-iii/hashed-smtp-password".path;
 
-    sops = {
-      secrets."firefly-iii/appkey" = {
+    sops =
+      let
         owner = cfg.user;
         group = cfg.group;
         mode = "0440";
+      in
+      {
+        secrets."firefly-iii/appkey" = {
+          inherit owner group mode;
+        };
+        templates."firefly-iii/appkey" = {
+          inherit owner group mode;
+          content = ''
+            base64:${config.sops.placeholder."firefly-iii/appkey"}
+          '';
+        };
+        secrets."firefly-iii/smtp-password" = mkIf mailserver.enable {
+          inherit owner group mode;
+        };
+        secrets."firefly-iii/hashed-smtp-password" = mkIf mailserver.enable {
+          inherit owner group mode;
+        };
       };
-      templates."firefly-iii/appkey" = {
-        owner = cfg.user;
-        group = cfg.group;
-        mode = "0440";
-        content = ''
-          base64:${config.sops.placeholder."firefly-iii/appkey"}
-        '';
-      };
-      secrets."firefly-iii/smtp-password" = mkIf mailserver.enable {
-        owner = cfg.user;
-        group = cfg.group;
-        mode = "0440";
-      };
-      secrets."firefly-iii/hashed-smtp-password" = mkIf mailserver.enable {
-        owner = cfg.user;
-        group = cfg.group;
-        mode = "0440";
-      };
-    };
   };
 }

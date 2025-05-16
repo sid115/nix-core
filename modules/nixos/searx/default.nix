@@ -16,7 +16,7 @@ in
     subdomain = mkOption {
       type = types.str;
       default = "srx";
-      description = "Subdomain for Nginx virtual host.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;
@@ -56,7 +56,7 @@ in
     services.nginx.virtualHosts."${fqdn}" = {
       enableACME = cfg.forceSSL;
       forceSSL = cfg.forceSSL;
-      locations."/".proxyPass = "http://localhost:${toString cfg.settings.server.port}";
+      locations."/".proxyPass = mkDefault "http://localhost:${toString cfg.settings.server.port}";
     };
   };
 }

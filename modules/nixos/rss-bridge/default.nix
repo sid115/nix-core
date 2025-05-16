@@ -2,16 +2,22 @@
 
 let
   cfg = config.services.rss-bridge;
-  fqdn = "${cfg.subdomain}.${config.networking.domain}";
+  domain = config.networking.domain;
+  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
 
-  inherit (lib) mkIf mkOption types;
+  inherit (lib)
+    isNotEmptyStr
+    mkIf
+    mkOption
+    types
+    ;
 in
 {
   options.services.rss-bridge = {
     subdomain = mkOption {
       type = types.str;
       default = "rss";
-      description = "Subdomain for Nginx virtual host.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;

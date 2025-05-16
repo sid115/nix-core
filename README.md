@@ -12,6 +12,7 @@ This is the directory structure of this repository:
 .
 ├── apps
 ├── docs
+├── lib
 ├── modules
 │   ├── home
 │   └── nixos
@@ -27,6 +28,7 @@ This is the directory structure of this repository:
 
 - `apps`: executables exposed through `nix run`
 - `docs`: documentation
+- `lib`: custom Nix functions
 - `modules/home`: Home Manager modules
 - `modules/nixos`: NixOS modules
 - `overlays`: fixes for packages

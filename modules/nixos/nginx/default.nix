@@ -31,7 +31,7 @@ in
       recommendedProxySettings = mkDefault true;
       recommendedTlsSettings = cfg.forceSSL;
       virtualHosts = {
-        "${config.networking.domain}" = {
+        "${config.networking.domain}" = mkDefault {
           enableACME = cfg.forceSSL;
           forceSSL = cfg.forceSSL;
         };
@@ -40,8 +40,8 @@ in
 
     security.acme = mkIf cfg.forceSSL {
       acceptTerms = true;
-      defaults.email = "postmaster@${config.networking.domain}";
-      defaults.webroot = "/var/lib/acme/acme-challenge";
+      defaults.email = mkDefault "postmaster@${config.networking.domain}";
+      defaults.webroot = mkDefault "/var/lib/acme/acme-challenge";
       certs."${config.networking.domain}".postRun = "systemctl reload nginx.service";
     };
   };

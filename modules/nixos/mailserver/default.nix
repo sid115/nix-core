@@ -7,12 +7,11 @@
 }:
 
 let
-  isNotEmpty = str: builtins.isString str && str != ""; # TODO: put in lib overlay
-
   cfg = config.mailserver;
   fqdn = "${cfg.subdomain}.${config.networking.domain}";
 
   inherit (lib)
+    isNotEmptyStr
     mkDefault
     mkIf
     mkOption
@@ -33,7 +32,7 @@ in
   config = mkIf cfg.enable {
     assertions = [
       {
-        assertion = isNotEmpty cfg.subdomain;
+        assertion = isNotEmptyStr cfg.subdomain;
         message = "nix-core/nixos/mailserver: config.mailserver.subdomain cannot be empty.";
       }
     ];

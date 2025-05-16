@@ -7,10 +7,12 @@
 
 let
   cfg = config.services.open-webui;
-  fqdn = "${cfg.subdomain}.${config.networking.domain}";
   searx = config.services.searx;
+  domain = config.networking.domain;
+  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
+    isNotEmptyStr
     mkDefault
     mkIf
     mkOption
@@ -22,7 +24,7 @@ in
     subdomain = mkOption {
       type = types.str;
       default = "ai";
-      description = "Subdomain for Nginx virtual host.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;
@@ -65,7 +67,7 @@ in
       enableACME = cfg.forceSSL;
       forceSSL = cfg.forceSSL;
       locations."/" = {
-        proxyPass = "http://localhost:${toString cfg.port}";
+        proxyPass = mkDefault "http://localhost:${toString cfg.port}";
         proxyWebsockets = true;
       };
     };

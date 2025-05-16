@@ -11,7 +11,7 @@ in
       enable = mkDefault true;
       exporters.node = {
         enable = true;
-        port = 9009;
+        port = mkDefault 9009;
         enabledCollectors = [ "systemd" ];
         extraFlags = [
           "--collector.ethtool"

@@ -7,9 +7,11 @@
 
 let
   cfg = config.services.jellyfin;
-  fqdn = "${cfg.subdomain}.${config.networking.domain}";
+  domain = config.networking.domain;
+  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
+    isNotEmptyStr
     mkDefault
     mkIf
     mkOption
@@ -21,7 +23,7 @@ in
     subdomain = mkOption {
       type = types.str;
       default = "jf";
-      description = "Subdomain for Nginx virtual host.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;
@@ -61,7 +63,7 @@ in
     services.nginx.virtualHosts."${fqdn}" = {
       forceSSL = cfg.forceSSL;
       enableACME = cfg.forceSSL;
-      locations."/".proxyPass = "http://localhost:8096";
+      locations."/".proxyPass = mkDefault "http://localhost:8096";
     };
 
     security.acme.certs."${fqdn}".postRun = mkIf cfg.forceSSL "systemctl restart jellyfin.service";

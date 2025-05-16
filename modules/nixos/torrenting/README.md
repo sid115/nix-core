@@ -1,6 +1,7 @@
 # Torrenting
 
-> Note: This module is not actively maintained. Expect things to break!
+> [!WARNING]
+> This module is not actively maintained. Expect things to break!
 
 A torrenting module for a web interface using [deluge](https://deluge-torrent.org/) and deluge-web. Check out the [user guide](https://deluge-torrent.org/userguide/).
 

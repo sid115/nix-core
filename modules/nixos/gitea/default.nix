@@ -6,10 +6,12 @@
 
 let
   cfg = config.services.gitea;
-  fqdn = "${cfg.subdomain}.${config.networking.domain}";
+  domain = config.networking.domain;
+  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
     elemAt
+    isNotEmptyStr
     mkDefault
     mkIf
     mkOption
@@ -21,7 +23,7 @@ in
     subdomain = mkOption {
       type = types.str;
       default = "git";
-      description = "Subdomain for Nginx virtual host.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;

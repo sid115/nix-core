@@ -1,6 +1,7 @@
 # cifsMount
 
-> Note: This module is not actively maintained. Expect things to break!
+> [!WARNING]
+> This module is not actively maintained. Expect things to break!
 
 This module allows you to automount cifs shares after the login of the specified user. The remote has to have a running samba server.
 

@@ -7,9 +7,11 @@
 
 let
   cfg = config.services.grafana;
-  fqdn = "${cfg.subdomain}.${config.networking.domain}";
+  domain = config.networking.domain;
+  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
+    isNotEmptyStr
     mkDefault
     mkIf
     mkOption
@@ -25,7 +27,7 @@ in
     subdomain = mkOption {
       type = types.str;
       default = "grafana";
-      description = "Subdomain for the Nginx virtual host.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;
@@ -59,7 +61,7 @@ in
       forceSSL = cfg.forceSSL;
       enableACME = cfg.forceSSL;
       locations."/" = {
-        proxyPass = with cfg.settings.server; "http://${http_addr}:${toString http_port}";
+        proxyPass = mkDefault (with cfg.settings.server; "http://${http_addr}:${toString http_port}");
         proxyWebsockets = mkDefault true;
         recommendedProxySettings = mkDefault true;
       };

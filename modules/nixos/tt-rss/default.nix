@@ -7,9 +7,11 @@
 
 let
   cfg = config.services.tt-rss;
-  fqdn = "${cfg.subdomain}.${config.networking.domain}";
+  domain = config.networking.domain;
+  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
+    isNotEmptyStr
     mkAfter
     mkDefault
     mkIf

@@ -7,9 +7,12 @@
 
 let
   cfg = config.services.print-server;
-  fqdn = "${cfg.subdomain}.${config.networking.domain}";
+  domain = config.networking.domain;
+  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
+    isNotEmptyStr
+    mkDefault
     mkEnableOption
     mkIf
     mkOption
@@ -22,7 +25,7 @@ in
     subdomain = mkOption {
       type = types.str;
       default = "print";
-      description = "Subdomain for web interface.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;
@@ -71,7 +74,7 @@ in
     services.nginx.virtualHosts.${fqdn} = {
       forceSSL = cfg.forceSSL;
       enableACME = cfg.forceSSL;
-      locations."/".proxyPass = "http://localhost:631";
+      locations."/".proxyPass = mkDefault "http://localhost:631";
     };
   };
 }
