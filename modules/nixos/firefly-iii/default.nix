@@ -19,12 +19,13 @@ let
       throw "No subdomain specified for Firefly-III data importer.";
 
   inherit (lib)
-    isNotEmptyStr
     mkDefault
     mkIf
     mkOption
     types
     ;
+
+  isNotEmptyStr = (import ../../../lib).isNotEmptyStr;
 in
 {
   options.services.firefly-iii = {
