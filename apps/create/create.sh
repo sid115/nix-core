@@ -32,6 +32,7 @@ Available configuration templates:
     hyprland
     server
     pi4
+    vm-uefi
 EOF
 }
 

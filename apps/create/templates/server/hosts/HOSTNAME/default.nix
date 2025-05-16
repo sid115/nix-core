@@ -16,6 +16,10 @@
 
   networking.hostName = "HOSTNAME";
 
+  services = {
+    nginx.enable = true;
+  };
+
   normalUsers = {
     USERNAME = {
       name = "USERNAME";
