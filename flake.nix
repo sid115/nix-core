@@ -113,7 +113,7 @@
           description = "NixOS configuration with standalone Home Manager using nix-core.";
         };
 
-        # dev
+        # dev # TODO: use direnv and extend Makefiles
         c-hello = {
           path = ./templates/dev/c-hello;
           description = "C hello world project.";
