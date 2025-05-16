@@ -7,12 +7,13 @@ let
   nginxUser = config.services.nginx.user;
 
   inherit (lib)
-    isNotEmptyStr
     mkEnableOption
     mkIf
     mkOption
     types
     ;
+
+  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   options.services.webPage = {

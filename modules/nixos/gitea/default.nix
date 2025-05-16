@@ -11,12 +11,13 @@ let
 
   inherit (lib)
     elemAt
-    isNotEmptyStr
     mkDefault
     mkIf
     mkOption
     types
     ;
+
+  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   options.services.gitea = {

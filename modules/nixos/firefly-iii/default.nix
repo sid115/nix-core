@@ -25,7 +25,7 @@ let
     types
     ;
 
-  isNotEmptyStr = (import ../../../lib).isNotEmptyStr;
+  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   options.services.firefly-iii = {

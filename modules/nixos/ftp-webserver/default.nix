@@ -7,12 +7,13 @@ let
   nginx = config.services.nginx;
 
   inherit (lib)
-    isNotEmptyStr
     mkEnableOption
     mkIf
     mkOption
     types
     ;
+
+  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   options.services.ftp-webserver = {

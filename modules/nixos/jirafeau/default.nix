@@ -6,11 +6,12 @@ let
   fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
-    isNotEmptyStr
     mkDefault
     mkOption
     types
     ;
+
+  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   options.services.jirafeau = {
