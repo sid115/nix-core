@@ -1,6 +1,8 @@
 { inputs, ... }:
 
 {
+  lib = final: prev: prev.lib // import ../lib;
+
   modifications = final: prev: {
     comfyui = inputs.nixpkgs-comfyui.legacyPackages.${final.system}.comfyui;
 

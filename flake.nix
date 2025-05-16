@@ -19,17 +19,15 @@
       ...
     }@inputs:
     let
-      lib = nixpkgs.lib // import ./lib;
-
       supportedSystems = [
         "x86_64-linux"
         "aarch64-linux" # For testing only. Use at your own risk.
       ];
 
-      forAllSystems = lib.genAttrs supportedSystems;
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
     in
     {
-      inherit lib;
+      lib = nixpkgs.lib // import ./lib;
 
       apps = forAllSystems (
         system:
