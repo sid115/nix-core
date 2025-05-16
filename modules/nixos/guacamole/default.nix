@@ -7,14 +7,18 @@
 
 let
   cfg = config.services.guacamole;
-  fqdn = "${cfg.subdomain}.${config.networking.domain}";
+  domain = config.networking.domain;
+  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
+    mkDefault
     mkEnableOption
     mkIf
     mkOption
     types
     ;
+
+  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
 
@@ -23,7 +27,7 @@ in
     subdomain = mkOption {
       type = types.str;
       default = "guac";
-      description = "Subdomain for Nginx virtual host.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;
@@ -52,7 +56,7 @@ in
   config = mkIf cfg.enable {
     services.guacamole-server = {
       enable = true;
-      package = pkgs.guacamole-server;
+      package = mkDefault pkgs.guacamole-server;
       userMappingXml = cfg.users;
       logbackXml = ./logback.xml;
     };
@@ -68,19 +72,19 @@ in
       baseDir = "/var/lib/tomcat";
       purifyOnStart = true;
       webapps = [ config.services.guacamole-client.package ];
-      package = pkgs.tomcat9;
+      package = mkDefault pkgs.tomcat9;
     };
 
     services.nginx.virtualHosts = {
       "${fqdn}" = {
         enableACME = cfg.forceSSL;
         forceSSL = cfg.forceSSL;
-        locations."/".proxyPass = "http://localhost:8080/guacamole/";
+        locations."/".proxyPass = mkDefault "http://localhost:8080/guacamole/";
       };
       "sample.${config.networking.domain}" = {
         enableACME = cfg.forceSSL;
         forceSSL = cfg.forceSSL;
-        locations."/".proxyPass = "http://localhost:8080/sample/";
+        locations."/".proxyPass = mkDefault "http://localhost:8080/sample/";
       };
     };
   };

@@ -2,6 +2,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-zoom.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs-comfyui.url = "github:nixos/nixpkgs/pull/402112/head";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -22,9 +23,12 @@
         "x86_64-linux"
         "aarch64-linux" # For testing only. Use at your own risk.
       ];
+
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
     in
     {
+      lib = nixpkgs.lib // import ./lib;
+
       apps = forAllSystems (
         system:
         let
@@ -102,17 +106,12 @@
       };
 
       templates = {
-        # nix-config
-        hyprland = {
-          path = ./templates/nix-config/hyprland;
-          description = "NixOS client configuration for Hyprland.";
-        };
-        server = {
-          path = ./templates/nix-config/server;
-          description = "Minimal NixOS server configuration.";
+        nix-config = {
+          path = ./templates/nix-config;
+          description = "NixOS configuration with standalone Home Manager using nix-core.";
         };
 
-        # dev
+        # dev # TODO: use direnv and extend Makefiles
         c-hello = {
           path = ./templates/dev/c-hello;
           description = "C hello world project.";

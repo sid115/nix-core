@@ -2,16 +2,23 @@
 
 let
   cfg = config.services.jirafeau;
-  fqdn = "${cfg.subdomain}.${config.networking.domain}";
+  domain = config.networking.domain;
+  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
 
-  inherit (lib) mkDefault mkOption types;
+  inherit (lib)
+    mkDefault
+    mkOption
+    types
+    ;
+
+  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   options.services.jirafeau = {
     subdomain = mkOption {
       type = types.str;
       default = "share";
-      description = "Subdomain for Nginx virtual host.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;

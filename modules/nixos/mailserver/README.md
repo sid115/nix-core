@@ -1,6 +1,8 @@
 # Mail
 
-[docs](https://nixos-mailserver.readthedocs.io/en/latest/index.html)
+A simple NixOS mailserver.
+
+- [docs](https://nixos-mailserver.readthedocs.io/en/latest/index.html)
 
 ## Setup
 
@@ -12,16 +14,16 @@ Follow the [setup guide](https://nixos-mailserver.readthedocs.io/en/nixos-24.05/
 
 ```nix
 inputs = {
-  nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-24.11";
+  nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver";
   nixos-mailserver.inputs.nixpkgs.follows = "nixpkgs";
 };
 ```
 
-> Replace `24.11` with your `nixpkgs` version.
-
 ### Host configuration:
 
 ```nix
+imports = [ inputs.core.nixosModules.mailserver ]
+
 mailserver = {
   enable = true;
   loginAccounts = {

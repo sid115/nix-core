@@ -76,7 +76,7 @@ in
       };
     };
 
-    services.gpg-agent.pinentryPackage = mkOverride 1001 pkgs.pinentry-qt; # mkDefault collides with gpg home module
+    services.gpg-agent.pinentry.package = mkOverride 1001 pkgs.pinentry-qt; # mkDefault collides with gpg home module
 
     home.packages =
       [

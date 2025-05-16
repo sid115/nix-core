@@ -29,6 +29,10 @@ python3.pkgs.buildPythonApplication rec {
     "cppman"
   ];
 
+  # TODO: add tests
+  # https://github.com/aitjcize/cppman/blob/master/test/test.py
+  # https://github.com/NixOS/nixpkgs/blob/master/doc/languages-frameworks/python.section.md#buildpythonapplication-function-buildpythonapplication-function
+
   meta = {
     description = "C++ 98/11/14/17/20 manual pages for Linux/MacOS";
     homepage = "https://pypi.org/project/cppman";

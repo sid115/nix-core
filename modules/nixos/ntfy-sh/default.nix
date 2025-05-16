@@ -54,6 +54,7 @@ let
     escapeShellArg
     foldl'
     hasPrefix
+    mkDefault
     mkEnableOption
     mkIf
     mkOption
@@ -114,7 +115,7 @@ in
       "${fqdn}" = {
         enableACME = cfg.reverseProxy.forceSSL;
         forceSSL = cfg.reverseProxy.forceSSL;
-        locations."/".proxyPass = "http://127.0.0.1:2586";
+        locations."/".proxyPass = mkDefault "http://127.0.0.1:2586";
       };
     };
 

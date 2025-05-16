@@ -35,6 +35,13 @@ Make sure you have a CNAME record for `turn` pointing to your domain.
 
 > Warning: Bridges use [`mautrix-go`](https://github.com/mautrix/go) which relies on [deprecated `libolm`](https://github.com/mautrix/go/issues/262).
 
+### NixOS configuration
+
+The `config.yaml` for each bridge is managed through `services.mautrix-BRIDGE.settings`:
+
+- [services.mautrix-signal.settings](https://search.nixos.org/options?channel=unstable&query=services.mautrix-signal.settings): [example configuration file](https://github.com/mautrix/signal/blob/main/pkg/connector/example-config.yaml)
+- [services.mautrix-whatsapp.settings](https://search.nixos.org/options?channel=unstable&query=services.mautrix-whatsapp.settings): [example configuration file](https://github.com/mautrix/whatsapp/blob/main/pkg/connector/example-config.yaml)
+
 ### Authentication
 
 1. Open chat with bridge bot: `@BOT:DOMAIN.TLD`

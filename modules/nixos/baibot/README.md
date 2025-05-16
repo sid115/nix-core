@@ -1,5 +1,8 @@
 # Baibot
 
+> [!WARNING]
+> This module is not actively maintained. Expect things to break!
+
 Baibot is a Matrix AI bot.
 
 ## References

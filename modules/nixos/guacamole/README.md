@@ -1,6 +1,7 @@
 # Apache Guacamole
 
-> Note: This module is not actively maintained. Expect things to break!
+> [!WARNING]
+> This module is not actively maintained. Expect things to break!
 
 Apache Guacamole is a clientless remote desktop gateway.
 
@@ -9,7 +10,7 @@ Apache Guacamole is a clientless remote desktop gateway.
 ## Config
 
 ```nix
-config.services.guacamole = {
+services.guacamole = {
   enable = true;
   users = ./path/to/user-mapping.xml;
   settings = {

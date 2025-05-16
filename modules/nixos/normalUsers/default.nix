@@ -60,7 +60,7 @@ in
 
   # Create users
   config.users.users = genAttrs (attrNames cfg) (userName: {
-    name = userName;
+    name = userName; # TODO: use attr name instead
     inherit (cfg.${userName}) extraGroups shell initialPassword;
 
     isNormalUser = true;
