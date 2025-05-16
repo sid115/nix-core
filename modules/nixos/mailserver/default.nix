@@ -11,12 +11,13 @@ let
   fqdn = "${cfg.subdomain}.${config.networking.domain}";
 
   inherit (lib)
-    isNotEmptyStr
     mkDefault
     mkIf
     mkOption
     types
     ;
+
+  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   imports = [ inputs.nixos-mailserver.nixosModules.mailserver ];
