@@ -9,7 +9,7 @@ in
   # Do not add binds here. Use `./binds/default.nix` instead.
   "$mod" = cfg.modifier;
 
-  windowrulev2 = [
+  windowrule = [
     "center, floating:1, not class:^(Gimp)$, not class:^(Steam)$"
     "noborder, onworkspace:w[t1]"
 

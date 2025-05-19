@@ -1,1 +1,1 @@
-See the [Hyprland Home Mananager module](../../home/hyprland/README.md).
+See the [Hyprland Home Manager module](../../home/hyprland/README.md).
