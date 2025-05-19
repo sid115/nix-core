@@ -11,93 +11,39 @@ in
   engines = {
 
     "GitHub" = {
-      urls = [
-        {
-          template = "https://github.com/search";
-          params = [
-            {
-              name = "q";
-              value = "{searchTerms}";
-            }
-          ];
-        }
-      ];
-      #icon = ""; # TODO
-      #updateInterval = every_day;
+      urls = [ { template = "https://github.com/search?q={searchTerms}"; } ];
+      icon = "https://github.com/favicon.ico";
+      updateInterval = every_day;
       definedAliases = [ "@gh" ];
     };
 
     "Home Manager Options" = {
-      urls = [
-        {
-          template = "https://home-manager-options.extranix.com/";
-          params = [
-            {
-              name = "query";
-              value = "{searchTerms}";
-            }
-          ];
-        }
-      ];
+      urls = [ { template = "https://home-manager-options.extranix.com/?query={searchTerms}&release=master"; } ];
       icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
       definedAliases = [ "@hm" ];
     };
 
     "Nix Packages" = {
-      urls = [
-        {
-          template = "https://search.nixos.org/packages";
-          params = [
-            {
-              name = "query";
-              value = "{searchTerms}";
-            }
-          ];
-        }
-      ];
+      urls = [ { template = "https://search.nixos.org/packages?channel=unstable&query={searchTerms}"; } ];
       icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
       definedAliases = [ "@np" ];
     };
 
     "NixOS Options" = {
-      urls = [
-        {
-          template = "https://search.nixos.org/options";
-          params = [
-            {
-              name = "query";
-              value = "{searchTerms}";
-            }
-          ];
-        }
-      ];
+      urls = [ { template = "https://search.nixos.org/options?channel=unstable&query={searchTerms}"; } ];
       icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
       definedAliases = [ "@no" ];
     };
 
     "NixOS Wiki" = {
-      urls = [
-        {
-          template = "https://wiki.nixos.org/index.php";
-          params = [
-            {
-              name = "search";
-              value = "{searchTerms}";
-            }
-          ];
-        }
-      ];
+      urls = [ { template = "https://wiki.nixos.org/w/index.php?search={searchTerms}"; } ];
       icon = "https://wiki.nixos.org/favicon.png";
       updateInterval = every_day;
       definedAliases = [ "@nw" ];
     };
 
     "Nixpkgs Issues" = {
-      urls = [
-        {
-          template = "https://github.com/NixOS/nixpkgs/issues?q=is%3Aissue%20state%3Aopen%20{searchTerms}";
-        }
-      ];
+      urls = [ { template = "https://github.com/NixOS/nixpkgs/issues?q=is%3Aissue%20state%3Aopen%20{searchTerms}"; } ];
       icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
       definedAliases = [ "@ni" ];
     };
@@ -127,6 +73,34 @@ in
       icon = "https://www.youtube.com/favicon.ico";
       updateInterval = every_day;
       definedAliases = [ "@yt" ];
+    };
+
+    protondb = {
+      urls = [ { template = "https://www.protondb.com/search?q={searchTerms}"; } ];
+      icon = "https://www.protondb.com/favicon.ico";
+      updateInterval = every_day;
+      definedAliases = [ "@pdb" ];
+    };
+
+    steamdb = {
+      urls = [ { template = "https://steamdb.info/search/?a=all&q={searchTerms}"; } ];
+      icon = "https://steamdb.info/favicon.ico";
+      updateInterval = every_day;
+      definedAliases = [ "@stdb" ];
+    };
+
+    keyforsteam = {
+      urls = [ { template = "https://www.keyforsteam.de/katalog/?search_name={searchTerms}"; } ];
+      icon = "https://www.keyforsteam.de/favicon.ico";
+      updateInterval = every_day;
+      definedAliases = [ "@k4s" ];
+    };
+
+    howlongtobeat = {
+      urls = [ { template = "https://howlongtobeat.com/?q={searchTerms}"; } ];
+      icon = "https://howlongtobeat.com/favicon.ico";
+      updateInterval = every_day;
+      definedAliases = [ "@hltb" ];
     };
 
     # engines below are disabled
