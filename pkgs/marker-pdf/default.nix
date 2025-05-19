@@ -43,15 +43,15 @@ python.pkgs.buildPythonApplication rec {
     ./skip-font-download.patch
   ];
 
-  # TODO: use `pythonRelaxDeps` instead
-  # https://github.com/NixOS/nixpkgs/blob/master/doc/languages-frameworks/python.section.md#using-pythonrelaxdepshook-using-pythonrelaxdepshook
-  postPatch = ''
-    substituteInPlace pyproject.toml \
-      --replace-warn 'Pillow = "^10.1.0"' 'Pillow = "^11.2.0"' \
-      --replace-warn 'anthropic = "^0.46.0"' 'anthropic = "^0.49.0"' \
-      --replace-warn 'markdownify = "^0.13.1"' 'markdownify = "^0.14.1"' \
-      --replace-warn 'pre-commit = "^4.2.0"' '#pre-commit = "^4.2.0"'
-  '';
+  pythonRelaxDeps = [
+    "Pillow"
+    "anthropic"
+    "markdownify"
+  ];
+
+  pythonRemoveDeps = [
+    "pre-commit"
+  ];
 
   postInstall = ''
     FONT_DEST_DIR="$out/lib/${python.libPrefix}/site-packages/static/fonts"

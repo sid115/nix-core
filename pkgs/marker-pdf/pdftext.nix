@@ -16,10 +16,9 @@ python.pkgs.buildPythonApplication rec {
     hash = "sha256-mmxNrjEXQ5J5aZkn0+iXAamNBnu1RWdqLe5MjJGwkp0=";
   };
 
-  postPatch = ''
-    substituteInPlace pyproject.toml \
-      --replace 'pypdfium2 = "=4.30.0"' 'pypdfium2 = "^4.30.0"'
-  '';
+  pythonRelaxDeps = [
+    "pypdfium2"
+  ];
 
   build-system = [
     python.pkgs.poetry-core
