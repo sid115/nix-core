@@ -18,7 +18,9 @@ in
     };
 
     "Home Manager Options" = {
-      urls = [ { template = "https://home-manager-options.extranix.com/?query={searchTerms}&release=master"; } ];
+      urls = [
+        { template = "https://home-manager-options.extranix.com/?query={searchTerms}&release=master"; }
+      ];
       icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
       definedAliases = [ "@hm" ];
     };
@@ -43,7 +45,11 @@ in
     };
 
     "Nixpkgs Issues" = {
-      urls = [ { template = "https://github.com/NixOS/nixpkgs/issues?q=is%3Aissue%20state%3Aopen%20{searchTerms}"; } ];
+      urls = [
+        {
+          template = "https://github.com/NixOS/nixpkgs/issues?q=is%3Aissue%20state%3Aopen%20{searchTerms}";
+        }
+      ];
       icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
       definedAliases = [ "@ni" ];
     };
