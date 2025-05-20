@@ -1,4 +1,7 @@
+.cache/
+.direnv/
 .pre-commit-config.yaml
 bin/
 build/
+compile_commands.json
 result/
