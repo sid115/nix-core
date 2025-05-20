@@ -5,8 +5,13 @@ INCLUDE_DIR = include
 SRC_DIR = src
 
 CC = gcc
-BUILD_CMD = bear --output $(BUILD_DIR)/compile_commands.json -- $(CC)
 CFLAGS = -I$(INCLUDE_DIR) -Wall -Wextra -g
+USE_BEAR ?= 0
+ifeq ($(USE_BEAR), 1)
+	BUILD_CMD = bear --output $(BUILD_DIR)/compile_commands.json -- $(CC)
+else
+	BUILD_CMD = $(CC)
+endif
 
 TARGET = $(BUILD_DIR)/$(PNAME)
 SRCS = $(wildcard $(SRC_DIR)/*.c)
