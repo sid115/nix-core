@@ -111,18 +111,21 @@
           description = "NixOS configuration with standalone Home Manager using nix-core.";
         };
 
-        # dev # TODO: use direnv and extend Makefiles
         c-hello = {
           path = ./templates/dev/c-hello;
-          description = "C hello world project.";
+          description = "C hello world template.";
+        };
+        esp-blink = {
+          path = ./templates/dev/esp-blink;
+          description = "ESP32 blink template.";
         };
         py-hello = {
           path = ./templates/dev/py-hello;
-          description = "Python hello world project.";
+          description = "Python hello world template.";
         };
         rs-hello = {
           path = ./templates/dev/rs-hello;
-          description = "Rust hello world project.";
+          description = "Rust hello world template.";
         };
       };
     };
