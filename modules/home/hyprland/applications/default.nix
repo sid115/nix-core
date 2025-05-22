@@ -198,7 +198,7 @@ in
   config = {
     wayland.windowManager.hyprland.settings = {
       bind = binds;
-      windowrulev2 = windowrules;
+      windowrule = windowrules;
     };
   };
 }

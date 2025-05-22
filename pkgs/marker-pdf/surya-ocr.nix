@@ -16,12 +16,11 @@ python.pkgs.buildPythonApplication rec {
     hash = "sha256-8be9NmlqVuDJj7TiVdnGCrpRNbWlA9Fo+6wBiYY7BgM=";
   };
 
-  postPatch = ''
-    substituteInPlace pyproject.toml \
-      --replace-warn 'pillow = "^10.2.0"' 'pillow = "^11.2.0"' \
-      --replace-warn 'pypdfium2 = "=4.30.0"' 'pypdfium2 = "^4.30.0"' \
-      --replace-warn 'opencv-python-headless = "^4.11.0.86"' 'opencv-python-headless = "^4.11.0"'
-  '';
+  pythonRelaxDeps = [
+    "opencv-python-headless"
+    "pillow"
+    "pypdfium2"
+  ];
 
   build-system = [
     python.pkgs.poetry-core
