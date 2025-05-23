@@ -1,21 +1,66 @@
 site_name: nix-core docs
-# site_url: TODO
 repo_url: https://github.com/sid115/nix-core
+edit_uri: blob/master/docs/
 repo_name: GitHub
 docs_dir: docs
 theme:
-  name: readthedocs
+  name: material
 
 nav:
   - Home: index.md # do not change
   - Getting Started:
-    - Nix package manager: getting-started/nix-package-manager.md
-    - Create nix-config: getting-started/create-nix-config.md
-    - Add configs: getting-started/add-configs.md
-    - Install instructions: getting-started/install-instructions.md
+    - 1. Install the Nix package manager: getting-started/nix-package-manager.md
+    - 2. Create your nix-config flake: getting-started/create-nix-config.md
+    - 3. Add configs to your flake: getting-started/add-configs.md
+    - 4. Install instructions: getting-started/install-instructions.md
   - Modules:
     - NixOS:
-      - Open WebUI: modules/nixos/open-webui.md
+      - audio: modules/nixos/audio.md
+      - baibot: modules/nixos/baibot.md
+      - cifsMount: modules/nixos/cifsmount.md
+      - common: modules/nixos/common.md
+      - device: modules/nixos/device.md
+      - firefly-iii: modules/nixos/firefly-iii.md
+      - ftp-webserver: modules/nixos/ftp-webserver.md
+      - gitea: modules/nixos/gitea.md
+      - grafana: modules/nixos/grafana.md
+      - guacamole: modules/nixos/guacamole.md
+      - home-assistant-oci: modules/nixos/home-assistant-oci.md
+      - jellyfin: modules/nixos/jellyfin.md
+      - jirafeau: modules/nixos/jirafeau.md
+      - mailserver: modules/nixos/mailserver.md
+      - matrix-synapse: modules/nixos/matrix-synapse.md
+      - nextcloud: modules/nixos/nextcloud.md
+      - normalUsers: modules/nixos/normalUsers.md
+      - ntfy-sh: modules/nixos/ntfy-sh.md
+      - nvidia: modules/nixos/nvidia.md
+      - open-webui: modules/nixos/open-webui.md
+      - peertube: modules/nixos/peertube.md
+      - print-server: modules/nixos/print-server.md
+      - rss-bridge: modules/nixos/rss-bridge.md
+      - searx: modules/nixos/searx.md
+      - sops: modules/nixos/sops.md
+      - torrenting: modules/nixos/torrenting.md
+      - tt-rss: modules/nixos/tt-rss.md
+      - vaultwarden: modules/nixos/vaultwarden.md
+      - virtualization: modules/nixos/virtualization.md
+      - webPage: modules/nixos/webpage.md
+      - xrdp: modules/nixos/xrdp.md
+    - Home Manager:
+      - bemenu: modules/home/bemenu.md
+      - common: modules/home/common.md
+      - gpg: modules/home/gpg.md
+      - hyprland: modules/home/hyprland.md
+      - kitty: modules/home/kitty.md
+      - lf: modules/home/lf.md
+      - networkmanager-dmenu: modules/home/networkmanager-dmenu.md
+      - nextcloud-sync: modules/home/nextcloud-sync.md
+      - nixvim: modules/home/nixvim.md
+      - password-manager: modules/home/password-manager.md
+      - sops: modules/home/sops.md
+      - styling: modules/home/styling.md
+      - virtualization: modules/home/virtualization.md
+      - waybar: modules/home/waybar.md
   - Tips:
     - Nix/NixOS:
       - Useful Links: tips/nix-nixos/useful-links.md

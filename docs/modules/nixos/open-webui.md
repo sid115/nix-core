@@ -4,7 +4,7 @@ Open WebUI is an extensible, self-hosted AI interface that adapts to your workfl
 
 View the [*nix-core* NixOS module on GitHub](https://github.com/sid115/nix-core/tree/master/modules/nixos/open-webui).
 
-## Docs
+## References
 
 - [Homepage](https://openwebui.com/)
 - [GitHub](https://github.com/open-webui/open-webui)
@@ -43,18 +43,18 @@ View the [*nix-core* NixOS module on GitHub](https://github.com/sid115/nix-core/
 > Remember to set a CNAME record pointing to your domain.
 
 1. Import this module:
-    ```nix
-    imports = [
-      inputs.core.nixosModules.open-webui
-    ];
-    ```
+```nix
+imports = [
+  inputs.core.nixosModules.open-webui
+];
+```
 2. Rebuild your system with `ENABLE_SIGNUP = "True";`:
-    ```nix
-    services.open-webui = {
-      enable = true;
-      environment.ENABLE_SIGNUP = "True";
-    };
-    ```
+```nix
+services.open-webui = {
+  enable = true;
+  environment.ENABLE_SIGNUP = "True"; # Delete this in step 5
+};
+```
 3. Visit `SUBDOMAIN.DOMAIN.TLD`.
 4. Click on "Sign up" to create an admin account.
 5. Disable signups and rebuild.

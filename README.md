@@ -39,13 +39,13 @@ This is the directory structure of this repository:
 - `README.md`: this file
 - `flake.nix`: entry point
 
-## Documentation
-
-Please refer to our documentation hosted on [GitHub Pages](TODO).
-
 ## Getting started
 
 The [getting started guide](TODO) will take you from scratch to a working configuration.
+
+## Documentation
+
+Please refer to our documentation hosted on [GitHub Pages](https://sid115.github.io/nix-core/).
 
 ## Rebuilding
 

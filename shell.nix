@@ -5,6 +5,12 @@
 
 pkgs.mkShell {
   nativeBuildInputs = with pkgs; [
-    mkdocs
+    (python313.withPackages (
+      p: with p; [
+        mkdocs
+        mkdocs-material
+        mkdocs-material-extensions
+      ]
+    ))
   ];
 }

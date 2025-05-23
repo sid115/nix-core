@@ -1,6 +1,6 @@
 # 4. Installation Guide
 
-This guide will walk you through installing NixOS using the provided installation script [`install.sh`](../apps/install/install.sh).
+This guide will walk you through installing NixOS using the provided installation script [`install.sh`](https://github.com/sid115/nix-core/blob/master/apps/install/install.sh).
 
 ## Prerequisites
 
