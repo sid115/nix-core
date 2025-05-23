@@ -1,0 +1,21 @@
+site_name: nix-core docs
+# site_url: TODO
+repo_url: https://github.com/sid115/nix-core
+repo_name: GitHub
+docs_dir: docs
+theme:
+  name: readthedocs
+
+nav:
+  - Home: index.md # do not change
+  - Getting Started:
+    - Nix package manager: getting-started/nix-package-manager.md
+    - Create nix-config: getting-started/create-nix-config.md
+    - Add configs: getting-started/add-configs.md
+    - Install instructions: getting-started/install-instructions.md
+  - Modules:
+    - NixOS:
+      - Open WebUI: modules/nixos/open-webui.md
+  - Tips:
+    - Nix/NixOS:
+      - Useful Links: tips/nix-nixos/useful-links.md

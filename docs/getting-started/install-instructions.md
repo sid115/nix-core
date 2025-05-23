@@ -1,4 +1,4 @@
-# Installation Guide
+# 4. Installation Guide
 
 This guide will walk you through installing NixOS using the provided installation script [`install.sh`](../apps/install/install.sh).
 

@@ -39,39 +39,13 @@ This is the directory structure of this repository:
 - `README.md`: this file
 - `flake.nix`: entry point
 
-For more information, check out the `README.md` file in each module's directory.
+## Documentation
+
+Please refer to our documentation hosted on [GitHub Pages](TODO).
 
 ## Getting started
 
-The following guides will take you from scratch to a working configuration.
-
-### 1. Install the Nix package manager
-
-Follow the [official installation instructions](https://nixos.org/download/) to install the Nix package manager on your system.
-
-### 2. Create your own nix-config flake
-
-Create an empty directory and apply the [nix-config template](./templates/nix-config) to it:
-
-```bash
-mkdir -p ~/.config/nixos
-cd ~/.config/nixos
-nix flake init -t "github:sid115/nix-core#templates.nix-config"
-```
-
-> Note: You do not have to use `~/.config/nixos`, but configuration related scripts in this repository will use this directory as the default nix-config flake directory.
-
-### 3. Add NixOS and Home Manager configurations
-
-Follow the [configuration creation guide](./docs/create_config.md) to add new NixOS and Home Manager configurations to your nix-config flake.
-
-This process can be repeated for as many configurations you need. Push your changes to your remote nix-config git repository.
-
-You might want to take a look at [my personal configuration](https://github.com/sid115/nix-config) to see how I use nix-core in my nix-config repository.
-
-### 4. Installation Guide
-
-Follow the [installation instructions](./docs/install_instructions.md) to install an existing configuration. The hardware configuration can be generated automatically during installation.
+The [getting started guide](TODO) will take you from scratch to a working configuration.
 
 ## Rebuilding
 

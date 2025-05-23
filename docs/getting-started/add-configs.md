@@ -1,6 +1,8 @@
-# Create NixOS and Home Manager configurations
+# 3. Add NixOS and Home Manager configurations
 
-Run the [`create` script](../apps/create/create.sh) to add your desired [configuration template](../apps/create/templates/) to your nix-config flake:
+Choose a configuration template from [this list](https://github.com/sid115/nix-core/tree/master/apps/create/templates).
+
+Run the `create` script to add your desired configuration template to your nix-config flake:
 
 ```bash
 nix --experimental-features "nix-command flakes" run github:sid115/nix-core#apps.x86_64-linux.create -- \
@@ -12,7 +14,7 @@ nix --experimental-features "nix-command flakes" run github:sid115/nix-core#apps
 -f ~/.config/nixos
 ```
 
-> Change the architecture if needed. Supported architectures are listet under `supportedSystems` inside [`flake.nix`](../flake.nix).
+> Change the architecture if needed. Supported architectures are listet under `supportedSystems` inside [`flake.nix`](https://github.com/sid115/nix-core/blob/master/flake.nix).
 
 See the script's help page for reference:
 
