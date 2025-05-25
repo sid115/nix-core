@@ -3,7 +3,6 @@
 {
   imports = [
     inputs.core.nixosModules.common
-    inputs.core.nixosModules.nginx
     inputs.core.nixosModules.normalUsers
     inputs.core.nixosModules.openssh
 
@@ -16,10 +15,6 @@
 
   networking.hostName = "HOSTNAME";
 
-  services = {
-    nginx.enable = true;
-  };
-
   normalUsers = {
     USERNAME = {
       name = "USERNAME";
@@ -30,5 +25,5 @@
     };
   };
 
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.05";
 }

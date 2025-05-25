@@ -6,7 +6,7 @@
 
 python.pkgs.buildPythonApplication rec {
   pname = "surya-ocr";
-  version = "0.13.1";
+  version = "0.14.2";
   pyproject = true;
 
   src = fetchFromGitHub {

@@ -29,7 +29,7 @@ in
 
 python.pkgs.buildPythonApplication rec {
   pname = "marker-pdf";
-  version = "1.6.2";
+  version = "1.7.3";
   pyproject = true;
 
   src = fetchFromGitHub {
@@ -44,9 +44,9 @@ python.pkgs.buildPythonApplication rec {
   ];
 
   pythonRelaxDeps = [
-    "Pillow"
     "anthropic"
     "markdownify"
+    "pillow"
   ];
 
   pythonRemoveDeps = [
