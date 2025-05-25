@@ -1,9 +1,11 @@
 # nix-core docs
 
-Welcome to the documentation of [nix-core](https://github.com/sid115/nix-core)!
+Welcome to the documentation for [nix-core](https://github.com/sid115/nix-core).
 
-## Contents
+The goal of this project is to provide modules and packages for your NixOS and Home Manager configurations, suitable for client and server applications. Scripts are also included to automate the creation and installation of your own flake.
 
-- **Getting Started** takes you from zero to a working NixOS configuration using nix-core.
-- **Modules** contains documentation for the NixOS and Home Manager modules on nix-core.
-- **Tips** is a collection of recommendations and resources for the Nix ecosystem.
+## Explore the documentation:
+
+- **Getting Started:** A guide to go from scratch to a complete, working NixOS configuration using nix-core.
+- **Modules:** Information about available NixOS and Home Manager modules.
+- **Tips:** Find recommendations and resources to navigate the Nix ecosystem.

@@ -5,6 +5,17 @@ repo_name: GitHub
 docs_dir: docs
 theme:
   name: material
+  features:
+    - content.code.select
+markdown_extensions:
+  - pymdownx.highlight:
+      use_pygments: true
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
 
 nav:
   - Home: index.md # do not change
@@ -62,5 +73,4 @@ nav:
       - virtualization: modules/home/virtualization.md
       - waybar: modules/home/waybar.md
   - Tips:
-    - Nix/NixOS:
-      - Useful Links: tips/nix-nixos/useful-links.md
+    - Useful Links: tips/useful-links.md

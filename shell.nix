@@ -10,6 +10,7 @@ pkgs.mkShell {
         mkdocs
         mkdocs-material
         mkdocs-material-extensions
+        pygments
       ]
     ))
   ];
