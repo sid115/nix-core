@@ -1,4 +1,4 @@
-# Contributing to our NixOS and Home Manager configurations
+# Contributing to nix-core
 
 Please read the following guidelines to make the contribution process smooth and effective for everyone involved.
 
