@@ -1,4 +1,6 @@
+.direnv/
 .pre-commit-config.yaml
 result
+site/
 templates/**/*.lock
 templates/**/.pre-commit-config.yaml

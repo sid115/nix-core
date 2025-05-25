@@ -11,6 +11,10 @@ Please read the following guidelines to make the contribution process smooth and
 ### **Feature Branches:**
    - **`feature/<feature-name>`**: Create these branches from the `develop` branch. These branches are used to develop new features. Once the feature is complete and tested, it should be merged back into `develop`.
 
+### **Documentation Branches:**
+   - **`docs/<topic-name>`**: Create these branches from the `master` branch (for direct documentation updates) or `develop` branch (if documentation changes are tied to upcoming features). These branches are exclusively for contributions to the documentation (`docs/` directory).
+   - **`gh-deploy`**: **Do not touch this branch.** It is automatically managed and used by `mkdocs` to deploy the documentation to GitHub Pages.
+
 ### **Hotfix Branches:**
    - **`hotfix/<hotfix-name>`**: Create these branches from the `master` branch. These branches are used for urgent fixes that need to go directly into production. Once a hotfix is complete, it should be merged back into both `master` and `develop`.
 
@@ -34,6 +38,9 @@ git checkout develop
 git pull origin develop
 git checkout -b feature/<feature-name>
 ```
+
+> [!NOTE]
+> Use `docs/<topic-name>` for documentation contributions
 
 4. Make your changes and commit them to your branch.
 
@@ -87,6 +94,58 @@ git push origin hotfix/<hotfix-name>
 ```
 
 4. Create a pull request (PR) from your hotfix branch to both the `master` and `develop` branches.
+
+## Documentation contributions
+
+Documentation page using [mkdocs](https://www.mkdocs.org/) hosted on [GitHub pages](https://sid115.github.io/nix-core/).
+
+### Prerequisites
+
+* **direnv**: Use [`direnv`](https://direnv.net/) to automate and streamline dependency management. It should be available on most distros.
+* **Nix Package Manager**: Install the [Nix package manager](https://nixos.org/download/).
+
+    Add the following to `~/.config/nix/nix.conf` (or `/etc/nix/nix.conf` for system-wide):
+    ```ini
+    experimental-features = nix-command flakes
+    ```
+
+### Setup
+
+1.  Clone this repository:
+    ```bash
+    git clone https://github.com/sid115/nix-core.git
+    ```
+2.  Navigate into the cloned directory:
+    ```bash
+    cd nix-core
+    ```
+3.  Allow `direnv` to install dependencies from `shell.nix`:
+    ```bash
+    direnv allow
+    ```
+
+### Conventions
+
+Learn about the file layout, configuration settings and markdown syntax [here](https://www.mkdocs.org/user-guide/writing-your-docs/).
+
+Please use the following file naming scheme:
+
+* use lower case only
+* use dashes (-) instead of spaces, no underscores (_)
+* use the page names as file names in `mkdocs.yml`, e.g.:
+
+```yaml
+- Foo:
+  - Bar: 'foo/bar.md'
+```
+
+### Deployment
+
+To test your changes, run `mkdocs serve` in the root directory. This will generate the site locally which can be reached by visiting `http://127.0.0.1:8000`.
+
+To open a Pull Request, please follow the Getting Stated guide. For documentation contributions, you can fork from `master` for direct documentation updates or `develop` if documentation changes are tied to upcoming features. Please name your forks using this convention: `docs/<topic-name>`
+
+Your changes will automatically be deployed once they are merged with the `master` branch.
 
 ## Code style
 
