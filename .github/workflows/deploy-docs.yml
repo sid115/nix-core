@@ -1,21 +1,16 @@
-name: Flake Check
-
+name: Deploy Docs
 on:
-  pull_request:
+  push:
     branches:
       - master
-      - develop
-
 jobs:
-  flake-check:
-    runs-on: self-hosted
-
-    env:
-      NIXPKGS_ALLOW_UNFREE: 1
-
+  deploy-docs:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: cachix/install-nix-action@v25
         with:
           nix_path: nixpkgs=channel:nixos-unstable
-      - run: nix flake check --impure
+      - run: nix-shell --run "mkdocs gh-deploy --force"

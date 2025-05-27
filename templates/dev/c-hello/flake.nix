@@ -13,10 +13,11 @@
     {
       self,
       nixpkgs,
+      pre-commit-hooks,
       ...
     }:
     let
-      pname = "hello-world";
+      pname = "hello-world"; # Also change this in the Makefile
       version = "0.1.0";
 
       supportedSystems = [
@@ -60,15 +61,21 @@
         in
         {
           default = pkgs.mkShell {
-            inherit (self.checks.${system}.pre-commit-check) shellHook;
             buildInputs =
               self.checks.${system}.pre-commit-check.enabledPackages
               ++ (with pkgs; [
+                bear
                 coreutils
                 gcc
                 gdb
                 gnumake
               ]);
+            shellHook =
+              self.checks.${system}.pre-commit-check.shellHook
+              + ''
+                export LD_LIBRARY_PATH=${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH
+                export USE_BEAR=1
+              '';
           };
         }
       );
@@ -79,8 +86,11 @@
         system:
         let
           pkgs = nixpkgsFor.${system};
+          flakePkgs = self.packages.${system};
         in
         {
+          build-packages = pkgs.linkFarm "flake-packages-${system}" flakePkgs;
+
           integration-test =
             pkgs.runCommand "hello-world-test"
               {
@@ -100,7 +110,7 @@
                 echo "Hello World test passed!" > $out
               '';
 
-          pre-commit-check = self.inputs.pre-commit-hooks.lib.${system}.run {
+          pre-commit-check = pre-commit-hooks.lib.${system}.run {
             src = ./.;
             hooks = {
               nixfmt-rfc-style = {
