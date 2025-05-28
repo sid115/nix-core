@@ -25,6 +25,12 @@
       ];
 
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+
+      src = builtins.filterSource (
+        path: type: type == "directory" || nixpkgs.lib.hasSuffix ".nix" (baseNameOf path)
+      ) ./.;
+      ls = dir: nixpkgs.lib.attrNames (builtins.readDir (src + "/${dir}"));
+      fileList = dir: map (file: ./. + "/${dir}/${file}") (ls dir);
     in
     {
       lib = nixpkgs.lib // import ./lib;
@@ -61,6 +67,12 @@
       overlays = import ./overlays { inherit inputs; };
 
       nixosModules = import ./modules/nixos;
+      nixosModule =
+        { config, lib, ... }:
+        {
+          _module.args.libS = lib.mkOverride 1000 (self.lib { inherit lib config; });
+          imports = fileList "modules/nixos";
+        };
 
       homeModules = import ./modules/home;
 
