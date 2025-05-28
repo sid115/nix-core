@@ -7,7 +7,7 @@
 
 let
   cfg = config.programs.librewolf;
-  engines = import ./engines.nix { inherit pkgs; };
+  engines = import ./engines.nix pkgs;
 
   urlRegex = "^(http|https|ftp)://";
   isUrl = s: (match urlRegex s) != null;
