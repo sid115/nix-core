@@ -10,7 +10,7 @@ let
   engines = import ./engines.nix { inherit pkgs; };
 
   urlRegex = "^(http|https|ftp)://";
-  isUrl = s: match urlRegex;
+  isUrl = s: (match urlRegex s) != null;
 
   transformEngine =
     engine:
