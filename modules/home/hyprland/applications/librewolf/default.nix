@@ -10,7 +10,6 @@ let
   cfg = config.wayland.windowManager.hyprland;
   app = cfg.applications.browser.default;
   desktop = "librewolf.desktop";
-  every_day = 24 * 60 * 60 * 1000; 
   mimeTypes = [
     "text/html"
     "text/xml"
@@ -25,51 +24,35 @@ let
     in
     genMimeAssociations desktop mimeTypes;
 
-howlongtobeat = {
-    name = "howlongtobeat";
-    urls = [ { template = "https://howlongtobeat.com/?q={searchTerms}"; } ];
-    icon = "https://howlongtobeat.com/favicon.ico";
-    updateInterval = 1000;
-    definedAliases = [ "@hltb" ];
-  };
-protondb = {
-      name = "protondb";
-      urls = [ { template = "https://www.protondb.com/search?q={searchTerms}"; } ];
-      icon = "https://www.protondb.com/favicon.ico";
-      updateInterval = every_day;
-      definedAliases = [ "@pdb" ];
-    };
-
-
-  inherit (lib) mkDefault mkOption types mkIf;
+  inherit (lib) mkDefault mkIf;
 in
 {
-options = {
-    programs.librewolf.searchEngines = mkOption {
-      type = types.listOf types.attrs;
-      default = null;
-      description = "A set of search engines for the browser.";
-    };
-  };
+  imports = [ ./search ];
 
   config = mkIf (cfg.enable && app == "librewolf") {
     programs.librewolf = {
       enable = true;
-      searchEngines = [
-      protondb
-      howlongtobeat
-      ];
       policies.Homepage.StartPage = mkDefault "previous-session";
       profiles.default = {
         extensions.packages = import ./extensions.nix { inherit inputs pkgs; };
-        #search = import ./search.nix { inherit pkgs; };
-        search.engines = lib.listToAttrs (
-        map (item: {
-        name = item.name;
-        value = item;
-      }) config.programs.librewolf.searchEngines
-    );
         settings = import ./settings.nix;
+        search = {
+          force = true;
+          default = "Startpage";
+          privateDefault = "Startpage";
+          order = [ "Startpage" ];
+          engines = {
+            Startpage = {
+              urls = [ { template = "https://www.startpage.com/do/dsearch?q={searchTerms}"; } ];
+              icon = "https://www.startpage.com/sp/cdn/favicons/favicon--default.ico";
+              updateInterval = 24 * 60 * 60 * 1000; # every day
+            };
+            # engines below are disabled
+            bing.metaData.hidden = true;
+            ddg.metaData.hidden = true;
+            google.metaData.hidden = true;
+          };
+        };
         userChrome = builtins.readFile ./userChrome.css;
       };
     };
