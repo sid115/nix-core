@@ -6,6 +6,7 @@ The goal of this project is to provide modules and packages for your NixOS and H
 
 ## Explore the documentation:
 
+- **Introduction to Nix**: Understand the fundamentals of the Nix language and package manager, as well as NixOS.
 - **Getting Started:** A guide to go from scratch to a complete, working NixOS configuration using nix-core.
 - **Modules:** Information about available NixOS and Home Manager modules.
 - **Tips:** Find recommendations and resources to navigate the Nix ecosystem.

@@ -1,4 +1,4 @@
-# 3. Add NixOS and Home Manager configurations
+# Add NixOS and Home Manager configurations
 
 Choose a configuration template from [this list](https://github.com/sid115/nix-core/tree/master/apps/create/templates).
 
