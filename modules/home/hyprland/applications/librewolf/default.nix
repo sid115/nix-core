@@ -53,7 +53,6 @@ in
             google.metaData.hidden = true;
           };
         };
-        userChrome = builtins.readFile ./userChrome.css;
       };
     };
 

@@ -12,13 +12,8 @@
   "browser.urlbar.suggest.history" = false;
   "browser.urlbar.suggest.openpage" = false;
   "browser.urlbar.suggest.recentsearches" = false;
-  "gfx.webrender.all" = true; # custom css
-  "gfx.webrender.enabled" = true; # custom css
-  "layers.acceleration.force-enabled" = true; # custom css
-  "layout.css.backdrop-filter.enabled" = true; # custom css
   "places.history.enabled" = false;
   "plugin.scan.plid.all" = false;
   "privacy.donottrackheader.enabled" = true;
-  "svg.context-properties.content.enabled" = true; # custom css
-  "toolkit.legacyUserProfileCustomizations.stylesheets" = true; # custom css
+  "sidebar.revmap" = true;
 }
