@@ -27,8 +27,9 @@ in
           indent.enable = mkDefault true;
         };
       };
-      plugins.treesitter-textobjects = mkIf plugin.enable { enable = mkDefault true; };
       plugins.treesitter-context = mkIf plugin.enable { enable = mkDefault true; };
+      plugins.treesitter-rename = mkIf plugin.enable { enable = mkDefault true; };
+      plugins.treesitter-textobjects = mkIf plugin.enable { enable = mkDefault true; };
     };
 
     # Fix for: ERROR `cc` executable not found.
