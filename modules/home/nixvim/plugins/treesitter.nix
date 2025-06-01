@@ -28,7 +28,7 @@ in
         };
       };
       plugins.treesitter-context = mkIf plugin.enable { enable = mkDefault true; };
-      plugins.treesitter-rename = mkIf plugin.enable { enable = mkDefault true; };
+      plugins.treesitter-refactor = mkIf plugin.enable { enable = mkDefault true; };
       plugins.treesitter-textobjects = mkIf plugin.enable { enable = mkDefault true; };
     };
 
