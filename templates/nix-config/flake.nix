@@ -13,9 +13,9 @@
       self,
       nixpkgs,
       ...
-    }:
+    }@inputs:
     let
-      inherit (self) inputs outputs;
+      inherit (self) outputs;
       lib = nixpkgs.lib // self.inputs.core.lib;
       supportedSystems = [
         "x86_64-linux"
