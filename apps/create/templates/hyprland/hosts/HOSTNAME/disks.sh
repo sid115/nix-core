@@ -14,9 +14,18 @@ wait_for_device() {
   echo "Device $device is ready."
 }
 
-if ! command -v sgdisk &> /dev/null; then
-  nix-env -iA nixos.gptfdisk
-fi
+# Function to install a package if it's not already installed
+install_if_missing() {
+  local cmd="$1"
+  local package="$2"
+  if ! command -v "$cmd" &> /dev/null; then
+    echo "$cmd not found, installing $package..."
+    nix-env -iA "nixos.$package"
+  fi
+}
+
+install_if_missing "sgdisk" "gptfdisk"
+install_if_missing "partprobe" "parted"
 
 swapoff --all
 udevadm settle
