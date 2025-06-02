@@ -36,7 +36,7 @@ echo "Clearing partition table on $SSD..."
 sgdisk --zap-all $SSD
 
 echo "Partitioning $SSD..."
-sgdisk -n1:1M:+1G         -t1:EF00 -c1:EFI $SSD
+sgdisk -n1:1M:+1G         -t1:EF00 -c1:BOOT $SSD
 sgdisk -n2:0:+"$SWAP_GB"G -t2:8200 -c2:SWAP $SSD
 sgdisk -n3:0:0            -t3:8304 -c3:ROOT $SSD
 partprobe -s $SSD
@@ -47,7 +47,7 @@ wait_for_device ${SSD}-part2
 wait_for_device ${SSD}-part3
 
 echo "Formatting partitions..."
-mkfs.vfat -F 32 -n EFI "${SSD}-part1"
+mkfs.vfat -F 32 -n BOOT "${SSD}-part1"
 mkswap -L SWAP "${SSD}-part2"
 mkfs.ext4 -L ROOT "${SSD}-part3"
 
