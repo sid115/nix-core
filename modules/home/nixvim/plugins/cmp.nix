@@ -34,7 +34,7 @@ in
               name = "path"; # file system paths
               keywordLength = 3;
             }
-            { name = "ultisnips"; }
+            # { name = "ultisnips"; } # FIXME
             {
               name = "luasnip"; # snippets
               keywordLength = 3;
