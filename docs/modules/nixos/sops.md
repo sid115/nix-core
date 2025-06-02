@@ -19,6 +19,16 @@ inputs = {
 };
 ```
 
+## Setup
+
+Generate an age key for your host from its ssh host key:
+
+```bash
+nix-shell -p ssh-to-age --run 'cat /etc/ssh/ssh_host_ed25519_key.pub | ssh-to-age'
+```
+
+Then, add it to `.sops.yaml`.
+
 ### Host configuration:
 
 No additional configuration is required. Each module's documentation entry will tell you if it uses sops and what secrets it expects.
