@@ -1,10 +1,5 @@
 { config, lib, ... }:
 
-# Setup:
-# Generate binary cache key pair:
-# nix-store --generate-binary-cache-key cache.portuus.de cache-priv-key.pem cache-pub-key.pem
-# Delete the files after saving their contents.
-
 let
   cfg = config.services.nix-serve;
   domain = config.networking.domain;
@@ -18,7 +13,7 @@ let
     ;
 in
 {
-  options.services.hydra = {
+  options.services.nix-serve = {
     subdomain = mkOption {
       type = types.str;
       default = "cache";
