@@ -3,15 +3,13 @@
 let
   cfg = config.services.jirafeau;
   domain = config.networking.domain;
-  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
+  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkDefault
     mkOption
     types
     ;
-
-  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   options.services.jirafeau = {

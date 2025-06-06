@@ -3,7 +3,6 @@
 let
   inherit (lib) mkDefault;
 
-  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   config = {

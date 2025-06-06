@@ -16,8 +16,6 @@ let
     mkOption
     types
     ;
-
-  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   imports = [ inputs.nixos-mailserver.nixosModules.mailserver ];
@@ -33,7 +31,7 @@ in
   config = mkIf cfg.enable {
     assertions = [
       {
-        assertion = isNotEmptyStr cfg.subdomain;
+        assertion = cfg.subdomain != "";
         message = "nix-core/nixos/mailserver: config.mailserver.subdomain cannot be empty.";
       }
     ];

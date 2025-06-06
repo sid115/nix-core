@@ -27,8 +27,6 @@
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
     in
     {
-      lib = nixpkgs.lib // import ./lib;
-
       apps = forAllSystems (
         system:
         let
