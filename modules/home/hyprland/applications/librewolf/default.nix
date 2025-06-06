@@ -1,14 +1,13 @@
 {
-  inputs,
   config,
   lib,
-  pkgs,
   ...
 }:
 
 let
   cfg = config.wayland.windowManager.hyprland;
   app = cfg.applications.browser.default;
+
   desktop = "librewolf.desktop";
   mimeTypes = [
     "text/html"
@@ -24,24 +23,14 @@ let
     in
     genMimeAssociations desktop mimeTypes;
 
-  inherit (lib) mkDefault mkIf;
+  inherit (lib) mkIf;
 in
 {
+  imports = [ ../../../librewolf ];
+
   config = mkIf (cfg.enable && app == "librewolf") {
     programs.librewolf = {
       enable = true;
-      policies.Homepage.StartPage = mkDefault "previous-session";
-      profiles.default = {
-        extensions.packages = import ./extensions.nix { inherit inputs pkgs; };
-        search = import ./search.nix { inherit pkgs; };
-        settings = import ./settings.nix;
-        userChrome = builtins.readFile ./userChrome.css;
-      };
-    };
-
-    home.sessionVariables = with config.programs.librewolf; {
-      DEFAULT_BROWSER = "${package}/bin/librewolf";
-      BROWSER = "${package}/bin/librewolf";
     };
 
     xdg.mimeApps = {

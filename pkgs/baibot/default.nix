@@ -11,17 +11,17 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "baibot";
-  version = "1.5.1";
+  version = "1.7.2";
 
   src = fetchFromGitHub {
     owner = "etkecc";
     repo = "baibot";
     rev = "v${version}";
-    hash = "sha256-Rviurl+Baythcl92EjhqWBEAlaOg9L+HOjwEzEcG5DE=";
+    hash = "sha256-+Q+9JszTg/j1f109GsupFyfE0a6EQofCVWQwFmjBRHU=";
   };
 
   useFetchCargoVendor = true;
-  cargoHash = "sha256-07U1MmVRmIJWy2AWYHBZSyY/D1PJo8OProYDnZbAdng=";
+  cargoHash = "sha256-8b8eMVRVTsGbRHKEsFELRbATE1LcpVERqYuw6RbkuI0=";
 
   nativeBuildInputs = [
     pkg-config

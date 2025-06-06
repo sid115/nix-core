@@ -1,0 +1,10 @@
+32a33,41
+> 
+>       nixosConfigurations = {
+>         HOSTNAME = nixpkgs.lib.nixosSystem {
+>           specialArgs = {
+>             inherit inputs outputs;
+>           };
+>           modules = [ ./hosts/HOSTNAME ];
+>         };
+>       };

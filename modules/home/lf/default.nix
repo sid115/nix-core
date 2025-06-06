@@ -63,7 +63,6 @@ in
       };
       keybindings = import ./keybindings.nix;
       extraConfig = mkDefault ''
-        $mkdir -p ~/.trash
         set previewer ~/.config/lf/previewer
         set cleaner ~/.config/lf/cleaner
       '';
