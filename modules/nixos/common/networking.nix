@@ -1,8 +1,9 @@
 { config, lib, ... }:
 
 let
-  inherit (lib) mkDefault;
+  isNotEmptyStr = str: builtins.isString str && str != "";
 
+  inherit (lib) mkDefault;
 in
 {
   config = {
