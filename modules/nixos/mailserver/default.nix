@@ -43,6 +43,7 @@ in
 
       domains = mkDefault [ config.networking.domain ];
       certificateScheme = mkDefault "acme-nginx";
+      stateVersion = mkDefault 1;
     };
 
     environment.systemPackages = [ pkgs.mailutils ];
