@@ -28,3 +28,11 @@ Provide the following entries to your secrets.yaml for email support:
 hydra:
     cache-priv-key: abc123 # only the string between `:` and `==`
 ```
+
+## Troubleshooting
+
+Check the general availability of your cache server:
+
+```bash
+curl https://SUBDOMAIN.EXAMPLE.TLD/nix-cache-info
+```
