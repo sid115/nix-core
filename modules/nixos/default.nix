@@ -11,6 +11,7 @@
   grafana = import ./grafana;
   guacamole = import ./guacamole;
   home-assistant-oci = import ./home-assistant-oci;
+  hydra = import ./hydra;
   hyprland = import ./hyprland;
   jellyfin = import ./jellyfin;
   jirafeau = import ./jirafeau;
@@ -19,6 +20,7 @@
   matrix-synapse = import ./matrix-synapse;
   nextcloud = import ./nextcloud;
   nginx = import ./nginx;
+  nix-serve = import ./nix-serve;
   normalUsers = import ./normalUsers;
   ntfy-sh = import ./ntfy-sh;
   nvidia = import ./nvidia;

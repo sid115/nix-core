@@ -42,3 +42,5 @@ sops.secrets."mailserver/accounts/ADMIN" = { };
 ```
 
 > Replace `ADMIN` with an existing administrator account.
+
+You may need to set [`mailserver.stateVersion`](https://nixos-mailserver.readthedocs.io/en/latest/migrations.html). The default is `1`.
