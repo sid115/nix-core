@@ -16,6 +16,8 @@ let
     mkOption
     types
     ;
+
+  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   imports = [ inputs.nixos-mailserver.nixosModules.mailserver ];
@@ -29,10 +31,17 @@ in
   };
 
   config = mkIf cfg.enable {
-    mailserver = {
-      fqdn = fqdn;
-      domains = mkDefault [ config.networking.domain ];
+    assertions = [
+      {
+        assertion = isNotEmptyStr cfg.subdomain;
+        message = "nix-core/nixos/mailserver: config.mailserver.subdomain cannot be empty.";
+      }
+    ];
 
+    mailserver = {
+      inherit fqdn;
+
+      domains = mkDefault [ config.networking.domain ];
       certificateScheme = mkDefault "acme-nginx";
     };
 

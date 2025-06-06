@@ -7,7 +7,8 @@
 
 let
   cfg = config.services.nextcloud;
-  fqdn = "${cfg.subdomain}.${config.networking.domain}";
+  domain = config.networking.domain;
+  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
   mailserver = config.mailserver;
 
   inherit (lib)
@@ -16,13 +17,15 @@ let
     mkOption
     types
     ;
+
+  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   options.services.nextcloud = {
     subdomain = mkOption {
       type = types.str;
       default = "nc";
-      description = "Subdomain for Nginx virtual host.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;
@@ -35,12 +38,13 @@ in
     environment.etc."secrets/nextcloud-initial-admin-pass".text = "nextcloud";
 
     services.nextcloud = {
-      package = pkgs.nextcloud30;
+      package = pkgs.nextcloud31;
       hostName = fqdn;
       https = cfg.forceSSL;
       config = {
         adminuser = mkDefault "nextcloud";
         adminpassFile = mkDefault "/etc/secrets/nextcloud-initial-admin-pass";
+        dbtype = mkDefault "sqlite";
       };
       configureRedis = mkDefault true;
       extraAppsEnable = mkDefault true;
@@ -80,7 +84,7 @@ in
         output_buffering = "0";
         short_open_tag = "Off";
       };
-      secretFile = mkIf mailserver.enable config.sops.templates."nextcloud".path;
+      secretFile = mkDefault config.sops.templates."nextcloud".path;
     };
 
     services.nginx.virtualHosts.${cfg.hostName} = {
@@ -88,26 +92,26 @@ in
       enableACME = cfg.forceSSL;
     };
 
-    sops = mkIf mailserver.enable {
-      secrets."nextcloud/smtp-password" = {
+    sops =
+      let
         owner = "nextcloud";
         group = "nextcloud";
         mode = "0440";
+      in
+      {
+        secrets."nextcloud/smtp-password" = {
+          inherit owner group mode;
+        };
+        secrets."nextcloud/hashed-smtp-password" = mkIf mailserver.enable {
+          inherit owner group mode;
+        };
+        templates."nextcloud" = {
+          inherit owner group mode;
+          content = ''
+            {"mail_smtppassword":"${config.sops.placeholder."nextcloud/smtp-password"}"}
+          '';
+        };
       };
-      secrets."nextcloud/hashed-smtp-password" = {
-        owner = "nextcloud";
-        group = "nextcloud";
-        mode = "0440";
-      };
-      templates."nextcloud" = {
-        owner = "nextcloud";
-        group = "nextcloud";
-        mode = "0440";
-        content = ''
-          {"mail_smtppassword":"${config.sops.placeholder."nextcloud/smtp-password"}"}
-        '';
-      };
-    };
 
     mailserver = mkIf mailserver.enable {
       loginAccounts = {

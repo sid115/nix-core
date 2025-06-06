@@ -20,10 +20,6 @@ in
     type = types.attrsOf (
       types.submodule {
         options = {
-          name = mkOption {
-            type = types.str;
-            description = "Name of the user";
-          };
           extraGroups = mkOption {
             type = (types.listOf types.str);
             default = [ ];
@@ -50,22 +46,24 @@ in
       }
     );
     default = { };
-    description = "Users to create";
+    description = "Users to create. The usernames are the attribute names.";
   };
 
-  # Create user groups
-  config.users.groups = genAttrs (attrNames cfg) (userName: {
-    name = userName;
-  });
+  config = {
+    # Create user groups
+    users.groups = genAttrs (attrNames cfg) (userName: {
+      name = userName;
+    });
 
-  # Create users
-  config.users.users = genAttrs (attrNames cfg) (userName: {
-    name = userName;
-    inherit (cfg.${userName}) extraGroups shell initialPassword;
+    # Create users
+    users.users = genAttrs (attrNames cfg) (userName: {
+      name = userName;
+      inherit (cfg.${userName}) extraGroups shell initialPassword;
 
-    isNormalUser = true;
-    group = "${userName}";
-    home = "/home/${userName}";
-    openssh.authorizedKeys.keyFiles = cfg.${userName}.sshKeyFiles;
-  });
+      isNormalUser = true;
+      group = "${userName}";
+      home = "/home/${userName}";
+      openssh.authorizedKeys.keyFiles = cfg.${userName}.sshKeyFiles;
+    });
+  };
 }

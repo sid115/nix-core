@@ -2,7 +2,8 @@
 
 let
   cfg = config.services.peertube;
-  fqdn = "${cfg.subdomain}.${config.networking.domain}";
+  domain = config.networking.domain;
+  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkDefault
@@ -10,13 +11,15 @@ let
     mkOption
     types
     ;
+
+  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   options.services.peertube = {
     subdomain = mkOption {
       type = types.str;
       default = "vid";
-      description = "Subdomain for Nginx virtual host.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;

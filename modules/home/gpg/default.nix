@@ -22,7 +22,7 @@ in
     enableSshSupport = mkDefault true;
     maxCacheTtl = mkDefault 7200;
     maxCacheTtlSsh = mkDefault 7200;
-    pinentryPackage = mkDefault pkgs.pinentry-qt;
+    pinentry.package = mkDefault pkgs.pinentry-qt;
     verbose = mkDefault true;
   };
   programs.ssh = {

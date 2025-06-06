@@ -1,8 +1,15 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.programs.nixvim;
   plugin = cfg.plugins.treesitter;
+
+  cc = "${pkgs.gcc}/bin/gcc";
 
   inherit (lib) mkDefault mkIf;
 in
@@ -11,16 +18,23 @@ in
     programs.nixvim = {
       plugins.treesitter = {
         enable = mkDefault true;
-        settings.ensure_installed = mkDefault "all";
         nixvimInjections = mkDefault true;
         settings = {
-          highlight.enable = true;
-          incremental_selection.enable = true;
-          indent.enable = true;
+          auto_install = mkDefault true;
+          ensure_installed = mkDefault "all";
+          highlight.enable = mkDefault true;
+          incremental_selection.enable = mkDefault true;
+          indent.enable = mkDefault true;
         };
       };
-      plugins.treesitter-textobjects = mkIf plugin.enable { enable = mkDefault true; };
       plugins.treesitter-context = mkIf plugin.enable { enable = mkDefault true; };
+      plugins.treesitter-refactor = mkIf plugin.enable { enable = mkDefault true; };
+      plugins.treesitter-textobjects = mkIf plugin.enable { enable = mkDefault true; };
+    };
+
+    # Fix for: ERROR `cc` executable not found.
+    home.sessionVariables = mkIf plugin.enable {
+      CC = mkDefault cc;
     };
   };
 }

@@ -13,7 +13,7 @@ in
     inputs.nixvim.homeManagerModules.nixvim
     ./plugins
 
-    # ./spellfiles.nix # FIXME
+    ./spellfiles.nix
   ];
 
   config = {

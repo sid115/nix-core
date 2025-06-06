@@ -56,8 +56,12 @@ in
               enable = mkDefault true;
               installCargo = mkDefault true;
               installRustc = mkDefault true;
+              settings.rustfmt.overrideCommand = mkDefault [
+                "${pkgs.rustfmt}/bin/rustfmt --edition 2021" # --config tab_spaces=2"
+              ];
             };
             texlab.enable = mkDefault true;
+            vhdl_ls.enable = mkDefault true;
             yamlls.enable = mkDefault true;
           };
         };

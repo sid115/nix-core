@@ -17,7 +17,7 @@ let
     {
       default,
       bind ? [ "" ],
-      windowRule ? [ "" ],
+      windowrule ? [ "" ],
     }:
     {
       default = mkOption {
@@ -32,7 +32,7 @@ let
       };
       windowrule = mkOption {
         type = types.listOf types.str;
-        default = windowRule;
+        default = windowrule;
         description = "The window rule to use for the ${default}.";
       };
     };
@@ -44,15 +44,6 @@ let
   windowrules = filter (s: s != "") (
     builtins.concatLists (map (app: app.windowrule or [ "" ]) (attrValues apps))
   );
-
-  genAssociations =
-    desktop: mimeTypes:
-    builtins.listToAttrs (
-      map (mimeType: {
-        name = mimeType;
-        value = desktop;
-      }) mimeTypes
-    );
 
   inherit (lib)
     attrValues
@@ -95,7 +86,7 @@ in
     audiomixer = mkAppAttrs {
       default = "pulsemixer";
       bind = [ "$mod, a, exec, ${terminal} -T ${audiomixer} -e ${pkgs.pulsemixer}/bin/pulsemixer" ];
-      windowRule = [
+      windowrule = [
         "float, title:^${audiomixer}$"
         "size 50% 50%, title:^${audiomixer}$"
       ];
@@ -126,7 +117,7 @@ in
     filemanager = mkAppAttrs {
       default = "lf";
       bind = [ "$mod, e, togglespecialworkspace, ${filemanager}" ]; # lf autostarts on this workspace
-      windowRule = [
+      windowrule = [
         "float, title:^${filemanager}$"
         "size 50% 50%, title:^${filemanager}$"
       ];
@@ -198,7 +189,7 @@ in
   config = {
     wayland.windowManager.hyprland.settings = {
       bind = binds;
-      windowrulev2 = windowrules;
+      windowrule = windowrules;
     };
   };
 }

@@ -1,0 +1,8 @@
+[package]
+name = "hello-world"
+version = "0.1.0"
+edition = "2021"
+authors = ["Your Name <your.email@example.com>"]
+description = "A simple Hello World program"
+
+[dependencies]
