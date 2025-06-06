@@ -17,7 +17,7 @@ in
   options.services.hydra = {
     subdomain = mkOption {
       type = types.str;
-      default = "nc";
+      default = "hydra";
       description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
