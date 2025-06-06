@@ -12,10 +12,9 @@ For example:
 imports = [ inputs.core.nixosModules.normalUsers ]
 
 config.normalUsers = {
-  sid = {
-    name = "sid";
+  alice = {
     extraGroups = [ "wheel" ];
-    sshKeyFiles = [ ../../users/sid/pubkeys/id_rsa.pub ];
+    sshKeyFiles = [ ../../users/alice/pubkeys/id_rsa.pub ];
   };
 };
 ```
