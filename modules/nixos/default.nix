@@ -11,6 +11,7 @@
   grafana = import ./grafana;
   guacamole = import ./guacamole;
   home-assistant-oci = import ./home-assistant-oci;
+  hydra = import ./hydra;
   hyprland = import ./hyprland;
   jellyfin = import ./jellyfin;
   jirafeau = import ./jirafeau;

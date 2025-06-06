@@ -37,6 +37,7 @@ nav:
       - grafana: modules/nixos/grafana.md
       - guacamole: modules/nixos/guacamole.md
       - home-assistant-oci: modules/nixos/home-assistant-oci.md
+      - hydra: modules/nixos/hydra.md
       - jellyfin: modules/nixos/jellyfin.md
       - jirafeau: modules/nixos/jirafeau.md
       - mailserver: modules/nixos/mailserver.md
