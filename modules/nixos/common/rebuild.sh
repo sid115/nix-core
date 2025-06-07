@@ -29,7 +29,7 @@ Help() {
   echo "  -d, --dry-build      Build the configuration without applying it"
   echo
   echo "NixOS only options:"
-  echo "  -b, --build-host <user@example.com>     Use a remote host for building the configurationvia SSH"
+  echo "  -b, --build-host <user@example.com>     Use a remote host for building the configuration via SSH"
   echo "  -T, --target-host <user@example.com>    Deploy the configuration to a remote host via SSH"
   echo
   echo "Home Manager only options:"
