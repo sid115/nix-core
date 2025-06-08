@@ -1,47 +1,51 @@
 # Flakes
 
-Before flakes, Nix users often relied on "channels" like `nixos-23.11` or `nixpkgs-unstable`. You'd subscribe to a channel, and `nix` would fetch the latest version of Nixpkgs from it. While convenient, this had a major drawback for reproducibility:
+> Flakes are still an experimental feature in Nix. However, they are so widely used by the community that they almost became standard. Furthermore, *nix-core* uses Flakes.
 
-- **Channels are moving targets:** The content of a channel (e.g., `nixos-23.11`) changes daily. If you built a project today and your friend built it tomorrow using the "same" channel, they might get a different version of a package because the channel updated overnight.
-- **No explicit dependency locking:** There was no `.lock` file to record the *exact* commit or version of `nixpkgs` (or other Nix sources) that was used to build a specific project or system.
+Nix flakes are a reproducible way to define, build, and deploy Nix projects, making them reliable and portable.
 
-Nix Flakes solve this by introducing explicit, locked dependencies and a standardized project structure leveraging a `flake.lock` file.
+Flakes accomplish that by:
 
-They do this by:
+## Standardized Input
 
-1. **Explicit Inputs:** Instead of implicitly relying on a global channel, `flake.nix` explicitly declares all its dependencies (like `nixpkgs`) by pointing to their exact source (e.g., a specific GitHub repository and branch/tag, or even a local path).
+They define a fixed, declarative input (the `flake.nix` file) that specifies all project dependencies, sources, and outputs. This eliminates implicit dependencies or environment variables that could cause builds to differ.
 
-    Example in `flake.nix`:
-    ```nix
-    inputs = {
-      nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11"; # Declare we need nixpkgs, specifically this branch
-    };
-    ```
+Example in `flake.nix`:
 
-2. **`flake.lock` for Reproducibility:** When you first use a flake (e.g., `nix build`), Nix generates a file called `flake.lock`. This file records the *exact* commit hash for *every* input in your `flake.nix`.
+```nix
+inputs = {
+  nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11"; # Declare we need nixpkgs, specifically this branch
+};
+```
 
-    Example `flake.lock` entry for `nixpkgs`:
-    ```json
-    "nixpkgs": {
-      "locked": {
-        "lastModified": 1709259160,
-        "narHash": "sha256-...",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "b2f67f0b5d1a8e1b3c9f2d1e0f0e0c0b0a090807", // The exact commit!
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "type": "github",
-        "url": "github:NixOS/nixpkgs/nixos-23.11"
-      }
-    }
-    ```
-    This `flake.lock` file is typically committed to version control (e.g., Git) alongside `flake.nix`. Anyone else who clones your repository and uses your flake will use the *exact same* commit of `nixpkgs` as recorded in your `flake.lock`. This guarantees identical builds.
+## Reproducible "Lock File"
+
+When you build or develop with a flake, Nix generates a `flake.lock` file. This file records the *exact* content-addressable hashes of *all* transitive inputs used for that specific build. This lock file can be committed to version control, ensuring that anyone else cloning the repository (or a CI system) will use precisely the same set of inputs and thus achieve the identical result.
+
+Example `flake.lock` entry for `nixpkgs`:
+
+```json
+"nixpkgs": {
+  "locked": {
+    "lastModified": 1709259160,
+    "narHash": "sha256-...",
+    "owner": "NixOS",
+    "repo": "nixpkgs",
+    "rev": "b2f67f0b5d1a8e1b3c9f2d1e0f0e0c0b0a090807", // The exact commit!
+    "type": "github"
+  },
+  "original": {
+    "owner": "NixOS",
+    "repo": "nixpkgs",
+    "type": "github",
+    "url": "github:NixOS/nixpkgs/nixos-23.11"
+  }
+}
+```
 
 ## Flake Schema
+
+The `flake.nix` has a well-defined structure for `inputs` (sources like Git repos, other flakes) and `outputs` (packages, applications, modules, etc.). This consistent schema makes flakes composable and predictable.
 
 A `flake.nix` file typically looks like this:
 
@@ -88,7 +92,7 @@ A `flake.nix` file typically looks like this:
 Key parts of a `flake.nix`:
 - `description`: A human-readable description of your flake.
 - `inputs`: Defines all dependencies of your flake. Each input has a `url` pointing to another flake (e.g., a GitHub repository, a local path, or a Git URL) and an optional `follows` attribute to link inputs.
-- `outputs`: A function that takes `self` (this flake) and all `inputs` as arguments. It returns an attribute set defining what this flake provides. Common outputs are `packages`, `devShells`, `nixosConfigurations`, etc., usually segregated by system architecture.
+- `outputs`: A function that takes `self` (this flake) and all `inputs` as arguments. It returns an attribute set defining what this flake provides. Common outputs are `packages`, `devShells`, `nixosConfigurations`, etc., usually segregated by system architecture. You can read more about flake outputs in the [NixOS & Flakes Book](https://nixos-and-flakes.thiscute.world/other-usage-of-flakes/outputs).
 
 ## `nix flake` Commands
 

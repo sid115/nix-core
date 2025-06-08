@@ -18,11 +18,27 @@ int main() {
 }
 ```
 
-Now, define how to build this in a Nix file, `default`.nix:
+Then, create a `default.nix` file that imports Nixpkgs and then calls the package definition below.
+
+```nix
+# default.nix
+{ pkgs ? import <nixpkgs> {} }: # Fetch Nixpkgs
+# Nixpkgs is a collection of Nix expressions.
+# We need some functions (like `callPackage`) that are defined there.
+# Nixpkgs will be covered later in this guide.
+
+pkgs.callPackage ./my-hello.nix { }
+# `callPackage` is a helper function for Package derivations.
+# It automatically resolves all needed input arguments the derivation needs from Nixpkgs.
+```
+
+> Hint: `default.nix` will get replaced by Nix Flakes later. You do not need to know what Flakes are at the moment, but keep this relationship in mind.
+
+Now, define how to build the C source file a Nix file, `my-hello`.nix:
 
 ```nix
 # my-hello.nix
-{ stdenv, lib }:
+{ stdenv }: # Inputs
 
 stdenv.mkDerivation {
   pname = "my-hello"; # Package name
@@ -49,7 +65,7 @@ stdenv.mkDerivation {
 
 Let's break this down:
 
-- `stdenv`, `lib`: This derivation is a function that expects `stdenv` (standard environment, providing common build tools and phases) and `lib` (Nixpkgs utility functions, covered later) as arguments. These will be automatically resolved from Nixpkgs.
+- `stdenv`: This derivation is a function that expects `stdenv` (standard environment, providing common build tools and phases) as an argument. It will be automatically resolved from Nixpkgs.
 - `stdenv.mkDerivation`: This is the core function to create a derivation. It sets up a standard build environment and provides a set of common build phases.
 - `pname`, `version`: Standard metadata for the package.
 - `src = ./.;`: This tells Nix to copy all files from the current directory into the build sandbox.
@@ -61,7 +77,7 @@ Let's break this down:
 To build this derivation, use `nix build`:
 
 ```bash
-nix build --file my-hello.nix
+nix build --file default.nix
 ```
 
 You'll see output from the build process. If successful, Nix creates a `result` symlink in your current directory. This `result` symlink points to the package in the Nix store.
@@ -78,7 +94,7 @@ Hello from C!
 You can also run it directly without knowing the path via `nix run`:
 
 ```bash
-nix run --file my-hello.nix
+nix run --file default.nix
 ```
 ```
 Hello from C!
