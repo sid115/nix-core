@@ -1,4 +1,4 @@
-# 2. Create your own nix-config flake
+# Create your own nix-config flake
 
 Create an empty directory and apply the [nix-config template](https://github.com/sid115/nix-core/tree/master/templates/nix-config) to it:
 
