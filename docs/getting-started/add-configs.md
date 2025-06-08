@@ -1,4 +1,4 @@
-# 3. Add NixOS and Home Manager configurations
+# Add NixOS and Home Manager configurations
 
 Choose a configuration template from [this list](https://github.com/sid115/nix-core/tree/master/apps/create/templates).
 
@@ -33,6 +33,8 @@ Options:
 Available configuration templates:
     hyprland
     server
+    pi4
+    vm-uefi
 ```
 
 All templates should work right out of the box. You only need to edit the disk partitioning script (`disks.sh`) or provide a [disko](https://github.com/nix-community/disko) configuration (`disko.nix`) in your host directory. A basic single disk partitioning script is provided. Set your disk by its ID, which comes from `ls -lAh /dev/disk/by-id`.
