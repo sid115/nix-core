@@ -36,7 +36,7 @@ in
         perl540Packages.MIMETypes
       ]
       ++ [
-        (pkgs.writeShellScript "vidthumb" builtins.readFile ./vidthumb.sh)
+        (pkgs.writeShellScriptBin "vidthumb" builtins.readFile ./vidthumb.sh)
       ];
 
     programs.lf = {
