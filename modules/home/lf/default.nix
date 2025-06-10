@@ -13,6 +13,7 @@
 
 let
   cfg = config.programs.lf;
+  vidthumb = pkgs.writeShellScriptBin "vidthumb" (builtins.readFile ./vidthumb.sh);
 
   inherit (lib) mkDefault mkIf;
 in
@@ -36,7 +37,7 @@ in
         perl540Packages.MIMETypes
       ]
       ++ [
-        (pkgs.writeShellScriptBin "vidthumb" builtins.readFile ./vidthumb.sh)
+        vidthumb
       ];
 
     programs.lf = {
