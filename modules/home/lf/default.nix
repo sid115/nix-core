@@ -79,19 +79,19 @@ in
       associations = mkDefault [
         {
           fpath = ".*.log$";
-          command = "less %pistol-filename%";
+          command = "sh: less %pistol-filename%";
         }
         {
           fpath = ".*.md$";
-          command = "sh: glow %pistol-filename% | head -8";
+          command = "sh: glow %pistol-filename%";
         }
         {
           fpath = ".*.sh$";
-          command = "bat %pistol-filename%";
+          command = "sh: bat %pistol-filename%";
         }
         {
           mime = "application/json";
-          command = "bat %pistol-filename%";
+          command = "sh: bat %pistol-filename%";
         }
         {
           mime = "application/pdf";
@@ -103,23 +103,23 @@ in
         }
         # {
         #   mime = "application/*";
-        #   command = "hexyl %pistol-filename%";
+        #   command = "sh: hexyl %pistol-filename%";
         # }
         {
           mime = "audio/*";
-          command = "ffmpeg -i %pistol-filename% -f wav -";
+          command = "sh: ffmpeg -i %pistol-filename% -f wav -";
         }
         {
           mime = "image/*";
-          command = "chafa %pistol-filename%";
+          command = "sh: chafa %pistol-filename%";
         }
         {
           mime = "text/html";
-          command = "w3m -dump %pistol-filename%";
+          command = "sh: w3m -dump %pistol-filename%";
         }
         {
           mime = "text/*";
-          command = "bat %pistol-filename%";
+          command = "sh: bat %pistol-filename%";
         }
         {
           mime = "video/*";
