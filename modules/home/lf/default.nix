@@ -129,16 +129,6 @@ in
         enable = true;
         source = ./icons;
       };
-      "lf/cleaner" = mkDefault {
-        enable = true;
-        executable = true;
-        source = ./cleaner;
-      };
-      "lf/previewer" = mkDefault {
-        enable = true;
-        executable = true;
-        source = ./previewer;
-      };
     };
   };
 }
