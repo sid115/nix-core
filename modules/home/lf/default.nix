@@ -51,13 +51,13 @@ in
       };
       settings = {
         autoquit = mkDefault true;
-        cleaner = ./cleaner.sh;
+        cleaner = mkDefault config.xdg.configFile."lf/cleaner".path;
         dircache = mkDefault true;
         globsearch = mkDefault true;
         icons = mkDefault true;
         incfilter = mkDefault true;
         number = mkDefault false;
-        previewer = ./previewer.sh;
+        previewer = mkDefault config.xdg.configFile."lf/previewer".path;
         ratios = mkDefault [
           1
           1
@@ -128,6 +128,16 @@ in
       "lf/icons" = mkDefault {
         enable = true;
         source = ./icons;
+      };
+      "lf/cleaner" = mkDefault {
+        enable = true;
+        executable = true;
+        source = ./cleaner.sh;
+      };
+      "lf/previewer" = mkDefault {
+        enable = true;
+        executable = true;
+        source = ./previewer.sh;
       };
     };
   };
