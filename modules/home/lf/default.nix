@@ -18,21 +18,26 @@ let
 in
 {
   config = mkIf config.programs.kitty.enable {
-    home.packages = with pkgs; [
-      font-awesome
-      jq # used in vidthumb
-      bat
-      hexyl
-      glow
-      chafa
-      poppler_utils
-      w3m
-      ffmpeg
-      ffmpegthumbnailer # used by pistol
-      trash-cli
-      xdg-utils
-      perl540Packages.MIMETypes # used by commands
-    ];
+    home.packages =
+      with pkgs;
+      [
+        font-awesome
+        jq
+        bat
+        hexyl
+        glow
+        chafa
+        poppler_utils
+        w3m
+        ffmpeg
+        ffmpegthumbnailer
+        trash-cli
+        xdg-utils
+        perl540Packages.MIMETypes
+      ]
+      ++ [
+        (pkgs.writeShellScript "vidthumb" builtins.readFile ./vidthumb.sh)
+      ];
 
     programs.lf = {
       commands = {
@@ -45,13 +50,13 @@ in
       };
       settings = {
         autoquit = mkDefault true;
-        #cleaner = "~/.config/lf/cleaner";
+        cleaner = ./cleaner.sh;
         dircache = mkDefault true;
         globsearch = mkDefault true;
         icons = mkDefault true;
         incfilter = mkDefault true;
         number = mkDefault false;
-        #previewer = "~/.config/lf/previewer";
+        previewer = ./previewer.sh;
         ratios = mkDefault [
           1
           1
@@ -62,10 +67,6 @@ in
         wrapscroll = mkDefault true;
       };
       keybindings = import ./keybindings.nix;
-      extraConfig = mkDefault ''
-        set previewer ~/.config/lf/previewer
-        set cleaner ~/.config/lf/cleaner
-      '';
     };
 
     programs.pistol = mkIf cfg.enable {
@@ -137,11 +138,6 @@ in
         executable = true;
         source = ./previewer;
       };
-    };
-    home.file.".local/bin/vidthumb" = mkDefault {
-      enable = true;
-      executable = true;
-      source = ./vidthumb;
     };
   };
 }
