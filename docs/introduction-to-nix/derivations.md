@@ -90,14 +90,3 @@ Now, run your compiled program:
 ```
 Hello from C!
 ```
-
-You can also run it directly without knowing the path via `nix run`:
-
-```bash
-nix run --file default.nix
-```
-```
-Hello from C!
-```
-
-The `nix run` command automatically builds the derivation if needed and then executes its default executable (usually found in `bin/<pname>`).
