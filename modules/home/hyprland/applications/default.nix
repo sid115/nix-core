@@ -116,11 +116,7 @@ in
 
     filemanager = mkAppAttrs {
       default = "lf";
-      bind = [ "$mod, e, togglespecialworkspace, ${filemanager}" ]; # lf autostarts on this workspace
-      windowrule = [
-        "float, title:^${filemanager}$"
-        "size 50% 50%, title:^${filemanager}$"
-      ];
+      bind = [ "$mod, e, exec, ${terminal} -T ${filemanager} -e ${filemanager}" ];
     };
 
     matrix-client = mkAppAttrs {

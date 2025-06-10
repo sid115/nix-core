@@ -94,11 +94,11 @@ in
           command = "sh: bat %pistol-filename%";
         }
         {
-          mime = "application/pdf";
+          mime = "application/pdf"; # FIXME
           command = "sh: pdftoppm -png %pistol-filename% -singlefile -scale-to 1024 | chafa";
         }
         {
-          mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+          mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"; # FIXME
           command = "sh: libreoffice --headless --convert-to png %pistol-filename% && chafa %pistol-filename%.png";
         }
         # {
@@ -106,7 +106,7 @@ in
         #   command = "sh: hexyl %pistol-filename%";
         # }
         {
-          mime = "audio/*";
+          mime = "audio/*"; # FIXME
           command = "sh: ffmpeg -i %pistol-filename% -f wav -";
         }
         {
