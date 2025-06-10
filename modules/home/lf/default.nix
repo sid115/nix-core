@@ -53,13 +53,15 @@ in
       };
       settings = {
         autoquit = mkDefault true;
-        cleaner = mkDefault (config.home.homeDirectory + config.xdg.configFile."lf/cleaner".target);
+        cleaner = mkDefault (config.home.homeDirectory + "/" + config.xdg.configFile."lf/cleaner".target);
         dircache = mkDefault true;
         globsearch = mkDefault true;
         icons = mkDefault true;
         incfilter = mkDefault true;
         number = mkDefault false;
-        previewer = mkDefault (config.home.homeDirectory + config.xdg.configFile."lf/previewer".target);
+        previewer = mkDefault (
+          config.home.homeDirectory + "/" + config.xdg.configFile."lf/previewer".target
+        );
         ratios = mkDefault [
           1
           1
