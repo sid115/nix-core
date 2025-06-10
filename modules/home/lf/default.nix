@@ -15,6 +15,8 @@ let
   cfg = config.programs.lf;
   vidthumb = pkgs.writeShellScriptBin "vidthumb" (builtins.readFile ./vidthumb.sh);
 
+  # mkCommand = path: "\${{\n" + builtins.readFile path + "\n}}\n";
+
   inherit (lib) mkDefault mkIf;
 in
 {
@@ -51,13 +53,13 @@ in
       };
       settings = {
         autoquit = mkDefault true;
-        cleaner = mkDefault config.xdg.configFile."lf/cleaner".path;
+        cleaner = mkDefault (with config.xdg; configHome + configFile."lf/cleaner".target);
         dircache = mkDefault true;
         globsearch = mkDefault true;
         icons = mkDefault true;
         incfilter = mkDefault true;
         number = mkDefault false;
-        previewer = mkDefault config.xdg.configFile."lf/previewer".path;
+        previewer = mkDefault (with config.xdg; configHome + configFile."lf/previewer".target);
         ratios = mkDefault [
           1
           1
