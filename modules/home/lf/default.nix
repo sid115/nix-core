@@ -95,11 +95,11 @@ in
         }
         {
           mime = "application/pdf";
-          command = "pdftoppm -png %pistol-filename% -singlefile -scale-to 1024 | chafa";
+          command = "sh: pdftoppm -png %pistol-filename% -singlefile -scale-to 1024 | chafa";
         }
         {
           mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-          command = "libreoffice --headless --convert-to png %pistol-filename% && chafa %pistol-filename%.png";
+          command = "sh: libreoffice --headless --convert-to png %pistol-filename% && chafa %pistol-filename%.png";
         }
         # {
         #   mime = "application/*";
@@ -123,7 +123,7 @@ in
         }
         {
           mime = "video/*";
-          command = "ffmpegthumbnailer -i %pistol-filename% -o - | chafa";
+          command = "sh: ffmpegthumbnailer -i %pistol-filename% -o - | chafa";
         }
       ];
     };
