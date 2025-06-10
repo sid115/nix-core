@@ -15,7 +15,7 @@ let
   cfg = config.programs.lf;
   vidthumb = pkgs.writeShellScriptBin "vidthumb" (builtins.readFile ./vidthumb.sh);
 
-  # mkCommand = path: "\${{\n" + builtins.readFile path + "\n}}\n";
+  mkCommand = path: "\${{\n" + builtins.readFile path + "\n}}\n";
 
   inherit (lib) mkDefault mkIf;
 in
@@ -44,22 +44,22 @@ in
 
     programs.lf = {
       commands = {
-        bulk-rename = builtins.readFile ./commands/bulk-rename.sh;
-        extract = builtins.readFile ./commands/extract.sh;
-        open = builtins.readFile ./commands/open.sh;
-        paste = builtins.readFile ./commands/paste.sh;
+        bulk-rename = mkCommand ./commands/bulk-rename.sh;
+        extract = mkCommand ./commands/extract.sh;
+        open = mkCommand ./commands/open.sh;
+        paste = mkCommand ./commands/paste.sh;
         trash = "%trash-put -- $fx";
-        zip = builtins.readFile ./commands/zip.sh;
+        zip = mkCommand ./commands/zip.sh;
       };
       settings = {
         autoquit = mkDefault true;
-        cleaner = mkDefault (with config.xdg; configHome + configFile."lf/cleaner".target);
+        cleaner = mkDefault (config.home.homeDirectory + config.xdg.configFile."lf/cleaner".target);
         dircache = mkDefault true;
         globsearch = mkDefault true;
         icons = mkDefault true;
         incfilter = mkDefault true;
         number = mkDefault false;
-        previewer = mkDefault (with config.xdg; configHome + configFile."lf/previewer".target);
+        previewer = mkDefault (config.home.homeDirectory + config.xdg.configFile."lf/previewer".target);
         ratios = mkDefault [
           1
           1
