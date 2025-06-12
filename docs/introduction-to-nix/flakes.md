@@ -90,76 +90,110 @@ A `flake.nix` file typically looks like this:
 ```
 
 Key parts of a `flake.nix`:
+
 - `description`: A human-readable description of your flake.
 - `inputs`: Defines all dependencies of your flake. Each input has a `url` pointing to another flake (e.g., a GitHub repository, a local path, or a Git URL) and an optional `follows` attribute to link inputs.
 - `outputs`: A function that takes `self` (this flake) and all `inputs` as arguments. It returns an attribute set defining what this flake provides. Common outputs are `packages`, `devShells`, `nixosConfigurations`, etc., usually segregated by system architecture. You can read more about flake outputs in the [NixOS & Flakes Book](https://nixos-and-flakes.thiscute.world/other-usage-of-flakes/outputs).
 
 ## `nix flake` Commands
 
-The `nix flake` subcommand is your primary interface for interacting with flakes.
+The `nix flake` subcommand is your primary interface for interacting with flakes. Let's create a new flake to demonstrate them:
 
--   **Initializing a flake:**
-    ```bash
-    mkdir my-flake && cd my-flake
-    nix flake init
-    ```
-    This creates a minimal `flake.nix` and `flake.lock` (a file that locks the exact versions of your inputs).
+Initialize the flake:
 
--   **Updating flake inputs:**
-    ```bash
-    nix flake update
-    ```
-    This updates all inputs to their latest versions allowed by their `url` (e.g., the latest commit on `nixos-23.11` for `nixpkgs`) and then updates the `flake.lock` file.
+```bash
+mkdir my-flake && cd my-flake
+nix flake init
+```
 
--   **Showing flake info:**
-    ```bash
-    nix flake info
-    ```
-    Shows details about your flake, including its inputs and locked versions.
+This creates a minimal `flake.nix`.
 
--   **Building packages from a flake:**
-    Assuming your `flake.nix` defines `packages.x86_64-linux.my-other-app = pkgs.hello;`:
-    ```bash
-    nix build .#my-other-app # The '.' refers to the current directory's flake
-    ./result/bin/hello
-    ```
+Lock your flake:
 
--   **Running a package from a flake:**
-    ```bash
-    nix run .#my-other-app/bin/hello
-    ```
-    (Note: If the `packages.<system>.default` output exists, you can just do `nix run .`)
+```bash
+nix flake lock
+```
+
+This creates `flake.lock`, a file that locks the exact versions of your inputs.
+
+Update flake inputs:
+
+```bash
+nix flake update
+``` 
+
+This updates all inputs to their latest versions allowed by their `url` (e.g., the latest commit on `nixos-unstable` for `nixpkgs`) and then updates the `flake.lock` file. Since we just locked the flake for the first time, there probably won't be any updates available.
+
+Print flake inputs:
+
+```bash
+nix flake metadata
+```
+
+Print flake outputs:
+
+```bash
+nix flake show
+```
+
+Build packages from a flake:
+
+```bash
+nix build .#hello # The '.' refers to the current directory's flake
+./result/bin/hello
+```
+
+Run a package from a flake:
+
+```bash
+nix run .#hello
+```
+
+Since the `packages.<system>.default` output exists, you can just do `nix run`.
 
 ## `nix develop`
 
-One of the most powerful features of flakes for developers is `nix develop`. This command spins up a temporary shell environment with all the tools and dependencies specified in your flake's `devShells` output.
+This command spins up a temporary shell environment with all the tools and dependencies specified in your flake's `devShells` output.
 
 Let's expand your `flake.nix`:
+
 ```nix
 # flake.nix
 {
-  description = "A development environment for my project";
+  description = "A very basic flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
   };
 
-  outputs = { self, nixpkgs, ... }:
+  outputs =
+    { self, nixpkgs }:
     let
+      # Define `pkgs` for the current system
       pkgs = import nixpkgs {
         system = "x86_64-linux";
       };
     in
     {
+      packages.x86_64-linux.hello = nixpkgs.legacyPackages.x86_64-linux.hello;
+      # With `pkgs` defined, we could also do this:
+      # packages.x86_64-linux.hello = pkgs.hello;
+
+      packages.x86_64-linux.default = self.packages.x86_64-linux.hello;
+
       devShells.x86_64-linux.default = pkgs.mkShell {
         # Packages available in the shell
-        packages = [ pkgs.git pkgs.go pkgs.vscode ];
+        packages = [
+          pkgs.git
+          pkgs.go
+          pkgs.neovim
+        ];
         # Environment variables for the shell
         GIT_COMMITTER_EMAIL = "your-email@example.com";
         # Commands to run when entering the shell
         shellHook = ''
           echo "Entering development shell for my project."
-          echo "You have Git, Go, and VS Code available."
+          echo "You have Git, Go, and Neovim available."
         '';
       };
     };
@@ -172,4 +206,4 @@ Now, from your project directory:
 nix develop
 ```
 
-You'll instantly find yourself in a shell where `git`, `go`, and `code` are available, and your `GIT_COMMITTER_EMAIL` is set. When you exit, your regular shell environment is restored – no lingering installations or modified global state. This makes it incredibly easy to switch between projects, each with its specific toolchain and dependencies, without conflicts.
+You'll instantly find yourself in a shell where `git`, `go`, and `nvim` are available, and your `GIT_COMMITTER_EMAIL` is set. When you exit, your regular shell environment is restored – no lingering installations or modified global state. This makes it incredibly easy to switch between projects, each with its specific toolchain and dependencies, without conflicts.
