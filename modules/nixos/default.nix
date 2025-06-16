@@ -1,4 +1,5 @@
 {
+  amd = import ./amd;
   audio = import ./audio;
   baibot = import ./baibot;
   bluetooth = import ./bluetooth;
