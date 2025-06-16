@@ -6,7 +6,7 @@
   modifications = final: prev: {
     comfyui = inputs.nixpkgs-comfyui.legacyPackages.${final.system}.comfyui;
 
-    # for open-webui since onnxruntime fails to build 
+    # for open-webui since onnxruntime fails to build
     # https://github.com/NixOS/nixpkgs/issues/388681#issuecomment-2778618490
     pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
       (python-final: python-prev: {
