@@ -6,6 +6,16 @@
   modifications = final: prev: {
     comfyui = inputs.nixpkgs-comfyui.legacyPackages.${final.system}.comfyui;
 
+    # for open-webui since onnxruntime fails to build 
+    # https://github.com/NixOS/nixpkgs/issues/388681#issuecomment-2778618490
+    pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+      (python-final: python-prev: {
+        onnxruntime = python-prev.onnxruntime.overridePythonAttrs (oldAttrs: {
+          buildInputs = final.lib.lists.remove final.onnxruntime oldAttrs.buildInputs;
+        });
+      })
+    ];
+
     # https://github.com/NixOS/nixpkgs/issues/335003#issuecomment-2755803376
     kicad = (
       prev.kicad.override {
