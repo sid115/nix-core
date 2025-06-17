@@ -16,4 +16,5 @@
   "plugin.scan.plid.all" = false;
   "privacy.donottrackheader.enabled" = true;
   "sidebar.revmap" = true;
+  "sidebar.verticalTabs" = true;
 }
