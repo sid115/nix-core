@@ -37,4 +37,4 @@ View the [*nix-core* NixOS module on GitHub](https://github.com/sid115/nix-core/
 1. Import this module in your NixOS config. It is recommended to use the [VirtualizationHome Manager module](../home/virtualization.md) as well.
 1. Add your user to the `libvirtd` group: `users.users.YOU.extraGroups = [ "libvirtd" ];`
 1. Rebuild and reboot: `rebuild all && sudo reboot now`
-1. Enable the default network: `virsh net-autostart default`
+1. Enable the default network and reboot again: `virsh net-autostart default && sudo reboot now`
