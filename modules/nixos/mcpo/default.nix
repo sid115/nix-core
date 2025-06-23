@@ -89,7 +89,7 @@ in
     ];
 
     users.users."${cfg.user}" = {
-      isSystem = true;
+      isSystemUser = true;
       group = cfg.group;
     };
 
