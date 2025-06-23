@@ -1,6 +1,6 @@
 # mcpo
 
-Open WebUI is an extensible, self-hosted AI interface that adapts to your workflow, all while operating entirely offline.
+A simple MCP-to-OpenAPI proxy server.
 
 View the [*nix-core* NixOS module on GitHub](https://github.com/sid115/nix-core/tree/master/modules/nixos/mcpo).
 
