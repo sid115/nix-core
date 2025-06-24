@@ -36,8 +36,10 @@ Setting `mcpServers` is required. The following example runs a NixOS MCP server 
 
 ## Usage
 
-Each tool will be accessible under its own unique route *127.0.0.1:800/<mcp-server>*. Following the example from above, visit [127.0.0.1:8000/nixos/docs](http://127.0.0.1:8000/nixos/docs) to send requests manually.
+Each tool will be accessible under its own unique route `127.0.0.1:8000/<mcp-server>`. Following the example from above, visit [127.0.0.1:8000/nixos/docs](http://127.0.0.1:8000/nixos/docs) to send requests manually.
 
 ## Open WebUI Integration
 
-TODO
+Follow the [official Open WebUI integration documentation starting at *Step 2*](https://docs.openwebui.com/openapi-servers/open-webui/#step-2-connect-tool-server-in-open-webui).
+
+FIXME: Tool servers do not expose their available API requests.
