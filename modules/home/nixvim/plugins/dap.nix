@@ -18,7 +18,7 @@ in
         dap.enable = mkDefault true;
         # extensions
         dap-ui.enable = mkIf plugin.enable (mkDefault true);
-        dap-virtual-text.enable = mkIf (plugin.enable mkDefault true);
+        dap-virtual-text.enable = mkIf plugin.enable (mkDefault true);
         dap-go.enable = mkIf plugin.enable (mkDefault true);
         dap-python.enable = mkIf plugin.enable (mkDefault true);
       };
