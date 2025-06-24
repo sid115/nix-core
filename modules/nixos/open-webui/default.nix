@@ -37,7 +37,7 @@ in
       port = mkDefault 8082;
       environment = {
         ANONYMIZED_TELEMETRY = mkDefault "False";
-        BYPASS_MODEL_ACCESS_CONTROL = "True";
+        BYPASS_MODEL_ACCESS_CONTROL = mkDefault "True";
         DEFAULT_USER_ROLE = mkDefault "user";
         DO_NOT_TRACK = mkDefault "True";
         ENABLE_IMAGE_GENERATION = mkDefault "True";
@@ -45,10 +45,10 @@ in
         ENABLE_SEARCH_QUERY = mkDefault "True";
         ENABLE_SIGNUP = mkDefault "False";
         SCARF_NO_ANALYTICS = mkDefault "True";
-        USER_PERMISSIONS_WORKSPACE_KNOWLEDGE_ACCESS = "True";
-        USER_PERMISSIONS_WORKSPACE_MODELS_ACCESS = "True";
-        USER_PERMISSIONS_WORKSPACE_PROMPTS_ACCESS = "True";
-        USER_PERMISSIONS_WORKSPACE_TOOLS_ACCESS = "True";
+        USER_PERMISSIONS_WORKSPACE_KNOWLEDGE_ACCESS = mkDefault "True";
+        USER_PERMISSIONS_WORKSPACE_MODELS_ACCESS = mkDefault "True";
+        USER_PERMISSIONS_WORKSPACE_PROMPTS_ACCESS = mkDefault "True";
+        USER_PERMISSIONS_WORKSPACE_TOOLS_ACCESS = mkDefault "True";
 
         # web search engine
         RAG_WEB_SEARCH_ENGINE = mkIf searx.enable (mkDefault "searxng");
