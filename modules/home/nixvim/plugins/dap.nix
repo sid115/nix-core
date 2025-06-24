@@ -14,16 +14,11 @@ in
 {
   config = {
     programs.nixvim = {
-      plugins =
-        {
-          dap.enable = mkDefault true;
-        }
-        // mkIf plugin.enable {
-          dap-ui.enable = mkDefault true;
-          dap-virtual-text.enable = mkDefault true;
-          dap-go.enable = mkDefault true;
-          dap-python.enable = mkDefault true;
-        };
+      plugins.dap.enable = mkDefault true;
+      plugins.dap-ui.enable = plugin.enable;
+      plugins.dap-virtual-text.enable = plugin.enable;
+      plugins.dap-go.enable = plugin.enable;
+      plugins.dap-python.enable = plugin.enable;
 
       extraPlugins = mkIf plugin.enable [ pkgs.vimPlugins.nvim-gdb ];
 
