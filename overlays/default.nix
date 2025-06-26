@@ -1,7 +1,7 @@
 { inputs, ... }:
 
 {
-  # lib = final: prev: { lib = prev.lib // import ../lib; }; # FIXME
+  additions = final: _prev: import ../pkgs final.pkgs;
 
   modifications = final: prev: {
     comfyui = inputs.nixpkgs-comfyui.legacyPackages.${final.system}.comfyui;
