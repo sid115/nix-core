@@ -23,6 +23,7 @@ stdenv.mkDerivation rec {
     sha256 = "1xj4b8ydav90q3pnh1a0sqxvh1rz502s1sif7zxxyhkzh2fqj2vf";
   };
 
+  # TODO
   # supplementaryFiles = {
   #   "visual-paradigm-community.install" = fetchurl {
   #     url = "https://raw.githubusercontent.com/aur-helpers/aur-pkgbuilds/master/visual-paradigm-community/visual-paradigm-community.install?raw=true";
@@ -58,6 +59,7 @@ stdenv.mkDerivation rec {
   #   mv source Visual_Paradigm_CE_${v_patch}
   # '';
 
+  # TODO
   # cp ${supplementaryFiles."visual-paradigm.desktop"} $out/share/applications/visual-paradigm-community.desktop
   # cp ${supplementaryFiles."visual-paradigm.png"} $out/share/icons/hicolor/512x512/apps/visual-paradigm-community.png
   # cp ${supplementaryFiles."LICENSE.txt"} $out/share/licenses/${pname}/LICENSE
@@ -84,7 +86,7 @@ stdenv.mkDerivation rec {
   meta = with lib; {
     description = "UML design application (Community Edition)";
     homepage = "http://www.visual-paradigm.com/download/community.jsp";
-    # license = licenses.unfree;
+    license = licenses.unfree;
     platforms = platforms.linux;
   };
 }
