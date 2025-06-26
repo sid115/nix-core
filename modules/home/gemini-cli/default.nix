@@ -25,11 +25,12 @@ in
       default = null;
     };
 
-    apiKeyFile = mkOption {
+    envFile = mkOption {
       type = types.nullOr types.path;
       description = ''
-        The path to the file containing your Gemini API key.
-        If set, this will be used to authenticate with the Gemini API.
+        The path to Gemini's global `.env` file.
+        You can set our GEMINI_API_KEY here:
+          GEMINI_API_KEY=your_api_key
       '';
       default = null;
     };
@@ -62,10 +63,8 @@ in
       ".gemini/settings.json".source = pkgs.writeText "gemini-cli-settings.json" (
         builtins.toJSON cfg.settings
       );
-      ".gemini/.env" = mkIf (cfg.apiKeyFile != null) {
-        source = ''
-          GEMINI_API_KEY=$(cat ${cfg.apiKeyFile})
-        '';
+      ".gemini/.env" = mkIf (cfg.envFile != null) {
+        source = cfg.envFile;
       };
     };
   };
