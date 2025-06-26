@@ -6,7 +6,7 @@
 }:
 
 let
-  cfg = config.services.gemini-cli;
+  cfg = config.programs.gemini-cli;
 
   inherit (lib)
     mkEnableOption
@@ -16,7 +16,7 @@ let
     ;
 in
 {
-  options.services.gemini-cli = {
+  options.programs.gemini-cli = {
     enable = mkEnableOption "Enable gemini-cli.";
 
     package = mkOption {
