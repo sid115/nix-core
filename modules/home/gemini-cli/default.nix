@@ -62,7 +62,7 @@ in
       ".gemini/settings.json".source = pkgs.writeText "gemini-cli-settings.json" (
         builtins.toJSON cfg.settings
       );
-      ".gemeni/.env" = mkIf (cfg.apiKeyFile != null) {
+      ".gemini/.env" = mkIf (cfg.apiKeyFile != null) {
         source = ''
           GEMINI_API_KEY=$(cat ${cfg.apiKeyFile})
         '';
