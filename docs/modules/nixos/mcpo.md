@@ -42,4 +42,4 @@ Each tool will be accessible under its own unique route `127.0.0.1:8000/<mcp-ser
 
 Follow the [official Open WebUI integration documentation starting at *Step 2*](https://docs.openwebui.com/openapi-servers/open-webui/#step-2-connect-tool-server-in-open-webui).
 
-FIXME: Tool servers do not expose their available API requests.
+In Open WebUI, users have to set *Function Calling* to *Native* in *Settings* > *General* > *Advanced Parameters*. Then, they can enable MCP servers in a chat by clicking *More* (the plus sign) in the bottom left of the prompt window.
