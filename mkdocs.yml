@@ -50,6 +50,7 @@ nav:
       - jirafeau: modules/nixos/jirafeau.md
       - mailserver: modules/nixos/mailserver.md
       - matrix-synapse: modules/nixos/matrix-synapse.md
+      - mcpo: modules/nixos/mcpo.md
       - nextcloud: modules/nixos/nextcloud.md
       - nix-serve: modules/nixos/nix-serve.md
       - normalUsers: modules/nixos/normalUsers.md
