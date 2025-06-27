@@ -25,16 +25,6 @@ in
       default = null;
     };
 
-    envFile = mkOption {
-      type = types.nullOr types.path;
-      description = ''
-        The path to Gemini's global `.env` file.
-        You can set our GEMINI_API_KEY here:
-          GEMINI_API_KEY=your_api_key
-      '';
-      default = null;
-    };
-
     settings = mkOption {
       type = types.attrs;
       description = ''
@@ -63,9 +53,6 @@ in
       ".gemini/settings.json".source = pkgs.writeText "gemini-cli-settings.json" (
         builtins.toJSON cfg.settings
       );
-      ".gemini/.env" = mkIf (cfg.envFile != null) {
-        source = cfg.envFile;
-      };
     };
   };
 }
