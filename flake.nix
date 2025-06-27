@@ -25,12 +25,20 @@
       ];
 
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+
+      nixpkgsFor = forAllSystems (
+        system:
+        import nixpkgs {
+          inherit system;
+          # overlays = [ self.overlays.additions ]; # FIXME: infinite recursion
+        }
+      );
     in
     {
       apps = forAllSystems (
         system:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = nixpkgsFor.${system};
         in
         {
           install = {
@@ -54,7 +62,7 @@
         }
       );
 
-      packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+      packages = forAllSystems (system: import ./pkgs { pkgs = nixpkgsFor.${system}; });
 
       overlays = import ./overlays { inherit inputs; };
 
@@ -65,7 +73,7 @@
       devShells = forAllSystems (
         system:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = nixpkgsFor.${system};
         in
         {
           default = import ./shell.nix { inherit pkgs; };
@@ -83,7 +91,7 @@
       # TODO
       # homeConfigurations = {
       #   hm-test = home-manager.lib.homeManagerConfiguration {
-      #     pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      #     pkgs = nixpkgsFor.x86_64-linux;
       #     extraSpecialArgs = { inherit inputs outputs; };
       #     modules = [ ./tests/hm-test ];
       #   };
@@ -94,7 +102,7 @@
       checks = forAllSystems (
         system:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = nixpkgsFor.${system};
           flakePkgs = self.packages.${system};
         in
         {
