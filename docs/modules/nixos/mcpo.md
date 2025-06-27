@@ -12,7 +12,7 @@ View the [*nix-core* NixOS module on GitHub](https://github.com/sid115/nix-core/
 
 You have to provide a package, for example from [nix-core](https://github.com/sid115/nix-core/tree/master/pkgs/mcpo/default.nix).
 
-Setting `mcpServers` is required. The following example runs a NixOS MCP server using [mcp-nixos}(https://github.com/utensils/mcp-nixos).
+Setting `mcpServers` is required. The following example runs a NixOS MCP server using [mcp-nixos](https://github.com/utensils/mcp-nixos).
 
 ```nix
 { inputs, lib, ... }:
