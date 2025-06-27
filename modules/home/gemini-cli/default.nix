@@ -35,6 +35,7 @@ in
       default = {
         preferredEditor = "nvim";
         usageStatisticsEnabled = false;
+        theme = "Default";
       };
     };
   };
