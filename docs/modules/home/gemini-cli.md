@@ -63,11 +63,3 @@ Error saving user settings file: Error: EROFS: read-only file system, open '/hom
 ```
 
 This is intended behavior.
-
-### The `punycode` module is deprecated
-
-```
-[DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
-```
-
-The Gemini CLI package is not built with the latest version of Node.js. This issue will likely be resolved in the future.
