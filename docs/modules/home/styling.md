@@ -34,6 +34,14 @@ styling = {
 
 Replace `SCHEME` with the name of your scheme. Available schemes can be found in the [`schemes` directory](https://github.com/sid115/nix-core/blob/master/modules/home/styling/schemes).
 
+## Print a scheme
+
+This module provides a Python script to view color schemes in the terminal:
+
+```bash
+print-colors PATH/TO/colors.yaml
+```
+
 ## Create a scheme
 
 You can create your own scheme in the `schemes` directory by creating a subdirectory with the name of your scheme. Inside this subdirectory, you need two files: `colors.yaml` and `wallpaper.png`.
