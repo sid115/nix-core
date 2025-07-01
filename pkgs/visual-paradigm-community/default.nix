@@ -20,7 +20,7 @@ stdenv.mkDerivation rec {
 
   src = builtins.fetchTarball {
     url = "https://www.visual-paradigm.com/downloads/${server}/vpce/Visual_Paradigm_CE_Linux64_InstallFree.tar.gz";
-    sha256 = "1xj4b8ydav90q3pnh1a0sqxvh1rz502s1sif7zxxyhkzh2fqj2vf";
+    sha256 = "0mx5z05jyxncg1hpn3qjskpfz4b28i380bc0qlmf42kg80r1ydcw";
   };
 
   # TODO

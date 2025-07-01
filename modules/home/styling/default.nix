@@ -77,6 +77,10 @@ in
       polarity = "dark";
     };
 
+    home.packages = [
+      (pkgs.callPackage ./print-colors { })
+    ];
+
     # handle styling manually
     programs.waybar = {
       style = import ./custom/waybar/style.nix { inherit config; };

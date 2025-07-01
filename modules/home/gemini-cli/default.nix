@@ -20,9 +20,9 @@ in
     enable = mkEnableOption "Enable gemini-cli.";
 
     package = mkOption {
-      type = types.nullOr types.package;
-      description = "The package to use for gemini-cli. You have to provide it yourself.";
-      default = null;
+      type = types.package;
+      description = "The package to use for gemini-cli.";
+      default = pkgs.gemini-cli;
     };
 
     settings = mkOption {
@@ -41,13 +41,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = (cfg.package != null);
-        message = "You must provide a package for gemini-cli.";
-      }
-    ];
-
     home.packages = [ cfg.package ];
 
     home.file = {
