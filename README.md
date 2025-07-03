@@ -11,31 +11,19 @@ This is the directory structure of this repository:
 ```
 .
 ├── apps
-├── docs
+│   ├── create       # Add new hosts to your nix-config flake
+│   └── install      # NixOS installation script
+├── docs             # Documentation hosted on GH Pages
 ├── modules
-│   ├── home
-│   └── nixos
-├── overlays
-├── pkgs
-├── templates
-│   ├── dev
-│   └── nix-config
-├── CONTRIBUTING.md
-├── README.md
-└── flake.nix
+│   ├── home         # Home Manager modules
+│   └── nixos        # NixOS modules
+├── overlays         # Fixes for and additional packages
+├── pkgs             # Custom Nix packages
+├── templats
+│   ├── dev          # Development templates
+│   └── nix-config   # Create your first nix-config flake
+└── CONTRIBUTING.md  # Contribution guide
 ```
-
-- `apps`: executables exposed through `nix run`
-- `docs`: documentation
-- `modules/home`: Home Manager modules
-- `modules/nixos`: NixOS modules
-- `overlays`: fixes for packages
-- `pkgs`: custom packages
-- `templates/dev`: development templates
-- `templates/nix-config`: kickstart your first nix-config flake
-- `CONTRIBUTING.md`: contribution guide
-- `README.md`: this file
-- `flake.nix`: entry point
 
 ## Getting started
 
