@@ -13,7 +13,7 @@ in
         enable = mkDefault true;
         settings = {
           keys = {
-            "<leader>td" = "diagnostics toggle";
+            "<leader>td" = "<cmd>Trouble diagnostics toggle<cr>";
           };
         };
       };
