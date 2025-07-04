@@ -5,6 +5,7 @@
 
 {
   baibot = pkgs.callPackage ./baibot { };
+  blender-mcp = pkgs.callPackage ./blender-mcp { };
   cppman = pkgs.callPackage ./cppman { };
   mcpo = pkgs.callPackage ./mcpo { };
   pyman = pkgs.callPackage ./pyman { };
