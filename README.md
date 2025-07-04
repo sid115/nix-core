@@ -62,6 +62,9 @@ Home Manager only options:
 
 Use the environment variable `NIX_SSHOPTS` to pass additional options to ssh.
 
+> [!TIP]
+> Check a remote system's current generation with: `ssh user@your-server "readlink /run/current-system"`
+
 ## Templates
 
 This repository provides some templates for [software development](./templates/dev/) and your own [nix-config flake](./templates/nix-config/). Create an empty directory to initialize the template in.
