@@ -12,6 +12,7 @@ in
   windowrule = [
     "center, floating:1, not class:^(Gimp)$, not class:^(Steam)$"
     "noborder, onworkspace:w[t1]"
+    "float, title:^Open Files$"
 
     # https://wiki.hyprland.org/Useful-Utilities/Screen-Sharing/#xwayland
     "opacity 0.0 override, class:^(xwaylandvideobridge)$"
