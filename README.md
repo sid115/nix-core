@@ -50,6 +50,7 @@ The Getting Started guide will take you from scratch to a working configuration.
 To rebuild the system and/or user configurations after making changes to them, run the `rebuild` script:
 
 ```
+Wrapper script for 'nixos-rebuild switch'
 Usage: rebuild <command> [OPTIONS]
 
 Commands:
@@ -59,20 +60,21 @@ Commands:
   help                 Show this help message
 
 Options (for NixOS and Home Manager):
-  -H, --host <host>    Specify the target hostname. Default: $HOSTNAME
+  -H, --host <host>    Specify the target hostname. Default: $(hostname)
   -p, --path <path>    Set the path to the flake directory. Default: ~/.config/nixos
   -U, --update         Update flake inputs
   -r, --rollback       Don't build the new configuration, but use the previous generation instead
   -t, --show-trace     Show detailed error messages
-  -d, --dry-build      Build the configuration without applying it
 
 NixOS only options:
-  -b, --build-host <user@example.com>     Use a remote host for building the configurationvia SSH
+  -B, --build-host <user@example.com>     Use a remote host for building the configuration via SSH
   -T, --target-host <user@example.com>    Deploy the configuration to a remote host via SSH
 
 Home Manager only options:
-  -u, --user <user>    Specify the username. Default: $HOME_USER
+  -u, --user <user>    Specify the username. Default: $(whoami)
 ```
+
+Use the environment variable `NIX_SSHOPTS` to pass additional options to ssh.
 
 ## Templates
 
