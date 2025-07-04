@@ -130,17 +130,6 @@
     mode = "n";
   }
 
-  # file operations
-  {
-    # make current file executable
-    key = "<leader>x";
-    action = "<cmd>!chmod +x %<CR>";
-    options = {
-      silent = true;
-    };
-    mode = "n";
-  }
-
   # text selection
   {
     # select whole buffer

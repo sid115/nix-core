@@ -13,7 +13,8 @@ in
         enable = mkDefault true;
         settings = {
           keys = {
-            "<leader>td" = "<cmd>Trouble diagnostics toggle<cr>";
+            "<leader>xd" = "<cmd>Trouble diagnostics toggle<cr>";
+            "<leader>xq" = "<cmd>Trouble qflist toggle<cr>";
           };
         };
       };
