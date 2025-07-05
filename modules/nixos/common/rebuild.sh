@@ -2,10 +2,10 @@
 
 # Defaults
 FLAKE_PATH="$HOME/.config/nixos" # Default flake path
-HOME_USER="$(whoami)"            # Default user for Home Manager
-NIXOS_HOST="$(hostname)"         # Default target host for NixOS
-BUILD_HOST=""                    # Default build host for NixOS. Empty means local build
-TARGET_HOST=""                   # Default target host for NixOS. Empty means localhost
+HOME_USER="$(whoami)"            # Default username. Used to identify the Home Manager configuration
+NIXOS_HOST="$(hostname)"         # Default hostname. Used to identify the NixOS and Home Manager configuration
+BUILD_HOST=""                    # Default build host. Empty means localhost
+TARGET_HOST=""                   # Default target host. Empty means localhost
 UPDATE=0                         # Default to not update flake repositories
 ROLLBACK=0                       # Default to not rollback
 SHOW_TRACE=0                     # Default to not show detailed error messages
@@ -22,7 +22,7 @@ Help() {
   echo "  help                 Show this help message"
   echo
   echo "Options (for NixOS and Home Manager):"
-  echo "  -H, --host <host>    Specify the target hostname. Default: $NIXOS_HOST"
+  echo "  -H, --host <host>    Specify the hostname (as in 'nixosConfiguraions.<host>'). Default: $NIXOS_HOST"
   echo "  -p, --path <path>    Set the path to the flake directory. Default: $FLAKE_PATH"
   echo "  -U, --update         Update flake inputs"
   echo "  -r, --rollback       Don't build the new configuration, but use the previous generation instead"
@@ -33,7 +33,7 @@ Help() {
   echo "  -T, --target-host <user@example.com>    Deploy the configuration to a remote host via SSH. If '--host' is specified, it will be used as the target host."
   echo
   echo "Home Manager only options:"
-  echo "  -u, --user <user>    Specify the username. Default: $HOME_USER"
+  echo "  -u, --user <user>    Specify the username (as in 'homeConfigurations.<user>@<host>'). Default: $HOME_USER"
 }
 
 # Function to handle errors
