@@ -51,7 +51,7 @@ Rebuild_nixos() {
   [ "$ROLLBACK" = 1 ] && CMD="$CMD --rollback"
   [ "$SHOW_TRACE" = 1 ] && CMD="$CMD --show-trace"
   [ -n "$BUILD_HOST" ] && CMD="$CMD --build-host $BUILD_HOST"
-  if [ "$NIXOS_HOST" != "$(hostname)" ]; then
+  if [ "$NIXOS_HOST" != "$(hostname)" ] && [ -z "$TARGET_HOST" ]; then
     TARGET_HOST="$NIXOS_HOST"
     echo "Using '$TARGET_HOST' as target host."
   fi
