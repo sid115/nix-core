@@ -36,7 +36,7 @@ The Getting Started guide will take you from scratch to a working configuration.
 To rebuild the system and/or user configurations after making changes to them, run the `rebuild` script:
 
 ```
-Wrapper script for 'nixos-rebuild switch'
+Wrapper script for 'nixos-rebuild switch' and 'home-manager switch' commands.
 Usage: rebuild <command> [OPTIONS]
 
 Commands:
@@ -54,7 +54,7 @@ Options (for NixOS and Home Manager):
 
 NixOS only options:
   -B, --build-host <user@example.com>     Use a remote host for building the configuration via SSH
-  -T, --target-host <user@example.com>    Deploy the configuration to a remote host via SSH
+  -T, --target-host <user@example.com>    Deploy the configuration to a remote host via SSH. If '--host' is specified, it will be used as the target host.
 
 Home Manager only options:
   -u, --user <user>    Specify the username. Default: $(whoami)

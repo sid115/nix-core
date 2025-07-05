@@ -12,7 +12,7 @@ SHOW_TRACE=0                     # Default to not show detailed error messages
 
 # Function to display the help message
 Help() {
-  echo "Wrapper script for 'nixos-rebuild switch'"
+  echo "Wrapper script for 'nixos-rebuild switch' and 'home-manager switch' commands."
   echo "Usage: rebuild <command> [OPTIONS]"
   echo
   echo "Commands:"
@@ -30,7 +30,7 @@ Help() {
   echo
   echo "NixOS only options:"
   echo "  -B, --build-host <user@example.com>     Use a remote host for building the configuration via SSH"
-  echo "  -T, --target-host <user@example.com>    Deploy the configuration to a remote host via SSH"
+  echo "  -T, --target-host <user@example.com>    Deploy the configuration to a remote host via SSH. If '--host' is specified, it will be used as the target host."
   echo
   echo "Home Manager only options:"
   echo "  -u, --user <user>    Specify the username. Default: $HOME_USER"
@@ -51,6 +51,10 @@ Rebuild_nixos() {
   [ "$ROLLBACK" = 1 ] && CMD="$CMD --rollback"
   [ "$SHOW_TRACE" = 1 ] && CMD="$CMD --show-trace"
   [ -n "$BUILD_HOST" ] && CMD="$CMD --build-host $BUILD_HOST"
+  if [ "$NIXOS_HOST" != "$(hostname)" ]; then
+    TARGET_HOST="$NIXOS_HOST"
+    echo "Using '$TARGET_HOST' as target host."
+  fi
   [ -n "$TARGET_HOST" ] && CMD="$CMD --target-host $TARGET_HOST --ask-sudo-password"
 
   # Rebuild NixOS configuration
