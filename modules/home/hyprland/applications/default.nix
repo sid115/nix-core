@@ -121,7 +121,9 @@ in
 
     matrix-client = mkAppAttrs {
       default = "element-desktop";
-      bind = [ "$mod SHIFT, e, exec, ${matrix-client}" ];
+      # FIXME: screen sharing does not work
+      # bind = [ "$mod SHIFT, e, exec, ${matrix-client}" ];
+      bind = [ "$mod SHIFT, e, exec, chromium --app=https://app.element.io" ];
     };
 
     musicplayer = mkAppAttrs {
