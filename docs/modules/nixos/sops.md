@@ -32,3 +32,11 @@ Then, add it to `.sops.yaml`.
 ### Host configuration:
 
 No additional configuration is required. Each module's documentation entry will tell you if it uses sops and what secrets it expects.
+
+## Update Keys
+
+Update the keys of your SOPS files after making changes to `.sops.yaml`:
+
+```bash
+sops --config PATH/TO/.sops.yaml updatekeys PATH/TO/secrets.yaml
+```
