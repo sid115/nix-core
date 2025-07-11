@@ -2,7 +2,6 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-zoom.url = "github:nixos/nixpkgs/nixos-24.05";
-    nixpkgs-comfyui.url = "github:nixos/nixpkgs/pull/402112/head";
 
     # TODO: Implement test configs for runtime checks.
     # home-manager.url = "github:nix-community/home-manager";
