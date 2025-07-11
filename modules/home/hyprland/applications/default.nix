@@ -48,6 +48,7 @@ let
   inherit (lib)
     attrValues
     filter
+    getExe
     mapAttrs
     mkOption
     types
@@ -112,6 +113,11 @@ in
     emailclient = mkAppAttrs {
       default = "thunderbird";
       bind = [ "$mod, m, exec, ${emailclient}" ];
+    };
+
+    equalizer = mkAppAttrs {
+      default = "easyeffects";
+      bind = [ "$mod CTRL, e, exec, ${getExe pkgs.easyeffects}" ];
     };
 
     filemanager = mkAppAttrs {
