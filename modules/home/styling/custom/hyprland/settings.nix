@@ -1,14 +1,14 @@
-{ config, ... }:
+{ config, lib, ... }:
 
 let
   cfg = config.styling;
 in
 {
   general = {
-    gaps_in = cfg.gaps / 2;
-    gaps_out = cfg.gaps;
+    gaps_in = lib.mkDefault cfg.gaps / 2;
+    gaps_out = lib.mkDefault cfg.gaps;
   };
   decoration = {
-    rounding = cfg.radius;
+    rounding = lib.mkDefault cfg.radius;
   };
 }
