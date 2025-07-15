@@ -1,10 +1,8 @@
 {
   lib,
   python3,
-  fetchFromGitHub,
+  fetchPypi,
   fetchurl,
-
-  packageOverrides ? self: super: { },
 }:
 
 let
@@ -15,35 +13,29 @@ let
     hash = "sha256-iCr7q5ZWCMLSvGJ/2AFrliqlpr4tNY+d4kp7WWfFYy4=";
   };
 
-  defaultOverrides = [
-  ];
+  python = python3;
 
-  python = python3.override {
-    self = python;
-    packageOverrides = lib.composeManyExtensions (defaultOverrides ++ [ packageOverrides ]);
-  };
-
-  pdftext = import ./pdftext.nix { inherit lib python fetchFromGitHub; };
-  surya-ocr = import ./surya-ocr.nix { inherit lib python fetchFromGitHub; };
+  pdftext = import ./pdftext.nix { inherit lib python fetchPypi; };
+  surya-ocr = import ./surya-ocr.nix { inherit lib python fetchPypi; };
 in
 
 python.pkgs.buildPythonApplication rec {
   pname = "marker-pdf";
-  version = "1.7.3";
+  version = "1.8.2";
   pyproject = true;
 
-  src = fetchFromGitHub {
-    owner = "VikParuchuri";
-    repo = "marker";
-    rev = "v${version}";
-    hash = "sha256-tZxD+sosYazNJNZAn9gTp97Ho81xFInD9aQv5H8rspw=";
+  src = fetchPypi {
+    pname = "marker_pdf";
+    inherit version;
+    hash = "sha256-k2mxOpBBtXdCzxP4hqfXnCEqUF69hQZWr/d9V/tITZ4=";
   };
 
-  patches = [
-    ./skip-font-download.patch
-  ];
+  # patches = [
+  #   ./skip-font-download.patch
+  # ];
 
   pythonRelaxDeps = [
+    "click"
     "anthropic"
     "markdownify"
     "pillow"
@@ -53,12 +45,12 @@ python.pkgs.buildPythonApplication rec {
     "pre-commit"
   ];
 
-  postInstall = ''
-    FONT_DEST_DIR="$out/lib/${python.libPrefix}/site-packages/static/fonts"
-    mkdir -p $FONT_DEST_DIR
-    cp ${fetchFont} "$FONT_DEST_DIR/${fontFileName}"
-    echo "Installed font to $FONT_DEST_DIR/${fontFileName}"
-  '';
+  # postInstall = ''
+  #   FONT_DEST_DIR="$out/lib/${python.libPrefix}/site-packages/static/fonts"
+  #   mkdir -p $FONT_DEST_DIR
+  #   cp ${fetchFont} "$FONT_DEST_DIR/${fontFileName}"
+  #   echo "Installed font to $FONT_DEST_DIR/${fontFileName}"
+  # '';
 
   build-system = [
     python.pkgs.poetry-core
@@ -84,7 +76,6 @@ python.pkgs.buildPythonApplication rec {
       python-dotenv
       rapidfuzz
       regex
-      requests
       scikit-learn
       torch
       tqdm
@@ -106,10 +97,10 @@ python.pkgs.buildPythonApplication rec {
   ];
 
   meta = {
-    description = "Convert PDF to markdown + JSON quickly with high accuracy";
-    homepage = "https://github.com/VikParuchuri/marker";
+    description = "Convert documents to markdown with high speed and accuracy";
+    homepage = "https://pypi.org/project/marker-pdf/";
     license = lib.licenses.gpl3Only;
     maintainers = with lib.maintainers; [ ];
-    mainProgram = "marker-pdf";
   };
+
 }

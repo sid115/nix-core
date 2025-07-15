@@ -2,10 +2,10 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-zoom.url = "github:nixos/nixpkgs/nixos-24.05";
-    nixpkgs-comfyui.url = "github:nixos/nixpkgs/pull/402112/head";
 
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    # TODO: Implement test configs for runtime checks.
+    # home-manager.url = "github:nix-community/home-manager";
+    # home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     pre-commit-hooks.url = "github:cachix/git-hooks.nix";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
@@ -27,8 +27,6 @@
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
     in
     {
-      lib = nixpkgs.lib // import ./lib;
-
       apps = forAllSystems (
         system:
         let
@@ -56,7 +54,7 @@
         }
       );
 
-      packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+      packages = forAllSystems (system: import ./pkgs { pkgs = nixpkgs.legacyPackages.${system}; });
 
       overlays = import ./overlays { inherit inputs; };
 
@@ -74,7 +72,7 @@
         }
       );
 
-      # TODO
+      # TODO: Implement test configs for runtime checks.
       # nixosConfigurations = {
       #   nixos-test = nixpkgs.lib.nixosSystem {
       #     specialArgs = { inherit inputs outputs; };
@@ -82,7 +80,7 @@
       #   };
       # };
 
-      # TODO
+      # TODO: Implement test configs for runtime checks.
       # homeConfigurations = {
       #   hm-test = home-manager.lib.homeManagerConfiguration {
       #     pkgs = nixpkgs.legacyPackages.x86_64-linux;
