@@ -26,6 +26,7 @@
   normalUsers = import ./normalUsers;
   ntfy-sh = import ./ntfy-sh;
   nvidia = import ./nvidia;
+  ollama = import ./ollama;
   open-webui = import ./open-webui;
   openssh = import ./openssh;
   peertube = import ./peertube;

@@ -48,6 +48,7 @@ let
   inherit (lib)
     attrValues
     filter
+    getExe
     mapAttrs
     mkOption
     types
@@ -114,6 +115,11 @@ in
       bind = [ "$mod, m, exec, ${emailclient}" ];
     };
 
+    equalizer = mkAppAttrs {
+      default = "easyeffects";
+      bind = [ "$mod CTRL, e, exec, ${getExe pkgs.easyeffects}" ];
+    };
+
     filemanager = mkAppAttrs {
       default = "lf";
       bind = [ "$mod, e, exec, ${terminal} -T ${filemanager} -e ${filemanager}" ];
@@ -121,7 +127,9 @@ in
 
     matrix-client = mkAppAttrs {
       default = "element-desktop";
-      bind = [ "$mod SHIFT, e, exec, ${matrix-client}" ];
+      # FIXME: screen sharing does not work
+      # bind = [ "$mod SHIFT, e, exec, ${matrix-client}" ];
+      bind = [ "$mod SHIFT, e, exec, chromium --app=https://app.element.io" ];
     };
 
     musicplayer = mkAppAttrs {

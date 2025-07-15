@@ -1,19 +1,22 @@
 {
-  python3,
+  python3Packages,
   ...
 }:
 
-python3.pkgs.buildPythonApplication {
+python3Packages.buildPythonApplication {
   pname = "pyman";
   version = "1.0.0";
 
   src = ./.;
+  pyproject = true;
 
-  propagatedBuildInputs = [ ];
+  build-system = [ python3Packages.setuptools ];
+
+  propagatedBuildInputs = [ python3Packages.pyyaml ];
 
   doCheck = false;
 
   meta = {
-    description = "A script to display Python help for a given topic";
+    description = "Display colors from a YAML color palette file in the terminal.";
   };
 }

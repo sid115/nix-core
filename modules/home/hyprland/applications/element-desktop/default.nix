@@ -13,6 +13,7 @@ let
 in
 {
   config = mkIf (cfg.enable && app == "element-desktop") {
-    home.packages = [ pkgs.element-desktop ];
+    # FIXME: screen sharing does not work
+    # home.packages = [ pkgs.element-desktop ];
   };
 }

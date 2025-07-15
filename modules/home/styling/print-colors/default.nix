@@ -8,6 +8,9 @@ python3Packages.buildPythonApplication {
   version = "1.0.0";
 
   src = ./.;
+  pyproject = true;
+
+  build-system = [ python3Packages.setuptools ];
 
   propagatedBuildInputs = [ python3Packages.pyyaml ];
 

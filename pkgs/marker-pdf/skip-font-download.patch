@@ -1,0 +1,24 @@
+--- a/marker/util.py
++++ b/marker/util.py
+@@ -151,13 +151,7 @@
+     return sorted_lines
+ 
+ def download_font():
+-    if not os.path.exists(settings.FONT_PATH):
+-        os.makedirs(os.path.dirname(settings.FONT_PATH), exist_ok=True)
+-        font_dl_path = f"{settings.ARTIFACT_URL}/{settings.FONT_NAME}"
+-        with requests.get(font_dl_path, stream=True) as r, open(settings.FONT_PATH, 'wb') as f:
+-            r.raise_for_status()
+-            for chunk in r.iter_content(chunk_size=8192):
+-                f.write(chunk)
++    pass
+ 
+ def get_opening_tag_type(tag):
+     """
+@@ -195,4 +189,4 @@
+         if tag_type in TAG_MAPPING:
+             return True, TAG_MAPPING[tag_type]
+     
+-    return False, None
+\ No newline at end of file
++    return False, None
