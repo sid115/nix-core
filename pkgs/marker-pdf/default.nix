@@ -32,6 +32,7 @@ python.pkgs.buildPythonApplication rec {
 
   patches = [
     ./skip-font-download.patch
+    ./fix-output-dir.patch
   ];
 
   pythonRelaxDeps = [
