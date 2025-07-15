@@ -30,9 +30,9 @@ python.pkgs.buildPythonApplication rec {
     hash = "sha256-k2mxOpBBtXdCzxP4hqfXnCEqUF69hQZWr/d9V/tITZ4=";
   };
 
-  # patches = [
-  #   ./skip-font-download.patch
-  # ];
+  patches = [
+    ./skip-font-download.patch
+  ];
 
   pythonRelaxDeps = [
     "click"
@@ -45,12 +45,12 @@ python.pkgs.buildPythonApplication rec {
     "pre-commit"
   ];
 
-  # postInstall = ''
-  #   FONT_DEST_DIR="$out/lib/${python.libPrefix}/site-packages/static/fonts"
-  #   mkdir -p $FONT_DEST_DIR
-  #   cp ${fetchFont} "$FONT_DEST_DIR/${fontFileName}"
-  #   echo "Installed font to $FONT_DEST_DIR/${fontFileName}"
-  # '';
+  postInstall = ''
+    FONT_DEST_DIR="$out/lib/${python.libPrefix}/site-packages/static/fonts"
+    mkdir -p $FONT_DEST_DIR
+    cp ${fetchFont} "$FONT_DEST_DIR/${fontFileName}"
+    echo "Installed font to $FONT_DEST_DIR/${fontFileName}"
+  '';
 
   build-system = [
     python.pkgs.poetry-core
