@@ -76,7 +76,7 @@ in
         templates."searx/env-file" = {
           inherit owner group mode;
           content = ''
-            SEARX_SECRET_KEY=${config.sops.placeholder."searx/secret-key".path}
+            SEARX_SECRET_KEY=${config.sops.placeholder."searx/secret-key"}
           '';
         };
       };
