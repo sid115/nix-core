@@ -11,9 +11,9 @@ let
   domain = config.networking.domain;
   mailserver = config.mailserver;
 
-  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
+  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
   importer-fqdn =
-    if (isNotEmptyStr cfg.importer-subdomain) then
+    if (cfg.importer-subdomain != "") then
       "${cfg.importer-subdomain}.${domain}"
     else
       throw "No subdomain specified for Firefly-III data importer.";
@@ -24,8 +24,6 @@ let
     mkOption
     types
     ;
-
-  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   options.services.firefly-iii = {

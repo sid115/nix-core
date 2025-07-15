@@ -6,12 +6,6 @@ SRC_DIR = src
 
 CC = gcc
 CFLAGS = -I$(INCLUDE_DIR) -Wall -Wextra -g
-USE_BEAR ?= 0
-ifeq ($(USE_BEAR), 1)
-	BUILD_CMD = bear --output $(BUILD_DIR)/compile_commands.json -- $(CC)
-else
-	BUILD_CMD = $(CC)
-endif
 
 TARGET = $(BUILD_DIR)/$(PNAME)
 SRCS = $(wildcard $(SRC_DIR)/*.c)
@@ -22,11 +16,11 @@ all: $(TARGET)
 
 # Build the executable
 $(TARGET): $(OBJS)
-	$(BUILD_CMD) $(OBJS) -o $@
+	$(CC) $(OBJS) -o $@
 
 # Compile source files into object files
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
-	$(BUILD_CMD) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Create the build directory
 $(BUILD_DIR):

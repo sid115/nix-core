@@ -1,4 +1,5 @@
 {
+  amd = import ./amd;
   audio = import ./audio;
   baibot = import ./baibot;
   bluetooth = import ./bluetooth;
@@ -11,17 +12,21 @@
   grafana = import ./grafana;
   guacamole = import ./guacamole;
   home-assistant-oci = import ./home-assistant-oci;
+  hydra = import ./hydra;
   hyprland = import ./hyprland;
   jellyfin = import ./jellyfin;
   jirafeau = import ./jirafeau;
   krdpserver = import ./krdpserver;
   mailserver = import ./mailserver;
   matrix-synapse = import ./matrix-synapse;
+  mcpo = import ./mcpo;
   nextcloud = import ./nextcloud;
   nginx = import ./nginx;
+  nix-serve = import ./nix-serve;
   normalUsers = import ./normalUsers;
   ntfy-sh = import ./ntfy-sh;
   nvidia = import ./nvidia;
+  ollama = import ./ollama;
   open-webui = import ./open-webui;
   openssh = import ./openssh;
   peertube = import ./peertube;
