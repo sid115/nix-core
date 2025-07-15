@@ -73,6 +73,9 @@ key | action
 `<C-Tab>` | select next item in completion menu
 `gd` | go to definition
 `K` | display more information about word under cursor
+`<leader>bl` | list buffers
+`<C-S-J>` | next buffer
+`<C-S-K>` | previous buffer
 `<leader>fb` or `<C-e>` | open file browser
 `<leader>ff` | find files by name
 `<leader>fg` | find files containing string

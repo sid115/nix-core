@@ -97,18 +97,18 @@
   }
 
   # quickfix and location list navigation
-  {
-    # previous quickfix item
-    key = "<C-S-J>";
-    action = "<cmd>cprev<CR>zz";
-    mode = "n";
-  }
-  {
-    # next quickfix item
-    key = "<C-S-K>";
-    action = "<cmd>cnext<CR>zz";
-    mode = "n";
-  }
+  # {
+  #   # previous quickfix item
+  #   key = "<C-S-J>";
+  #   action = "<cmd>cprev<CR>zz";
+  #   mode = "n";
+  # }
+  # {
+  #   # next quickfix item
+  #   key = "<C-S-K>";
+  #   action = "<cmd>cnext<CR>zz";
+  #   mode = "n";
+  # }
   {
     # previous location list item
     key = "<leader>j";
@@ -289,6 +289,38 @@
     # adding words to the dictionary
     key = "zg";
     action = "zg";
+    options = {
+      noremap = true;
+      silent = true;
+    };
+    mode = "n";
+  }
+
+  # buffer navigation
+  {
+    # next buffer
+    key = "<C-S-J>";
+    action = ":bnext<CR>";
+    options = {
+      noremap = true;
+      silent = true;
+    };
+    mode = "n";
+  }
+  {
+    # previous buffer
+    key = "<C-S-K>";
+    action = ":bprevious<CR>";
+    options = {
+      noremap = true;
+      silent = true;
+    };
+    mode = "n";
+  }
+  {
+    # close current buffer
+    key = "<leader>bd";
+    action = ":bdelete<CR>";
     options = {
       noremap = true;
       silent = true;
