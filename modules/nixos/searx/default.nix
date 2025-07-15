@@ -40,6 +40,7 @@ in
         enable_metrics = mkDefault false;
         server = {
           bind_address = mkDefault "127.0.0.1";
+          port = mkDefault 8787;
           secret_key = mkDefault "@SEARX_SECRET_KEY@";
           base_url = mkDefault "https://${fqdn}";
           limiter = mkDefault true;
