@@ -7,6 +7,7 @@
 
 let
   cfg = config.services.instaloader;
+  sessionFile = "${cfg.home}/.config/instaloader/session-${cfg.login}";
 
   instaloaderScript = pkgs.writeShellScriptBin "instaloader-run" ''
     declare -a args
@@ -16,11 +17,15 @@ let
     args+=(--no-compress-json)
 
     args+=(--login "${cfg.login}")
-    if [[ ! -r "${cfg.passwordFile}" ]]; then
-      echo "Error: Instaloader password file '${cfg.passwordFile}' not found or not readable." >&2
-      exit 1
+
+    # Skip password authentication if session file exists
+    if [[ ! -r "${sessionFile}" ]]; then
+      if [[ ! -r "${cfg.passwordFile}" ]]; then
+        echo "Error: Instaloader password file '${cfg.passwordFile}' not found or not readable." >&2
+        exit 1
+      fi
+      args+=(--password "$(cat "${cfg.passwordFile}")")
     fi
-    args+=(--password "$(cat "${cfg.passwordFile}")")
 
     ${optionalString cfg.stories "args+=(--stories)"}
     ${optionalString cfg.reels "args+=(--reels)"}
