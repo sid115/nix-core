@@ -27,7 +27,6 @@ let
   '';
 
   inherit (lib)
-    baseNameOf
     concatMapStringsSep
     escapeShellArg
     getExe
@@ -146,7 +145,7 @@ in
           User = cfg.user;
           Group = cfg.group;
           ExecStart = getExe instaloaderScript;
-          StateDirectory = baseNameOf cfg.home;
+          StateDirectory = builtins.baseNameOf cfg.home;
           PrivateNetwork = false;
         };
         after = [ "network-online.target" ];
