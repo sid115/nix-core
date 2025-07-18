@@ -125,7 +125,7 @@ in
         message = "Instaloader: `login` is required.";
       }
       {
-        assertion = cfg.passwordFile != "";
+        assertion = cfg.passwordFile != null;
         message = "Instaloader: `passwordFile` is required.";
       }
     ];
