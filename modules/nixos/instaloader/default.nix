@@ -43,7 +43,7 @@ in
   options.services.instaloader = {
     enable = mkEnableOption "The instaloader periodic download service.";
 
-    package = mkPackageOption pkgs "instaloader";
+    package = mkPackageOption pkgs "instaloader" { };
 
     user = mkOption {
       type = types.str;
