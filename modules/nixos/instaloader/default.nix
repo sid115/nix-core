@@ -15,7 +15,6 @@ let
     args+=(--fast-update)
     args+=(--quiet)
     args+=(--no-compress-json)
-
     args+=(--login "${cfg.login}")
 
     # Skip password authentication if session file exists
@@ -29,6 +28,7 @@ let
 
     ${optionalString cfg.stories "args+=(--stories)"}
     ${optionalString cfg.reels "args+=(--reels)"}
+    ${optionalString cfg.highlights "args+=(--highlights)"}
     ${optionalString (!cfg.posts) "args+=(--no-posts)"}
 
     args+=(${concatMapStringsSep " " escapeShellArg cfg.profiles})
@@ -101,6 +101,12 @@ in
       type = types.bool;
       default = true;
       description = "Whether to download Reels from the specified profiles.";
+    };
+
+    highlights = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Whether to download Highlights from the specified profiles.";
     };
 
     posts = mkOption {
