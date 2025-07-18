@@ -34,6 +34,7 @@ let
     mkIf
     mkOption
     mkPackageOption
+    optionalAttrs
     optionalString
     types
     ;
@@ -77,7 +78,7 @@ in
     profiles = mkOption {
       type = types.listOf types.str;
       default = [ ];
-      description = "A list of Instagram profile names to download.";
+      description = "A list of Instagram profile names to download. Must have at least one entry.";
     };
 
     stories = mkOption {
@@ -115,6 +116,29 @@ in
         description = "If true, the service will run immediately after a boot if it missed its last scheduled time.";
       };
     };
+
+    retry = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Whether to automatically restart the service if it fails (e.g. due to rate limiting).";
+      };
+
+      delay = mkOption {
+        type = types.str;
+        default = "20min";
+        description = ''
+          How long to wait before retrying after a failure.
+          Use systemd time format (e.g., "10s", "5min", "1h").
+        '';
+      };
+
+      attempts = mkOption {
+        type = types.int;
+        default = 3;
+        description = "How many times to retry within a single activation before giving up.";
+      };
+    };
   };
 
   config = mkIf cfg.enable {
@@ -126,6 +150,10 @@ in
       {
         assertion = cfg.passwordFile != null;
         message = "Instaloader: `passwordFile` is required.";
+      }
+      {
+        assertion = cfg.profiles != [ ];
+        message = "Instaloader: `profiles` must have at least one entry.";
       }
     ];
 
@@ -140,14 +168,21 @@ in
     systemd = {
       services.instaloader = {
         description = "Download media from Instagram profiles";
-        serviceConfig = {
-          Type = "oneshot";
-          User = cfg.user;
-          Group = cfg.group;
-          ExecStart = getExe instaloaderScript;
-          StateDirectory = builtins.baseNameOf cfg.home;
-          PrivateNetwork = false;
-        };
+        serviceConfig =
+          {
+            Type = "oneshot";
+            User = cfg.user;
+            Group = cfg.group;
+            ExecStart = getExe instaloaderScript;
+            StateDirectory = builtins.baseNameOf cfg.home;
+            PrivateNetwork = false;
+          }
+          // optionalAttrs cfg.retry.enable {
+            Restart = "on-failure";
+            RestartSec = cfg.retry.delay;
+            StartLimitBurst = cfg.retry.attempts;
+            StartLimitIntervalSec = "1day";
+          };
         after = [ "network-online.target" ];
         wants = [ "network-online.target" ];
       };
