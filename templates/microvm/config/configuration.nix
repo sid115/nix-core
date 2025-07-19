@@ -1,3 +1,3 @@
 {
-  # Add ypur configuration here
+  # Add your configuration here
 }

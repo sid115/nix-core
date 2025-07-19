@@ -72,10 +72,10 @@ This repository provides some templates for [software development](./templates/d
 ```bash
 mkdir DIR
 cd DIR
-nix flake init -t "github:sid115/nix-core#templates.TEMPLATE"
+nix flake init -t github:sid115/nix-core#TEMPLATE
 ```
 
-`TEMPLATE` has to be the template attribute, for example `c-hello` or `nix-config`. See [flake.nix](./flake.nix) for all available templates.
+`TEMPLATE` has to be the template attribute, for example `c-hello`, `microvm` or `nix-config`. See [flake.nix](./flake.nix) for all available templates.
 
 ## Contributing
 

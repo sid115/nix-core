@@ -120,6 +120,11 @@
           description = "NixOS configuration with standalone Home Manager using nix-core.";
         };
 
+        microvm = {
+          path = ./templates/microvm;
+          description = "MicroVM NixOS configurations";
+        };
+
         c-hello = {
           path = ./templates/dev/c-hello;
           description = "C hello world template.";
