@@ -8,7 +8,12 @@
 
   networking.hostName = "uvm";
 
-  users.users.root.password = "";
+  users.users.root = {
+    password = "";
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOFhVo4CckOSB1QZVOfG6MrG5fmox5w67P2PnvOVrVf6 root@localhost"
+    ];
+  };
   services.getty.autologinUser = "root";
 
   microvm = {
@@ -72,7 +77,7 @@
     openFirewall = true;
     settings = {
       PermitRootLogin = "yes";
-      PasswordAuthentication = true;
+      PasswordAuthentication = false;
     };
   };
 
