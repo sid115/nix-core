@@ -7,14 +7,14 @@
 
 python3.pkgs.buildPythonApplication rec {
   pname = "mcpo";
-  version = "0.0.15";
+  version = "0.0.16";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "open-webui";
     repo = "mcpo";
     rev = "v${version}";
-    hash = "sha256-b9zCeMwZdss/5bR6t7rvNWhVRJ8p3aIDEKwezU+CzB0=";
+    hash = "sha256-T4eAhPgm1ysf/+ZmqZxAoc0SwQbkl8x8lBGwamMYcpU=";
   };
 
   build-system = [
