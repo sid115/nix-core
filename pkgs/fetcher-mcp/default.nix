@@ -6,10 +6,6 @@
   playwright-driver,
 }:
 
-let
-    browsers = (builtins.fromJSON (builtins.readFile "${playwright-driver}/browsers.json")).browsers;
-    chromium-rev = (builtins.head (builtins.filter (x: x.name == "chromium") browsers)).revision;
-in
 buildNpmPackage rec {
   pname = "fetcher-mcp";
   version = "unstable-2025-06-26";
@@ -26,12 +22,9 @@ buildNpmPackage rec {
   nativeBuildInputs = [ makeWrapper ];
 
   makeWrapperArgs = [
-    "--set-default"
+    "--set"
     "PLAYWRIGHT_BROWSERS_PATH"
     "${playwright-driver.browsers}"
-    "--set-default"
-    "PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH"
-    "${playwright-driver.browsers}/chromium_headless_shell_${chromium-rev}/chrome-linux/headless_shell"
   ];
 
   meta = {
