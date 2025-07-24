@@ -4,6 +4,7 @@
   python3,
   fetchPypi,
   curl,
+  git,
 }:
 
 python3.pkgs.buildPythonApplication rec {
@@ -28,7 +29,10 @@ python3.pkgs.buildPythonApplication rec {
       mcp
       pathspec
     ]
-    ++ [ curl ];
+    ++ [
+      curl
+      git
+    ];
 
   pythonImportsCheck = [
     "gitingest_mcp"
