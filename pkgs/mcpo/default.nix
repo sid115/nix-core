@@ -1,3 +1,4 @@
+# See https://github.com/NixOS/nixpkgs/pull/410836
 {
   lib,
   python3,

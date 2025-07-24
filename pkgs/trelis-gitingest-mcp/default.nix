@@ -3,6 +3,7 @@
   lib,
   python3,
   fetchPypi,
+  curl,
 }:
 
 python3.pkgs.buildPythonApplication rec {
@@ -20,11 +21,14 @@ python3.pkgs.buildPythonApplication rec {
     python3.pkgs.hatchling
   ];
 
-  dependencies = with python3.pkgs; [
-    gitingest
-    mcp
-    pathspec
-  ];
+  dependencies =
+    with python3.pkgs;
+    [
+      gitingest
+      mcp
+      pathspec
+    ]
+    ++ [ curl ];
 
   pythonImportsCheck = [
     "gitingest_mcp"

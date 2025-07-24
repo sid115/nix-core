@@ -3,7 +3,7 @@
   buildNpmPackage,
   fetchFromGitHub,
   makeWrapper,
-  playwright,
+  playwright-driver,
 }:
 
 buildNpmPackage rec {
@@ -24,7 +24,7 @@ buildNpmPackage rec {
   makeWrapperArgs = [
     "--set-default"
     "PLAYWRIGHT_BROWSERS_PATH"
-    "${playwright.browsers}"
+    "${playwright-driver.browsers}"
   ];
 
   meta = {
