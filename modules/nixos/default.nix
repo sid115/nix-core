@@ -38,6 +38,7 @@
   tt-rss = import ./tt-rss;
   vaultwarden = import ./vaultwarden;
   virtualization = import ./virtualization;
+  vpn-server = import ./vpn-server;
   webPage = import ./webPage;
   xrdp = import ./xrdp;
 }
