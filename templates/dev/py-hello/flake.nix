@@ -82,17 +82,16 @@
           };
 
           venv = pkgs.mkShell {
-            buildInputs =
-              [
-                python
-              ]
-              ++ [
-                (python.withPackages (
-                  p: with p; [
-                    pip
-                  ]
-                ))
-              ];
+            buildInputs = [
+              python
+            ]
+            ++ [
+              (python.withPackages (
+                p: with p; [
+                  pip
+                ]
+              ))
+            ];
             shellHook = ''
               python -m venv .venv
               source .venv/bin/activate
