@@ -25,7 +25,7 @@ in
           "<C-e>" = "file_browser";
           "<leader>ff" = "find_files";
           "<leader>fg" = "live_grep";
-          "<leader>b" = "buffers";
+          "<leader>bl" = "buffers";
           "<leader>fh" = "help_tags";
           "<leader>fd" = "diagnostics";
           "<C-p>" = "git_files";

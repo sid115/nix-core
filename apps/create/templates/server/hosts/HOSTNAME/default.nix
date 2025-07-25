@@ -22,7 +22,6 @@
 
   normalUsers = {
     USERNAME = {
-      name = "USERNAME";
       extraGroups = [
         "wheel"
       ];

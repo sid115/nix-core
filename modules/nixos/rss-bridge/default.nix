@@ -3,15 +3,13 @@
 let
   cfg = config.services.rss-bridge;
   domain = config.networking.domain;
-  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
+  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkIf
     mkOption
     types
     ;
-
-  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   options.services.rss-bridge = {

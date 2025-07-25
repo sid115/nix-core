@@ -54,6 +54,11 @@ in
 
       download-buffer-size = 524288000; # 500 MiB
 
+      # Add all wheel users to the trusted-users group
+      trusted-users = [
+        "@wheel"
+      ];
+
       # Binary caches
       substituters = [
         "https://nix-community.cachix.org"

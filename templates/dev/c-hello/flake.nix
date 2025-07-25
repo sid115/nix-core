@@ -70,12 +70,9 @@
                 gdb
                 gnumake
               ]);
-            shellHook =
-              self.checks.${system}.pre-commit-check.shellHook
-              + ''
-                export LD_LIBRARY_PATH=${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH
-                export USE_BEAR=1
-              '';
+            shellHook = self.checks.${system}.pre-commit-check.shellHook + ''
+              export LD_LIBRARY_PATH=${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH
+            '';
           };
         }
       );
@@ -92,22 +89,30 @@
           build-packages = pkgs.linkFarm "flake-packages-${system}" flakePkgs;
 
           integration-test =
-            pkgs.runCommand "hello-world-test"
+            let
+              exe = "${flakePkgs.${pname}}/bin/${pname}";
+            in
+            pkgs.runCommand "${pname}-test"
               {
                 nativeBuildInputs = [
                   pkgs.coreutils
-                  self.packages.${system}.${pname}
+                  flakePkgs.${pname}
                 ];
               }
               ''
-                output=$(hello-world)
-
-                echo "$output" | grep -q "Hello, world!" || {
-                  echo "Test failed: Expected 'Hello, world!' but got: $output"
-                  exit 1
+                assert_equal() {
+                  if [[ "$1" != "$2" ]]; then
+                    echo "Test failed: Expected '$1' but got '$2'"
+                    exit 1
+                  fi
                 }
 
-                echo "Hello World test passed!" > $out
+                exp1="Hello, world!"
+                out1="$(${exe})"
+
+                assert_equal "$exp1" "$out1"
+
+                echo "Test passed!" > $out
               '';
 
           pre-commit-check = pre-commit-hooks.lib.${system}.run {

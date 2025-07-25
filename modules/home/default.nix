@@ -1,10 +1,12 @@
 {
   bemenu = import ./bemenu;
   common = import ./common;
+  gemini-cli = import ./gemini-cli;
   gpg = import ./gpg;
   hyprland = import ./hyprland;
   kitty = import ./kitty;
   lf = import ./lf;
+  librewolf = import ./librewolf;
   networkmanager-dmenu = import ./networkmanager-dmenu;
   nextcloud-sync = import ./nextcloud-sync;
   nixvim = import ./nixvim;

@@ -29,9 +29,10 @@ Options:
     -h, --help                 Show this help message
 
 Available configuration templates:
+    hetzner-intel
     hyprland
-    server
     pi4
+    server
     vm-uefi
 EOF
 }

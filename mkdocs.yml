@@ -19,11 +19,19 @@ markdown_extensions:
 
 nav:
   - Home: index.md # do not change
+  - Introduction to Nix:
+    - Overview: introduction-to-nix/overview.md
+    - Install Nix: introduction-to-nix/install-nix.md
+    - Nix Speedrun: introduction-to-nix/nix-speedrun.md
+    - Derivations: introduction-to-nix/derivations.md
+    - Nix Store: introduction-to-nix/nix-store.md
+    - Nixpkgs: introduction-to-nix/nixpkgs.md
+    - Flakes: introduction-to-nix/flakes.md
+    - NixOS: introduction-to-nix/nixos.md
   - Getting Started:
-    - 1. Install the Nix package manager: getting-started/nix-package-manager.md
-    - 2. Create your nix-config flake: getting-started/create-nix-config.md
-    - 3. Add configs to your flake: getting-started/add-configs.md
-    - 4. Install instructions: getting-started/install-instructions.md
+    - Create your nix-config flake: getting-started/create-nix-config.md
+    - Add configs to your flake: getting-started/add-configs.md
+    - Install instructions: getting-started/install-instructions.md
   - Modules:
     - NixOS:
       - audio: modules/nixos/audio.md
@@ -37,11 +45,14 @@ nav:
       - grafana: modules/nixos/grafana.md
       - guacamole: modules/nixos/guacamole.md
       - home-assistant-oci: modules/nixos/home-assistant-oci.md
+      - hydra: modules/nixos/hydra.md
       - jellyfin: modules/nixos/jellyfin.md
       - jirafeau: modules/nixos/jirafeau.md
       - mailserver: modules/nixos/mailserver.md
       - matrix-synapse: modules/nixos/matrix-synapse.md
+      - mcpo: modules/nixos/mcpo.md
       - nextcloud: modules/nixos/nextcloud.md
+      - nix-serve: modules/nixos/nix-serve.md
       - normalUsers: modules/nixos/normalUsers.md
       - ntfy-sh: modules/nixos/ntfy-sh.md
       - nvidia: modules/nixos/nvidia.md
@@ -72,5 +83,6 @@ nav:
       - styling: modules/home/styling.md
       - virtualization: modules/home/virtualization.md
       - waybar: modules/home/waybar.md
+      - yazi: modules/home/yazi.md
   - Tips:
     - Useful Links: tips/useful-links.md

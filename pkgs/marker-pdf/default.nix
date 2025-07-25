@@ -1,10 +1,8 @@
 {
   lib,
   python3,
-  fetchFromGitHub,
+  fetchPypi,
   fetchurl,
-
-  packageOverrides ? self: super: { },
 }:
 
 let
@@ -15,35 +13,30 @@ let
     hash = "sha256-iCr7q5ZWCMLSvGJ/2AFrliqlpr4tNY+d4kp7WWfFYy4=";
   };
 
-  defaultOverrides = [
-  ];
+  python = python3;
 
-  python = python3.override {
-    self = python;
-    packageOverrides = lib.composeManyExtensions (defaultOverrides ++ [ packageOverrides ]);
-  };
-
-  pdftext = import ./pdftext.nix { inherit lib python fetchFromGitHub; };
-  surya-ocr = import ./surya-ocr.nix { inherit lib python fetchFromGitHub; };
+  pdftext = import ./pdftext.nix { inherit lib python fetchPypi; };
+  surya-ocr = import ./surya-ocr.nix { inherit lib python fetchPypi; };
 in
 
 python.pkgs.buildPythonApplication rec {
   pname = "marker-pdf";
-  version = "1.7.3";
+  version = "1.8.2";
   pyproject = true;
 
-  src = fetchFromGitHub {
-    owner = "VikParuchuri";
-    repo = "marker";
-    rev = "v${version}";
-    hash = "sha256-tZxD+sosYazNJNZAn9gTp97Ho81xFInD9aQv5H8rspw=";
+  src = fetchPypi {
+    pname = "marker_pdf";
+    inherit version;
+    hash = "sha256-k2mxOpBBtXdCzxP4hqfXnCEqUF69hQZWr/d9V/tITZ4=";
   };
 
   patches = [
     ./skip-font-download.patch
+    ./fix-output-dir.patch
   ];
 
   pythonRelaxDeps = [
+    "click"
     "anthropic"
     "markdownify"
     "pillow"
@@ -64,32 +57,30 @@ python.pkgs.buildPythonApplication rec {
     python.pkgs.poetry-core
   ];
 
-  dependencies =
-    [
-      pdftext
-      surya-ocr
-    ]
-    ++ (with python.pkgs; [
-      anthropic
-      click
-      filetype
-      ftfy
-      google-genai
-      markdown2
-      markdownify
-      openai
-      pillow
-      pydantic
-      pydantic-settings
-      python-dotenv
-      rapidfuzz
-      regex
-      requests
-      scikit-learn
-      torch
-      tqdm
-      transformers
-    ]);
+  dependencies = [
+    pdftext
+    surya-ocr
+  ]
+  ++ (with python.pkgs; [
+    anthropic
+    click
+    filetype
+    ftfy
+    google-genai
+    markdown2
+    markdownify
+    openai
+    pillow
+    pydantic
+    pydantic-settings
+    python-dotenv
+    rapidfuzz
+    regex
+    scikit-learn
+    torch
+    tqdm
+    transformers
+  ]);
 
   optional-dependencies = with python.pkgs; {
     full = [
@@ -106,10 +97,10 @@ python.pkgs.buildPythonApplication rec {
   ];
 
   meta = {
-    description = "Convert PDF to markdown + JSON quickly with high accuracy";
-    homepage = "https://github.com/VikParuchuri/marker";
+    description = "Convert documents to markdown with high speed and accuracy";
+    homepage = "https://pypi.org/project/marker-pdf/";
     license = lib.licenses.gpl3Only;
     maintainers = with lib.maintainers; [ ];
-    mainProgram = "marker-pdf";
   };
+
 }

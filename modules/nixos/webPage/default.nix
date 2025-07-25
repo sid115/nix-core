@@ -3,7 +3,7 @@
 let
   cfg = config.services.webPage;
   domain = config.networking.domain;
-  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
+  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
   nginxUser = config.services.nginx.user;
 
   inherit (lib)
@@ -12,8 +12,6 @@ let
     mkOption
     types
     ;
-
-  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   options.services.webPage = {

@@ -2,7 +2,7 @@
 
 {
   # nix-core packages accessible through 'pkgs.core'
-  core-packages = final: prev: { core = inputs.core.packages."${final.system}"; };
+  core-packages = final: prev: { core = inputs.core.overlays.additions final prev; };
 
   # packages in `pkgs/` accessible through 'pkgs.local'
   local-packages = final: prev: { local = import ../pkgs { pkgs = final; }; };

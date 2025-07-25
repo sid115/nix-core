@@ -29,7 +29,7 @@ in
       default = "dracula";
       description = ''
         Available color schemes are:
-        "ayu" "dracula" "moonfly" "onedark" "oxocarbon" "tokyonight"
+        "ayu" "dracula" "modus-vivendi" "moonfly" "onedark" "oxocarbon" "tokyonight"
       '';
     };
     gaps = mkOption {
@@ -60,6 +60,7 @@ in
         nixvim.enable = mkIf (
           cfg.scheme == "ayu"
           || cfg.scheme == "dracula"
+          || cfg.scheme == "modus-vivendi"
           || cfg.scheme == "onedark"
           || cfg.scheme == "oxocarbon"
           || cfg.scheme == "tokyonight"
@@ -75,6 +76,10 @@ in
       image = schemesPath + "/wallpaper.png";
       polarity = "dark";
     };
+
+    home.packages = [
+      (pkgs.callPackage ./print-colors { })
+    ];
 
     # handle styling manually
     programs.waybar = {
@@ -92,6 +97,7 @@ in
     programs.nixvim.colorschemes = {
       ayu.enable = mkIf (cfg.scheme == "ayu") (mkForce true);
       dracula.enable = mkIf (cfg.scheme == "dracula") (mkForce true);
+      modus.enable = mkIf (cfg.scheme == "modus-vivendi") (mkForce true);
       onedark.enable = mkIf (cfg.scheme == "onedark") (mkForce true);
       oxocarbon.enable = mkIf (cfg.scheme == "oxocarbon") (mkForce true);
       tokyonight.enable = mkIf (cfg.scheme == "tokyonight") (mkForce true);

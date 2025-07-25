@@ -23,7 +23,6 @@
 
   normalUsers = {
     USERNAME = {
-      name = "USERNAME";
       extraGroups = [
         "audio"
         "floppy"

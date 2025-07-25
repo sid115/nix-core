@@ -69,13 +69,18 @@ key | action
 `<leader>sg` | switch to german spell checking
 `z=` | correction suggestions for a misspelled word
 `zg` | add word to spell list
-`<CR>` | confirm selection in completion menu
-`<Tab>` | select next item in completion menu
+`<C-CR>` | confirm selection in completion menu
+`<C-Tab>` | select next item in completion menu
 `gd` | go to definition
 `K` | display more information about word under cursor
+`<leader>bl` | list buffers
+`<C-S-J>` | next buffer
+`<C-S-K>` | previous buffer
 `<leader>fb` or `<C-e>` | open file browser
 `<leader>ff` | find files by name
 `<leader>fg` | find files containing string
+`<leader>xd` | toggle diagnostics
+`<leader>xq` | toggle quick fix list
 `<leader>ce` | let copilot explains the selected code
 `<leader>cr` | let copilot review the selected code
 `<leader>cf` | let copilot fix the selected code

@@ -17,10 +17,5 @@ in
     programs.lf = {
       enable = true;
     };
-
-    # special workspace (scratchpad) for lf
-    wayland.windowManager.hyprland.extraConfig = ''
-      workspace = special:lf, on-created-empty:${cfg.applications.terminal.default} -T lf -e lf
-    '';
   };
 }

@@ -1,19 +1,17 @@
 {
   lib,
   python,
-  fetchFromGitHub,
+  fetchPypi,
 }:
 
 python.pkgs.buildPythonApplication rec {
   pname = "pdftext";
-  version = "0.6.2";
+  version = "0.6.3";
   pyproject = true;
 
-  src = fetchFromGitHub {
-    owner = "VikParuchuri";
-    repo = "pdftext";
-    rev = "v${version}";
-    hash = "sha256-mmxNrjEXQ5J5aZkn0+iXAamNBnu1RWdqLe5MjJGwkp0=";
+  src = fetchPypi {
+    inherit pname version;
+    hash = "sha256-q1xd/g8ft43h24N8ytrB6kGwfOGJD+rZc8moTNr1Tew=";
   };
 
   pythonRelaxDeps = [
@@ -38,9 +36,8 @@ python.pkgs.buildPythonApplication rec {
 
   meta = {
     description = "Extract structured text from pdfs quickly";
-    homepage = "https://github.com/VikParuchuri/pdftext";
+    homepage = "https://pypi.org/project/pdftext/";
     license = lib.licenses.asl20;
     maintainers = with lib.maintainers; [ ];
-    mainProgram = "pdftext";
   };
 }

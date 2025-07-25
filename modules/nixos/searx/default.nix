@@ -3,16 +3,15 @@
 let
   cfg = config.services.searx;
   domain = config.networking.domain;
-  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
+  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkDefault
+    mkForce
     mkIf
     mkOption
     types
     ;
-
-  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   options.services.searx = {
@@ -31,7 +30,8 @@ in
   config = mkIf cfg.enable {
     services.searx = {
       redisCreateLocally = mkDefault true;
-      runInUwsgi = mkDefault true;
+      runInUwsgi = mkForce false;
+      environmentFile = config.sops.templates."searx/env-file".path;
       settings = {
         debug = mkDefault false;
         privacypolicy_url = mkDefault false;
@@ -40,7 +40,8 @@ in
         enable_metrics = mkDefault false;
         server = {
           bind_address = mkDefault "127.0.0.1";
-          secret_key = mkDefault "searx_secret_key"; # FIXME
+          port = mkDefault 8787;
+          secret_key = mkDefault "@SEARX_SECRET_KEY@";
           base_url = mkDefault "https://${fqdn}";
           limiter = mkDefault true;
         };
@@ -61,5 +62,23 @@ in
       forceSSL = cfg.forceSSL;
       locations."/".proxyPass = mkDefault "http://localhost:${toString cfg.settings.server.port}";
     };
+
+    sops =
+      let
+        owner = "searx";
+        group = "searx";
+        mode = "0440";
+      in
+      {
+        secrets."searx/secret-key" = {
+          inherit owner group mode;
+        };
+        templates."searx/env-file" = {
+          inherit owner group mode;
+          content = ''
+            SEARX_SECRET_KEY=${config.sops.placeholder."searx/secret-key"}
+          '';
+        };
+      };
   };
 }

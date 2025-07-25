@@ -1,25 +1,29 @@
 {
   lib,
   python,
-  fetchFromGitHub,
+  fetchPypi,
 }:
 
 python.pkgs.buildPythonApplication rec {
   pname = "surya-ocr";
-  version = "0.14.2";
+  version = "0.14.6";
   pyproject = true;
 
-  src = fetchFromGitHub {
-    owner = "VikParuchuri";
-    repo = "surya";
-    rev = "v${version}";
-    hash = "sha256-8be9NmlqVuDJj7TiVdnGCrpRNbWlA9Fo+6wBiYY7BgM=";
+  src = fetchPypi {
+    pname = "surya_ocr";
+    inherit version;
+    hash = "sha256-yFoL2d0AyGq0TtJlwO0VYBEG268tDQoGf6e7UzE31fA=";
   };
 
   pythonRelaxDeps = [
     "opencv-python-headless"
     "pillow"
     "pypdfium2"
+    "einops"
+  ];
+
+  pythonRemoveDeps = [
+    "pre-commit"
   ];
 
   build-system = [
@@ -28,6 +32,7 @@ python.pkgs.buildPythonApplication rec {
 
   dependencies = with python.pkgs; [
     click
+    einops
     filetype
     opencv-python-headless
     pillow
@@ -45,10 +50,9 @@ python.pkgs.buildPythonApplication rec {
   ];
 
   meta = {
-    description = "OCR, layout analysis, reading order, table recognition in 90+ languages";
-    homepage = "https://github.com/VikParuchuri/surya";
+    description = "OCR, layout, reading order, and table recognition in 90+ languages";
+    homepage = "https://pypi.org/project/surya-ocr/";
     license = lib.licenses.gpl3Only;
     maintainers = with lib.maintainers; [ ];
-    mainProgram = "surya";
   };
 }
