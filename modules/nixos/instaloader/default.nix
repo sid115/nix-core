@@ -184,21 +184,20 @@ in
     systemd = {
       services.instaloader = {
         description = "Download media from Instagram profiles";
-        serviceConfig =
-          {
-            Type = "oneshot";
-            User = cfg.user;
-            Group = cfg.group;
-            ExecStart = getExe instaloaderScript;
-            StateDirectory = builtins.baseNameOf cfg.home;
-            PrivateNetwork = false;
-          }
-          // optionalAttrs cfg.retry.enable {
-            Restart = "on-failure";
-            RestartSec = cfg.retry.delay;
-            StartLimitBurst = cfg.retry.attempts;
-            StartLimitIntervalSec = "1day";
-          };
+        serviceConfig = {
+          Type = "oneshot";
+          User = cfg.user;
+          Group = cfg.group;
+          ExecStart = getExe instaloaderScript;
+          StateDirectory = builtins.baseNameOf cfg.home;
+          PrivateNetwork = false;
+        }
+        // optionalAttrs cfg.retry.enable {
+          Restart = "on-failure";
+          RestartSec = cfg.retry.delay;
+          StartLimitBurst = cfg.retry.attempts;
+          StartLimitIntervalSec = "1day";
+        };
         after = [ "network-online.target" ];
         wants = [ "network-online.target" ];
       };
