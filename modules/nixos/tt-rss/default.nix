@@ -8,7 +8,7 @@
 let
   cfg = config.services.tt-rss;
   domain = config.networking.domain;
-  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
+  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkAfter
@@ -17,8 +17,6 @@ let
     mkOption
     types
     ;
-
-  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   options.services.tt-rss = {

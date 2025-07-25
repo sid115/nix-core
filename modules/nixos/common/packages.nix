@@ -6,8 +6,10 @@
     fzf
     git
     htop
+    hydra-check
     iproute2
     jq
+    lm_sensors
     lsof
     neovim
     netcat-openbsd

@@ -7,7 +7,7 @@
 let
   cfg = config.services.gitea;
   domain = config.networking.domain;
-  fqdn = if (isNotEmptyStr cfg.subdomain) then "${cfg.subdomain}.${domain}" else domain;
+  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
     elemAt
@@ -16,8 +16,6 @@ let
     mkOption
     types
     ;
-
-  isNotEmptyStr = (import ../../../lib).isNotEmptyStr; # FIXME: cannot get lib overlay to work
 in
 {
   options.services.gitea = {
@@ -47,6 +45,7 @@ in
           DEFAULT_THEME = mkDefault "arc-green";
         };
         database.type = mkDefault "postgres";
+        mailer.SENDMAIL_PATH = "/run/wrappers/bin/sendmail"; # https://github.com/NixOS/nixpkgs/issues/421484
       };
     };
 

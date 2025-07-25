@@ -5,6 +5,7 @@
 
 pkgs.mkShell {
   nativeBuildInputs = with pkgs; [
+    nixfmt-tree
     (python313.withPackages (
       p: with p; [
         mkdocs

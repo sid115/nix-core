@@ -23,4 +23,6 @@ stdenv.mkDerivation rec {
 
     sed -i "s|^TEMPLATES_DIR.*|TEMPLATES_DIR=$out/share/templates|" $out/bin/${pname}
   '';
+
+  meta.mainProgram = "create";
 }

@@ -2,16 +2,17 @@
 
 # Defaults
 FLAKE_PATH="$HOME/.config/nixos" # Default flake path
-HOME_USER="$(whoami)"            # Default user for Home Manager
-NIXOS_HOST="$(hostname)"         # Default target host for NixOS
-BUILD_HOST=""                    # Default build host for NixOS. Empty means local build
-TARGET_HOST=""                   # Default target host for NixOS. Empty means localhost
+HOME_USER="$(whoami)"            # Default username. Used to identify the Home Manager configuration
+NIXOS_HOST="$(hostname)"         # Default hostname. Used to identify the NixOS and Home Manager configuration
+BUILD_HOST=""                    # Default build host. Empty means localhost
+TARGET_HOST=""                   # Default target host. Empty means localhost
 UPDATE=0                         # Default to not update flake repositories
 ROLLBACK=0                       # Default to not rollback
 SHOW_TRACE=0                     # Default to not show detailed error messages
 
 # Function to display the help message
 Help() {
+  echo "Wrapper script for 'nixos-rebuild switch' and 'home-manager switch' commands."
   echo "Usage: rebuild <command> [OPTIONS]"
   echo
   echo "Commands:"
@@ -21,19 +22,18 @@ Help() {
   echo "  help                 Show this help message"
   echo
   echo "Options (for NixOS and Home Manager):"
-  echo "  -H, --host <host>    Specify the target hostname. Default: $NIXOS_HOST"
+  echo "  -H, --host <host>    Specify the hostname (as in 'nixosConfiguraions.<host>'). Default: $NIXOS_HOST"
   echo "  -p, --path <path>    Set the path to the flake directory. Default: $FLAKE_PATH"
   echo "  -U, --update         Update flake inputs"
   echo "  -r, --rollback       Don't build the new configuration, but use the previous generation instead"
   echo "  -t, --show-trace     Show detailed error messages"
-  echo "  -d, --dry-build      Build the configuration without applying it"
   echo
   echo "NixOS only options:"
-  echo "  -b, --build-host <user@example.com>     Use a remote host for building the configurationvia SSH"
-  echo "  -T, --target-host <user@example.com>    Deploy the configuration to a remote host via SSH"
+  echo "  -B, --build-host <user@example.com>     Use a remote host for building the configuration via SSH"
+  echo "  -T, --target-host <user@example.com>    Deploy the configuration to a remote host via SSH. If '--host' is specified, it will be used as the target host."
   echo
   echo "Home Manager only options:"
-  echo "  -u, --user <user>    Specify the username. Default: $HOME_USER"
+  echo "  -u, --user <user>    Specify the username (as in 'homeConfigurations.<user>@<host>'). Default: $HOME_USER"
 }
 
 # Function to handle errors
@@ -47,11 +47,15 @@ Rebuild_nixos() {
   local FLAKE="$FLAKE_PATH#$NIXOS_HOST"
 
   # Construct rebuild command
-  CMD="sudo nixos-rebuild switch --flake $FLAKE"
+  CMD="nixos-rebuild switch --sudo --flake $FLAKE"
   [ "$ROLLBACK" = 1 ] && CMD="$CMD --rollback"
   [ "$SHOW_TRACE" = 1 ] && CMD="$CMD --show-trace"
   [ -n "$BUILD_HOST" ] && CMD="$CMD --build-host $BUILD_HOST"
-  [ -n "$TARGET_HOST" ] && CMD="$CMD --target-host $TARGET_HOST --use-remote-sudo"
+  if [ "$NIXOS_HOST" != "$(hostname)" ] && [ -z "$TARGET_HOST" ]; then
+    TARGET_HOST="$NIXOS_HOST"
+    echo "Using '$TARGET_HOST' as target host."
+  fi
+  [ -n "$TARGET_HOST" ] && CMD="$CMD --target-host $TARGET_HOST --ask-sudo-password"
 
   # Rebuild NixOS configuration
   if [ "$ROLLBACK" = 0 ]; then 
@@ -60,6 +64,7 @@ Rebuild_nixos() {
     echo "Rolling back to last NixOS generation..."
   fi
 
+  echo "Executing command: $CMD"
   $CMD || error "NixOS rebuild failed"
   echo "NixOS rebuild completed successfully."
 }
@@ -88,6 +93,8 @@ Rebuild_home() {
   else
     echo "Rolling back to last Home Manager generation..."
   fi
+
+  echo "Executing command: $CMD"
   $CMD || error "Home Manager rebuild failed"
   echo "Home Manager rebuild completed successfully."
 }
@@ -144,17 +151,17 @@ while [ $# -gt 0 ]; do
       SHOW_TRACE=1
       shift
       ;;
-    -b|--build-host)
+    -B|--build-host)
       if [ -n "$2" ]; then
         BUILD_HOST="$2"
         shift 2
       else
-        error "-b|--build-host option requires an argument"
+        error "-B|--build-host option requires an argument"
       fi
       ;;
     -T|--target-host)
       if [ -n "$2" ]; then
-        BUILD_HOST="$2"
+        TARGET_HOST="$2"
         shift 2
       else
         error "-T|--target-host option requires an argument"
