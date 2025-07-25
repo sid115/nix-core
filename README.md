@@ -11,31 +11,19 @@ This is the directory structure of this repository:
 ```
 .
 ├── apps
-├── docs
+│   ├── create       # Add new hosts to your nix-config flake
+│   └── install      # NixOS installation script
+├── docs             # Documentation hosted on GH Pages
 ├── modules
-│   ├── home
-│   └── nixos
-├── overlays
-├── pkgs
-├── templates
-│   ├── dev
-│   └── nix-config
-├── CONTRIBUTING.md
-├── README.md
-└── flake.nix
+│   ├── home         # Home Manager modules
+│   └── nixos        # NixOS modules
+├── overlays         # Fixes for and additional packages
+├── pkgs             # Custom Nix packages
+├── templats
+│   ├── dev          # Development templates
+│   └── nix-config   # Create your first nix-config flake
+└── CONTRIBUTING.md  # Contribution guide
 ```
-
-- `apps`: executables exposed through `nix run`
-- `docs`: documentation
-- `modules/home`: Home Manager modules
-- `modules/nixos`: NixOS modules
-- `overlays`: fixes for packages
-- `pkgs`: custom packages
-- `templates/dev`: development templates
-- `templates/nix-config`: kickstart your first nix-config flake
-- `CONTRIBUTING.md`: contribution guide
-- `README.md`: this file
-- `flake.nix`: entry point
 
 ## Getting started
 
@@ -48,22 +36,34 @@ The Getting Started guide will take you from scratch to a working configuration.
 To rebuild the system and/or user configurations after making changes to them, run the `rebuild` script:
 
 ```
+Wrapper script for 'nixos-rebuild switch' and 'home-manager switch' commands.
 Usage: rebuild <command> [OPTIONS]
 
 Commands:
   nixos                Rebuild NixOS configuration
   home                 Rebuild Home Manager configuration
   all                  Rebuild both NixOS and Home Manager configurations
+  help                 Show this help message
 
-Options:
-  -H, --host <host>    Specify the host (for NixOS and Home Manager). Default: $(hostname)
-  -u, --user <user>    Specify the user (for Home Manager only). Default: $(whoami)
+Options (for NixOS and Home Manager):
+  -H, --host <host>    Specify the hostname (as in 'nixosConfiguraions.<host>'). Default: $(hostname)
   -p, --path <path>    Set the path to the flake directory. Default: ~/.config/nixos
   -U, --update         Update flake inputs
   -r, --rollback       Don't build the new configuration, but use the previous generation instead
   -t, --show-trace     Show detailed error messages
-  -h, --help           Show this help message
+
+NixOS only options:
+  -B, --build-host <user@example.com>     Use a remote host for building the configuration via SSH
+  -T, --target-host <user@example.com>    Deploy the configuration to a remote host via SSH. If '--host' is specified, it will be used as the target host.
+
+Home Manager only options:
+  -u, --user <user>    Specify the username (as in 'homeConfigurations.<user>@<host>'). Default: $(whoami)
 ```
+
+Use the environment variable `NIX_SSHOPTS` to pass additional options to ssh. SSH target specifications for `-B` and `-T` are compatible with your SSH configuration. You can use the Home Manager option [`programs.ssh.matchBlocks`](https://home-manager-options.extranix.com/?query=programs.ssh.matchBlocks&release=master) to specify per-host settings.
+
+> [!TIP]
+> Check a remote system's current generation with: `ssh user@your-server "readlink /run/current-system"`
 
 ## Templates
 

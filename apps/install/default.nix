@@ -1,17 +1,18 @@
 {
-  writeShellScriptBin,
-  symlinkJoin,
+  writeShellApplication,
   git,
   ...
 }:
 
 let
-  wrapped = writeShellScriptBin "install" (builtins.readFile ./install.sh);
-in
-symlinkJoin {
   name = "install";
-  paths = [
-    wrapped
+  text = builtins.readFile ./${name}.sh;
+in
+writeShellApplication {
+  inherit name text;
+  meta.mainProgram = name;
+
+  runtimeInputs = [
     git
   ];
 }

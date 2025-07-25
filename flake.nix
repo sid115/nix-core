@@ -2,10 +2,10 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-zoom.url = "github:nixos/nixpkgs/nixos-24.05";
-    nixpkgs-comfyui.url = "github:nixos/nixpkgs/pull/402112/head";
 
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    # TODO: Implement test configs for runtime checks.
+    # home-manager.url = "github:nix-community/home-manager";
+    # home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     pre-commit-hooks.url = "github:cachix/git-hooks.nix";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
@@ -31,30 +31,20 @@
         system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
+          mkApp = name: desc: {
+            type = "app";
+            program = pkgs.lib.getExe (pkgs.callPackage ./apps/${name} { });
+            meta.description = desc;
+          };
         in
         {
-          install = {
-            type = "app";
-            program =
-              let
-                pkg = pkgs.callPackage ./apps/install { };
-              in
-              "${pkg}/bin/install";
-            meta.description = "Install a NixOS configuration.";
-          };
-          create = {
-            type = "app";
-            program =
-              let
-                pkg = pkgs.callPackage ./apps/create { };
-              in
-              "${pkg}/bin/create";
-            meta.description = "Create a new NixOS configuration.";
-          };
+          install = mkApp "install" "Install a NixOS configuration.";
+          create = mkApp "create" "Create a new NixOS configuration.";
+          update-packages = mkApp "update-packages" "Update all packages in this flake.";
         }
       );
 
-      packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+      packages = forAllSystems (system: import ./pkgs { pkgs = nixpkgs.legacyPackages.${system}; });
 
       overlays = import ./overlays { inherit inputs; };
 
@@ -72,7 +62,7 @@
         }
       );
 
-      # TODO
+      # TODO: Implement test configs for runtime checks.
       # nixosConfigurations = {
       #   nixos-test = nixpkgs.lib.nixosSystem {
       #     specialArgs = { inherit inputs outputs; };
@@ -80,7 +70,7 @@
       #   };
       # };
 
-      # TODO
+      # TODO: Implement test configs for runtime checks.
       # homeConfigurations = {
       #   hm-test = home-manager.lib.homeManagerConfiguration {
       #     pkgs = nixpkgs.legacyPackages.x86_64-linux;

@@ -45,6 +45,7 @@ in
           DEFAULT_THEME = mkDefault "arc-green";
         };
         database.type = mkDefault "postgres";
+        mailer.SENDMAIL_PATH = "/run/wrappers/bin/sendmail"; # https://github.com/NixOS/nixpkgs/issues/421484
       };
     };
 

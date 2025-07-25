@@ -4,7 +4,6 @@
   imports = [
     ./cmp.nix
     ./copilot-chat.nix
-    ./dap.nix
     ./lsp.nix
     ./lualine.nix
     ./telescope.nix

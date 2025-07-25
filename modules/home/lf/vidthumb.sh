@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 if ! [ -f "$1" ]; then
 	exit 1

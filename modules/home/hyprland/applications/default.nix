@@ -48,6 +48,7 @@ let
   inherit (lib)
     attrValues
     filter
+    getExe
     mapAttrs
     mkOption
     types
@@ -73,6 +74,7 @@ in
     ./qbittorrent
     ./screenshot
     ./thunderbird
+    ./yazi
     ./zathura
     # add your application directories here
   ];
@@ -114,18 +116,21 @@ in
       bind = [ "$mod, m, exec, ${emailclient}" ];
     };
 
+    equalizer = mkAppAttrs {
+      default = "easyeffects";
+      bind = [ "$mod CTRL, e, exec, ${getExe pkgs.easyeffects}" ];
+    };
+
     filemanager = mkAppAttrs {
-      default = "lf";
-      bind = [ "$mod, e, togglespecialworkspace, ${filemanager}" ]; # lf autostarts on this workspace
-      windowrule = [
-        "float, title:^${filemanager}$"
-        "size 50% 50%, title:^${filemanager}$"
-      ];
+      default = "yazi";
+      bind = [ "$mod, e, exec, ${terminal} -T ${filemanager} -e ${filemanager}" ];
     };
 
     matrix-client = mkAppAttrs {
       default = "element-desktop";
-      bind = [ "$mod SHIFT, e, exec, ${matrix-client}" ];
+      # FIXME: screen sharing does not work
+      # bind = [ "$mod SHIFT, e, exec, ${matrix-client}" ];
+      bind = [ "$mod SHIFT, e, exec, chromium --app=https://app.element.io" ];
     };
 
     musicplayer = mkAppAttrs {
