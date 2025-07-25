@@ -24,7 +24,7 @@ buildNpmPackage rec {
   makeWrapperArgs = [
     "--set"
     "PLAYWRIGHT_BROWSERS_PATH"
-    "${playwright-driver.browsers}"
+    "${playwright-driver.browsers-chromium}"
   ];
 
   meta = {
