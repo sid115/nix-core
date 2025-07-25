@@ -83,5 +83,6 @@ nav:
       - styling: modules/home/styling.md
       - virtualization: modules/home/virtualization.md
       - waybar: modules/home/waybar.md
+      - yazi: modules/home/yazi.md
   - Tips:
     - Useful Links: tips/useful-links.md

@@ -8,7 +8,7 @@
 
 let
   v_patch = "17.2";
-  version = "${v_patch}.20241101";
+  version = "${v_patch}.20250617";
 
   # Possible values: ca1 usa10 usa11 usa13 usa14 uk3 uk5 germany5 germany6 france3
   server = "germany4";

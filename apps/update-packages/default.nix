@@ -1,11 +1,12 @@
 {
   writeShellApplication,
-  git,
+  jq,
+  nix-update,
   ...
 }:
 
 let
-  name = "install";
+  name = "update-packages";
   text = builtins.readFile ./${name}.sh;
 in
 writeShellApplication {
@@ -13,6 +14,7 @@ writeShellApplication {
   meta.mainProgram = name;
 
   runtimeInputs = [
-    git
+    jq
+    nix-update
   ];
 }

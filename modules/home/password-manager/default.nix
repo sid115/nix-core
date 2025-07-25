@@ -78,23 +78,22 @@ in
 
     services.gpg-agent.pinentry.package = mkOverride 1001 pkgs.pinentry-qt; # mkDefault collides with gpg home module
 
-    home.packages =
-      [
-        passmenuScript
-        pkgs.zbar
-      ]
-      ++ (
-        if cfg.wayland then
-          [
-            pkgs.bemenu
-            pkgs.ydotool
-          ]
-        else
-          [
-            pkgs.dmenu
-            pkgs.xdotool
-          ]
-      );
+    home.packages = [
+      passmenuScript
+      pkgs.zbar
+    ]
+    ++ (
+      if cfg.wayland then
+        [
+          pkgs.bemenu
+          pkgs.ydotool
+        ]
+      else
+        [
+          pkgs.dmenu
+          pkgs.xdotool
+        ]
+    );
 
     home.sessionVariables.PASSWORD_STORE_MENU = if cfg.wayland then "bemenu" else "dmenu";
 

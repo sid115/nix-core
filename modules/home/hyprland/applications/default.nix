@@ -74,6 +74,7 @@ in
     ./qbittorrent
     ./screenshot
     ./thunderbird
+    ./yazi
     ./zathura
     # add your application directories here
   ];
@@ -121,7 +122,7 @@ in
     };
 
     filemanager = mkAppAttrs {
-      default = "lf";
+      default = "yazi";
       bind = [ "$mod, e, exec, ${terminal} -T ${filemanager} -e ${filemanager}" ];
     };
 
