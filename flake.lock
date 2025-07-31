@@ -70,6 +70,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-ncmpcpp": {
+      "locked": {
+        "lastModified": 1752427994,
+        "narHash": "sha256-xldK0K6bGl2wzX3wqdpQDMaFA8l8GWDieNw9+fbyoaQ=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "b47d4f01d4213715a1f09b999bab96bb6a5b675e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "b47d4f01d4213715a1f09b999bab96bb6a5b675e",
+        "type": "github"
+      }
+    },
     "nixpkgs-zoom": {
       "locked": {
         "lastModified": 1735563628,
@@ -128,6 +144,7 @@
       "inputs": {
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs_2",
+        "nixpkgs-ncmpcpp": "nixpkgs-ncmpcpp",
         "nixpkgs-zoom": "nixpkgs-zoom",
         "pre-commit-hooks": "pre-commit-hooks"
       }
