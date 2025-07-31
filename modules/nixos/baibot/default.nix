@@ -17,9 +17,9 @@ let
     user = {
       mxid_localpart = "baibot";
       name = "baibot";
-      password = "baibot";
+      # password = ""; # Use BAIBOT_USER_PASSWORD instead
       encryption = {
-        recovery_passphrase = "super-secret-key";
+        # recovery_passphrase = ""; # Use BAIBOT_ENCRYPTION_RECOVERY_PASSPHRASE instead
         recovery_reset_allowed = false;
       };
     };
@@ -29,8 +29,8 @@ let
     ];
     persistence = {
       data_dir_path = "${homeDir}/data";
-      session_encryption_key = "9701cd109ed56770687dd8410f7d7371a4390dd3feb8ed721f189a0756c40098";
-      config_encryption_key = "a9f1df98d288802ead20a8be2c701a627eabd31cf3d9e2aea28867ccd7a4ded7";
+      # session_encryption_key = ""; # Use BAIBOT_PERSISTENCE_SESSION_ENCRYPTION_KEY instead
+      # config_encryption_key = ""; # Use BAIBOT_PERSISTENCE_CONFIG_ENCRYPTION_KEY instead
     };
     agents = {
       static_definitions = [ ];
