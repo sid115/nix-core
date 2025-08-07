@@ -55,7 +55,10 @@ python3.pkgs.buildPythonApplication rec {
   meta = {
     description = "A flexible arXiv search and analysis service with MCP protocol support";
     homepage = "https://pypi.org/project/arxiv-mcp-server";
-    license = with lib.licenses; [ asl20 mit ];
+    license = with lib.licenses; [
+      asl20
+      mit
+    ];
     maintainers = with lib.maintainers; [ ];
     mainProgram = "arxiv-mcp-server";
   };
