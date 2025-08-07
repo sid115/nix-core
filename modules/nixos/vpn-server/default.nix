@@ -1,7 +1,3 @@
-# Create a key pair:
-# nix-shell -p wireguard-tools --run "wg genkey | tee privkey | wg pubkey > pubkey"
-# This will create two files: `privkey` and `pubkey`.
-
 {
   config,
   pkgs,
@@ -116,6 +112,10 @@ in
         # TODO: check for IP collisions
         # TODO: make sure every IP is in the same subnet
       ];
+
+    boot.kernel.sysctl = {
+      "net.ipv4.ip_forward" = true;
+    };
 
     networking = {
       firewall.allowedUDPPorts = [ cfg.port ];
