@@ -11,6 +11,9 @@
       }
     );
 
+    # https://hydra.nixos.org/build/303398398
+    ncmpcpp = inputs.nixpkgs-ncmpcpp.legacyPackages.${final.system}.ncmpcpp;
+
     # You should use the Flatpak instead.
     zoom-us =
       let

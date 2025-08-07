@@ -4,8 +4,26 @@
   fetchFromGitHub,
   makeWrapper,
   playwright-driver,
+  linkFarm,
+  ...
 }:
 
+let
+  revision = "1161";
+
+  chromium-headless-shell =
+    playwright-driver.passthru.components."chromium-headless-shell".overrideAttrs
+      (old: {
+        inherit revision;
+      });
+
+  browsers-headless-only = linkFarm "playwright-browsers-headless-only" [
+    {
+      name = "chromium_headless_shell-${revision}";
+      path = chromium-headless-shell;
+    }
+  ];
+in
 buildNpmPackage rec {
   pname = "fetcher-mcp";
   version = "unstable-2025-06-26";
@@ -24,7 +42,7 @@ buildNpmPackage rec {
   makeWrapperArgs = [
     "--set"
     "PLAYWRIGHT_BROWSERS_PATH"
-    "${playwright-driver.browsers-chromium}"
+    "${browsers-headless-only}"
   ];
 
   meta = {

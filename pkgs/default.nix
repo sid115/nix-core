@@ -4,6 +4,7 @@
 }:
 
 {
+  arxiv-mcp-server = pkgs.callPackage ./arxiv-mcp-server { };
   baibot = pkgs.callPackage ./baibot { };
   blender-mcp = pkgs.callPackage ./blender-mcp { };
   cppman = pkgs.callPackage ./cppman { };

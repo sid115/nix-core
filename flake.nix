@@ -2,6 +2,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-zoom.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs-ncmpcpp.url = "github:nixos/nixpkgs/b47d4f01d4213715a1f09b999bab96bb6a5b675e"; # https://hydra.nixos.org/build/302425768
 
     # TODO: Implement test configs for runtime checks.
     # home-manager.url = "github:nix-community/home-manager";

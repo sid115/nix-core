@@ -1,7 +1,5 @@
 # Baibot
 
-> Warning: This module is not actively maintained. Expect things to break!
-
 Baibot is a Matrix AI bot.
 
 View the [*nix-core* NixOS module on GitHub](https://github.com/sid115/nix-core/tree/master/modules/nixos/baibot).
@@ -14,25 +12,9 @@ View the [*nix-core* NixOS module on GitHub](https://github.com/sid115/nix-core/
 
 ### Configuration
 
-Baibot requires specific configuration options and secrets to function correctly. These settings can be provided via an environment file (`.env`) to securely handle sensitive information. Below are the required and optional settings you must configure:
+Since baibot's configuration file requires setting secrets as plain text strings, configuring the baibot service through Nix is not supported. You have to create a configuration file on your machine and point to it with `services.baibot.configFile`. 
 
-#### Required Settings
-- **Matrix User Password**: The password for the `baibot` Matrix user. This is required for authentication with the homeserver. Set it as `BAIBOT_USER_PASSWORD` in your `.env` file.
-- **Encryption Recovery Passphrase**: A secure passphrase for encryption key recovery. Required for secure message storage. Set it as `BAIBOT_ENCRYPTION_RECOVERY_PASSPHRASE` in your `.env` file.
-- **Session Encryption Key**: A 64-character hex key (generated using `openssl rand -hex 32`) for encrypting session data. Set it as `BAIBOT_PERSISTENCE_SESSION_ENCRYPTION_KEY` in your `.env` file.
-- **Config Encryption Key**: A 64-character hex key for encrypting configuration data. Set it as `BAIBOT_PERSISTENCE_CONFIG_ENCRYPTION_KEY` in your `.env` file.
-
-```bash
-BAIBOT_USER_PASSWORD="your-secure-password-for-baibot"
-BAIBOT_ENCRYPTION_RECOVERY_PASSPHRASE="your-long-and-secure-recovery-passphrase"
-...
-```
-
-#### Configure the `environmentFile` Option
-In your NixOS configuration, set the path to the `.env` file using the `environmentFile` option:
-```nix
-services.baibot.environmentFile = "/var/lib/secrets/baibot.env";
-```
+Use the [template configuration file](https://github.com/etkecc/baibot/blob/main/etc/app/config.yml.dist) for reference.
 
 ### User Creation
 
@@ -51,7 +33,7 @@ Restart both `matrix-synapse.service` and `baibot.service`. You can then invite 
 Send this message in a room where Baibot has joined:
 
 ```
-!bai agent create-global openai openai-agent
+!bai agent create-global openai openai
 ```
 
 The bot will reply with a YAML configuration which you need to edit and send back:
@@ -79,13 +61,13 @@ image_generation:
   quality: standard
 ```
 
-Set `openai-agent` as the default for any purpose you like:
+Set `openai` as the default for any purpose you like:
 
 ```
-!bai config global set-handler text-generation global/openai-agent
-!bai config global set-handler speech-to-text global/openai-agent
-!bai config global set-handler text-to-speech global/openai-agent
-!bai config global set-handler image-generation global/openai-agent
+!bai config global set-handler text-generation global/openai
+!bai config global set-handler speech-to-text global/openai
+!bai config global set-handler text-to-speech global/openai
+!bai config global set-handler image-generation global/openai
 ```
 
 ## Tips
