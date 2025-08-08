@@ -8,10 +8,11 @@
 let
   cfg = config.services.instaloader;
   sessionFile =
-    if (cfg.sessionFile != null) then
+    if (cfg.sessionFile != "") then
       cfg.sessionFile
     else
       "${cfg.home}/.config/instaloader/session-${cfg.login}";
+  passwordFile = if (cfg.passwordFile != null) then "${cfg.passwordFile}" else "";
 
   instaloaderScript = pkgs.writeShellScriptBin "instaloader-run" ''
     declare -a args
@@ -23,11 +24,11 @@ let
     # Skip password authentication if session file exists
     if [[ ! -r "${sessionFile}" ]]; then
       args+=(--login "${cfg.login}")
-      if [[ ! -r "${cfg.passwordFile or ""}" ]]; then
-        echo "Error: Instaloader password file '${cfg.passwordFile}' not found or not readable." >&2
+      if [[ ! -r "${passwordFile}" ]]; then
+        echo "Error: Instaloader password file '${passwordFile}' not found or not readable." >&2
         exit 1
       fi
-      args+=(--password "$(cat "${cfg.passwordFile}")")
+      args+=(--password "$(cat "${passwordFile}")")
     fi
 
     ${optionalString cfg.stories "args+=(--stories)"}
