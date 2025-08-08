@@ -8,18 +8,18 @@
 
 buildNpmPackage (finalAttrs: {
   pname = "qwen-code";
-  version = "unstable-2025-07-24";
+  version = "unstable-2025-08-01";
 
   src = fetchFromGitHub {
     owner = "sid115";
     repo = "qwen-code";
-    rev = "e082e301bf2e779435237aab56927b204ead5d2e";
-    hash = "sha256-qX2ssemIt3Ijl9GxCgurcXg5B5ZC2D6cRjGqD9G8Ksg=";
+    rev = "fac00e03f28557ba3d1040ece4bc509d0a8c9528";
+    hash = "sha256-Bn+n+CeQh9Hqee0G7OfvQRFXV1WwozyRE02+u30eUS4=";
   };
 
   npmDeps = fetchNpmDeps {
     inherit (finalAttrs) src;
-    hash = "sha256-zzF/9V+g3uxZxCGmIIHplDX8IRd2txbLj9lco+pkkWg=";
+    hash = "sha256-1p3AIPBbFy+P9x+f1cdYuj8ctr735kP2eBJT1wO0is8=";
   };
 
   buildPhase = ''

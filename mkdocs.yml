@@ -86,3 +86,4 @@ nav:
       - yazi: modules/home/yazi.md
   - Tips:
     - Useful Links: tips/useful-links.md
+    - Dependency Tracing: tips/dependency-tracing.md

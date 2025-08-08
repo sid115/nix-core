@@ -22,6 +22,9 @@ in
         settings = {
           auto_install = mkDefault true;
           ensure_installed = mkDefault "all";
+          ignore_install = [
+            "ipkg" # upstream is gone
+          ];
           highlight.enable = mkDefault true;
           incremental_selection.enable = mkDefault true;
           indent.enable = mkDefault true;
@@ -36,5 +39,10 @@ in
     home.sessionVariables = mkIf plugin.enable {
       CC = mkDefault cc;
     };
+
+    # Fix for: WARNING `tree-sitter` executable not found
+    # home.packages = mkIf plugin.enable [
+    #   pkgs.tree-sitter
+    # ];
   };
 }
