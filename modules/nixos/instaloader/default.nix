@@ -162,16 +162,16 @@ in
     assertions = [
       {
         assertion = cfg.login != "";
-        message = "ERROR: Instaloader: `login` is required.";
+        message = "Instaloader: `login` is required.";
       }
       {
         assertion = cfg.profiles != [ ];
-        message = "ERROR: Instaloader: `profiles` must have at least one entry.";
+        message = "Instaloader: `profiles` must have at least one entry.";
       }
     ];
     warnings =
       if (cfg.passwordFile == null) then
-        [ "WARNING: Instaloader: `passwordFile` is null. Relying on session file ${sessionFile}" ]
+        [ "Instaloader: `passwordFile` is null. Relying on session file ${sessionFile}" ]
       else
         [ ];
 
@@ -192,7 +192,7 @@ in
             User = cfg.user;
             Group = cfg.group;
             ExecStart = getExe instaloaderScript;
-            StateDirectory = builtins.baseNameOf cfg.home;
+            WorkingDirectory = cfg.home;
             PrivateNetwork = false;
           }
           // optionalAttrs cfg.retry.enable {
