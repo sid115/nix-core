@@ -23,7 +23,7 @@ let
     # Skip password authentication if session file exists
     if [[ ! -r "${sessionFile}" ]]; then
       args+=(--login "${cfg.login}")
-      if [[ ! -r "${cfg.passwordFile}" ]]; then
+      if [[ ! -r "${cfg.passwordFile or ""}" ]]; then
         echo "Error: Instaloader password file '${cfg.passwordFile}' not found or not readable." >&2
         exit 1
       fi
