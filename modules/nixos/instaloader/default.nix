@@ -32,6 +32,8 @@ let
     ${optionalString cfg.highlights "args+=(--highlights)"}
     ${optionalString (!cfg.posts) "args+=(--no-posts)"}
 
+    args+=(${concatMapStringsSep " " escapeShellArg cfg.extraArgs})
+
     args+=(${concatMapStringsSep " " escapeShellArg cfg.profiles})
 
     ${getExe cfg.package} ''${args[@]}
@@ -114,6 +116,13 @@ in
       type = types.bool;
       default = true;
       description = "Whether to download posts from the specified profiles.";
+    };
+
+    extraArgs = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      example = [ "--post-filter='date_utc >= datetime(2025, 1, 1)'" ];
+      description = "Additional command line arguments to pass to instaloader.";
     };
 
     timer = {
