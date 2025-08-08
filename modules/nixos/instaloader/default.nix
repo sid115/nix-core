@@ -8,7 +8,7 @@
 let
   cfg = config.services.instaloader;
   sessionFile =
-    if (cfg.sessionFile != "") then
+    if (cfg.sessionFile != null) then
       cfg.sessionFile
     else
       "${cfg.home}/.config/instaloader/session-${cfg.login}";
@@ -208,7 +208,6 @@ in
             Restart = "on-failure";
             RestartSec = cfg.retry.delay;
             StartLimitBurst = cfg.retry.attempts;
-            StartLimitIntervalSec = "1day";
           };
         after = [ "network-online.target" ];
         wants = [ "network-online.target" ];
