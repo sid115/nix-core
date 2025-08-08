@@ -14,6 +14,7 @@
   home-assistant-oci = import ./home-assistant-oci;
   hydra = import ./hydra;
   hyprland = import ./hyprland;
+  instaloader = import ./instaloader;
   jellyfin = import ./jellyfin;
   jirafeau = import ./jirafeau;
   krdpserver = import ./krdpserver;
