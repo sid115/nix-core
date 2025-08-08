@@ -7,12 +7,7 @@
 
 let
   cfg = config.services.instaloader;
-  sessionFile =
-    if (cfg.sessionFile != null) then
-      cfg.sessionFile
-    else
-      "${cfg.home}/.config/instaloader/session-${cfg.login}";
-  passwordFile = if (cfg.passwordFile != null) then "${cfg.passwordFile}" else "";
+  sessionFile = "${cfg.home}/.config/instaloader/session-${cfg.login}";
 
   instaloaderScript = pkgs.writeShellScriptBin "instaloader-run" ''
     declare -a args
@@ -20,15 +15,15 @@ let
     args+=(--fast-update)
     args+=(--quiet)
     args+=(--no-compress-json)
+    args+=(--login "${cfg.login}")
 
     # Skip password authentication if session file exists
     if [[ ! -r "${sessionFile}" ]]; then
-      args+=(--login "${cfg.login}")
-      if [[ ! -r "${passwordFile}" ]]; then
-        echo "Error: Instaloader password file '${passwordFile}' not found or not readable." >&2
+      if [[ ! -r "${cfg.passwordFile}" ]]; then
+        echo "Error: Instaloader password file '${cfg.passwordFile}' not found or not readable." >&2
         exit 1
       fi
-      args+=(--password "$(cat "${passwordFile}")")
+      args+=(--password "$(cat "${cfg.passwordFile}")")
     fi
 
     ${optionalString cfg.stories "args+=(--stories)"}
@@ -81,19 +76,13 @@ in
     login = mkOption {
       type = types.str;
       default = "";
-      description = "The Instagram username to use for logging in.";
+      description = "The Instagram username to use for logging in. Required.";
     };
 
     passwordFile = mkOption {
       type = types.nullOr types.path;
       default = null;
-      description = "Path to a file containing the password for the Instagram login.";
-    };
-
-    sessionFile = mkOption {
-      type = types.nullOr types.path;
-      default = null;
-      description = "Path to a session file for the Instagram login. Takes priority over password authentication.";
+      description = "Path to a file containing the password for the Instagram login. Required if no session file exists.";
     };
 
     profiles = mkOption {
@@ -171,12 +160,8 @@ in
   config = mkIf cfg.enable {
     assertions = [
       {
-        assertion = cfg.sessionFile != null || cfg.login != "";
-        message = "Instaloader: `sessionFile` or `login` is required.";
-      }
-      {
-        assertion = (cfg.login == "") == (cfg.passwordFile == null);
-        message = "Instaloader: `passwordFile` is required when using `login`.";
+        assertion = cfg.login != "";
+        message = "Instaloader: `login` is required.";
       }
       {
         assertion = cfg.profiles != [ ];
