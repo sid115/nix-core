@@ -7,7 +7,11 @@
 
 let
   cfg = config.services.instaloader;
-  sessionFile = "${cfg.home}/.config/instaloader/session-${cfg.login}";
+  sessionFile =
+    if (cfg.sessionFile != null) then
+      cfg.sessionFile
+    else
+      "${cfg.home}/.config/instaloader/session-${cfg.login}";
 
   instaloaderScript = pkgs.writeShellScriptBin "instaloader-run" ''
     declare -a args
@@ -15,10 +19,10 @@ let
     args+=(--fast-update)
     args+=(--quiet)
     args+=(--no-compress-json)
-    args+=(--login "${cfg.login}")
 
     # Skip password authentication if session file exists
     if [[ ! -r "${sessionFile}" ]]; then
+      args+=(--login "${cfg.login}")
       if [[ ! -r "${cfg.passwordFile}" ]]; then
         echo "Error: Instaloader password file '${cfg.passwordFile}' not found or not readable." >&2
         exit 1
@@ -70,19 +74,25 @@ in
     home = mkOption {
       type = types.path;
       default = "/var/lib/instaloader";
-      description = "The home directory for the instaloader user. All downloads and session files will be stored here.";
+      description = "The home directory for the instaloader user. All downloads will be stored here.";
     };
 
     login = mkOption {
       type = types.str;
       default = "";
-      description = "The Instagram username to use for logging in. Required.";
+      description = "The Instagram username to use for logging in.";
     };
 
     passwordFile = mkOption {
       type = types.nullOr types.path;
       default = null;
-      description = "Path to a file containing the password for the Instagram login. Required.";
+      description = "Path to a file containing the password for the Instagram login.";
+    };
+
+    sessionFile = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      description = "Path to a session file for the Instagram login. Takes priority over password authentication.";
     };
 
     profiles = mkOption {
@@ -160,12 +170,12 @@ in
   config = mkIf cfg.enable {
     assertions = [
       {
-        assertion = cfg.login != "";
-        message = "Instaloader: `login` is required.";
+        assertion = cfg.sessionFile != null || cfg.login != "";
+        message = "Instaloader: `sessionFile` or `login` is required.";
       }
       {
-        assertion = (cfg.passwordFile != null);
-        message = "Instaloader: `passwordFile` is required.";
+        assertion = (cfg.login == "") == (cfg.passwordFile == null);
+        message = "Instaloader: `passwordFile` is required when using `login`.";
       }
       {
         assertion = cfg.profiles != [ ];
@@ -184,20 +194,21 @@ in
     systemd = {
       services.instaloader = {
         description = "Download media from Instagram profiles";
-        serviceConfig = {
-          Type = "oneshot";
-          User = cfg.user;
-          Group = cfg.group;
-          ExecStart = getExe instaloaderScript;
-          StateDirectory = builtins.baseNameOf cfg.home;
-          PrivateNetwork = false;
-        }
-        // optionalAttrs cfg.retry.enable {
-          Restart = "on-failure";
-          RestartSec = cfg.retry.delay;
-          StartLimitBurst = cfg.retry.attempts;
-          StartLimitIntervalSec = "1day";
-        };
+        serviceConfig =
+          {
+            Type = "oneshot";
+            User = cfg.user;
+            Group = cfg.group;
+            ExecStart = getExe instaloaderScript;
+            StateDirectory = builtins.baseNameOf cfg.home;
+            PrivateNetwork = false;
+          }
+          // optionalAttrs cfg.retry.enable {
+            Restart = "on-failure";
+            RestartSec = cfg.retry.delay;
+            StartLimitBurst = cfg.retry.attempts;
+            StartLimitIntervalSec = "1day";
+          };
         after = [ "network-online.target" ];
         wants = [ "network-online.target" ];
       };
