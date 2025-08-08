@@ -8,6 +8,7 @@
 let
   cfg = config.services.instaloader;
   sessionFile = "${cfg.home}/.config/instaloader/session-${cfg.login}";
+  passwordFile = if (cfg.passwordFile != null) then "${cfg.passwordFile}" else "";
 
   instaloaderScript = pkgs.writeShellScriptBin "instaloader-run" ''
     declare -a args
@@ -19,11 +20,11 @@ let
 
     # Skip password authentication if session file exists
     if [[ ! -r "${sessionFile}" ]]; then
-      if [[ ! -r "${cfg.passwordFile}" ]]; then
-        echo "Error: Instaloader password file '${cfg.passwordFile}' not found or not readable." >&2
+      if [[ ! -r "${passwordFile}" ]]; then
+        echo "Error: Instaloader password file '${passwordFile}' not found or not readable." >&2
         exit 1
       fi
-      args+=(--password "$(cat "${cfg.passwordFile}")")
+      args+=(--password "$(cat "${passwordFile}")")
     fi
 
     ${optionalString cfg.stories "args+=(--stories)"}
@@ -161,13 +162,18 @@ in
     assertions = [
       {
         assertion = cfg.login != "";
-        message = "Instaloader: `login` is required.";
+        message = "ERROR: Instaloader: `login` is required.";
       }
       {
         assertion = cfg.profiles != [ ];
-        message = "Instaloader: `profiles` must have at least one entry.";
+        message = "ERROR: Instaloader: `profiles` must have at least one entry.";
       }
     ];
+    warnings =
+      if (cfg.passwordFile == null) then
+        [ "WARNING: Instaloader: `passwordFile` is null. Relying on session file ${sessionFile}" ]
+      else
+        [ ];
 
     users.users.${cfg.user} = {
       isSystemUser = true;
