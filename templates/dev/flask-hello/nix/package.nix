@@ -16,5 +16,18 @@ python3.pkgs.buildPythonApplication {
 
   src = ../.;
 
+  installPhase = ''
+    runHook preInstall
+
+    mkdir -p $out/bin
+    cp -r $src/src/*.py $out/bin/
+    cp -r $src/src/static $out/
+    chmod +x $out/bin/app.py
+
+    runHook postInstall
+  '';
+
   doCheck = false;
+
+  meta.mainProgram = "app.py";
 }

@@ -96,6 +96,11 @@ in
         enableACME = cfg.nginx.ssl;
         forceSSL = cfg.nginx.ssl;
         locations."/".proxyPass = "http://127.0.0.1:${toString cfg.port}";
+        locations."/static" = {
+          alias = "${cfg.package}/static";
+          expires = "30d";
+          tryFiles = "$uri $uri/ =404";
+        };
       };
     };
 
