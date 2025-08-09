@@ -10,6 +10,8 @@ pkgs.mkShell {
         flask
       ]
     ))
+    pkgs.nixfmt-tree
+    pkgs.black
   ];
 
   shellHook = ''

@@ -2,7 +2,7 @@
   description = "A hello world template for Python Flask";
 
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -34,7 +34,8 @@
       );
     in
     {
-      overlays.default = final: prev: {
+      overlays.default = final: _prev: {
+        flask-hello = self.packages.${final.system}.default;
       };
 
       packages = forAllSystems (system: {
@@ -45,18 +46,19 @@
         default = import ./nix/shell.nix { pkgs = nixpkgsFor.${system}; };
       });
 
+      nixosModules = {
+        flask-hello = import ./nix/module.nix;
+      };
+
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 
       checks = forAllSystems (system: {
-        # TODO: Add integration test
-
+        build-packages = nixpkgsFor."${system}".linkFarm "flake-packages-${system}" self.packages.${system};
         pre-commit-check = self.inputs.pre-commit-hooks.lib.${system}.run {
           src = ./.;
           hooks = {
-            nixfmt-rfc-style = {
-              enable = true;
-            };
-            # TODO: Add Python format check
+            nixfmt-rfc-style.enable = true;
+            black.enable = true;
           };
         };
       });
