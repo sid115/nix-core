@@ -12,6 +12,7 @@ let
   fqdn = if (cfg.nginx.subdomain != "") then "${cfg.nginx.subdomain}.${domain}" else domain;
 
   inherit (lib)
+    concatStringsSep
     getExe
     mkDefault
     mkEnableOption
@@ -30,7 +31,7 @@ in
     port = mkOption {
       type = types.port;
       default = 5000;
-      description = "Port for the Flask server to listen on.";
+      description = "The port to listen on.";
     };
 
     user = mkOption {
@@ -62,6 +63,12 @@ in
         description = "Enable SSL for the Nginx virtual host using ACME.";
       };
     };
+
+    gunicorn.extraArgs = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      description = "Extra arguments for gunicorn.";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -77,7 +84,13 @@ in
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
-        ExecStart = "${getExe cfg.package}";
+        ExecStart = ''
+          ${getExe pkgs.python3Packages.gunicorn} \
+            --bind=127.0.0.1:${toString cfg.port} \
+            ${concatStringsSep " " cfg.gunicorn.extraArgs} \
+            app:app
+        '';
+        WorkingDirectory = "${cfg.package}";
         Restart = "on-failure";
         User = cfg.user;
         Group = cfg.group;
@@ -85,6 +98,7 @@ in
     };
 
     users.users."${cfg.user}" = {
+      home = "/var/lib/${cfg.user}";
       isSystem = true;
       group = cfg.group;
     };

@@ -19,10 +19,10 @@ python3.pkgs.buildPythonApplication rec {
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/{bin,share}
-    cp -r $src/${pname} $out/bin/
-    cp $src/app.py $out/bin/
-    chmod +x $out/bin/app.py
+    mkdir -p $out
+    cp -r $src/${pname} $out/
+    cp $src/app.py $out/
+    chmod +x $out/app.py
 
     runHook postInstall
   '';

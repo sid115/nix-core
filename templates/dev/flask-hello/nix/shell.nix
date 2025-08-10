@@ -8,6 +8,7 @@ pkgs.mkShell {
     (pkgs.python3.withPackages (
       p: with p; [
         flask
+        gunicorn
       ]
     ))
     pkgs.nixfmt-tree
