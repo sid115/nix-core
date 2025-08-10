@@ -7,7 +7,7 @@
 }:
 
 let
-  cfg = config.services.flask-hello;
+  cfg = config.services.flask_hello;
   domain = config.networking.domain;
   fqdn = if (cfg.nginx.subdomain != "") then "${cfg.nginx.subdomain}.${domain}" else domain;
 
@@ -22,10 +22,10 @@ let
     ;
 in
 {
-  options.services.flask-hello = {
+  options.services.flask_hello = {
     enable = mkEnableOption "Flask Hello World service.";
 
-    package = mkPackageOption pkgs "flask-hello" { };
+    package = mkPackageOption pkgs "flask_hello" { };
 
     port = mkOption {
       type = types.port;
@@ -53,7 +53,7 @@ in
       };
       subdomain = mkOption {
         type = types.str;
-        default = "flask-hello";
+        default = "flask_hello";
         description = "Subdomain for the Nginx virtual host. Leave empty for root domain.";
       };
       ssl = mkOption {
@@ -65,14 +65,14 @@ in
   };
 
   config = mkIf cfg.enable {
-    nixpkgs.overlays = [ inputs.flask-hello.overlays.default ];
+    nixpkgs.overlays = [ inputs.flask_hello.overlays.default ];
 
     networking.firewall.allowedTCPPorts = [
       80 # ACME challenge
       443
     ];
 
-    systemd.services.flask-hello = {
+    systemd.services.flask_hello = {
       description = "Flask Hello World";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
@@ -96,11 +96,6 @@ in
         enableACME = cfg.nginx.ssl;
         forceSSL = cfg.nginx.ssl;
         locations."/".proxyPass = "http://127.0.0.1:${toString cfg.port}";
-        locations."/static" = {
-          alias = "${cfg.package}/static";
-          expires = "30d";
-          tryFiles = "$uri $uri/ =404";
-        };
       };
     };
 

@@ -3,8 +3,8 @@
   ...
 }:
 
-python3.pkgs.buildPythonApplication {
-  pname = "flask-hello";
+python3.pkgs.buildPythonApplication rec {
+  pname = "flask_hello";
   version = "0.1.0";
   pyproject = true;
 
@@ -19,15 +19,13 @@ python3.pkgs.buildPythonApplication {
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/bin
-    cp -r $src/src/*.py $out/bin/
-    cp -r $src/src/static $out/
+    mkdir -p $out/{bin,share}
+    cp -r $src/${pname} $out/bin/
+    cp $src/app.py $out/bin/
     chmod +x $out/bin/app.py
 
     runHook postInstall
   '';
 
   doCheck = false;
-
-  meta.mainProgram = "app.py";
 }

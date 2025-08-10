@@ -13,8 +13,4 @@ pkgs.mkShell {
     pkgs.nixfmt-tree
     pkgs.black
   ];
-
-  shellHook = ''
-    export FLASK_APP=src/app.py
-  '';
 }

@@ -35,7 +35,7 @@
     in
     {
       overlays.default = final: _prev: {
-        flask-hello = self.packages.${final.system}.default;
+        flask_hello = self.packages.${final.system}.default;
       };
 
       packages = forAllSystems (system: {
@@ -47,7 +47,7 @@
       });
 
       nixosModules = {
-        flask-hello = import ./nix/module.nix;
+        flask_hello = import ./nix/module.nix;
       };
 
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
