@@ -11,6 +11,12 @@ let
   domain = config.networking.domain;
   fqdn = if (cfg.nginx.subdomain != "") then "${cfg.nginx.subdomain}.${domain}" else domain;
 
+  python-with-packages = pkgs.python3.withPackages (
+    p: with p; [
+      flask
+    ]
+  );
+
   inherit (lib)
     concatStringsSep
     getExe
@@ -83,6 +89,9 @@ in
       description = "Flask Hello World";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
+      environment = {
+        PYTHONPATH = "${python-with-packages}/${python-with-packages.sitePackages}";
+      };
       serviceConfig = {
         ExecStart = ''
           ${getExe pkgs.python3Packages.gunicorn} \
@@ -99,7 +108,7 @@ in
 
     users.users."${cfg.user}" = {
       home = "/var/lib/${cfg.user}";
-      isSystem = true;
+      isSystemUser = true;
       group = cfg.group;
     };
     users.groups."${cfg.group}" = { };
