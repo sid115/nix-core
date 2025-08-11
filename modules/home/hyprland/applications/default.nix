@@ -141,6 +141,11 @@ in
       bind = [ "$mod SHIFT, n, exec, ${networksettings}" ];
     };
 
+    notes = mkAppAttrs {
+      default = "quicknote";
+      bind = [ "$mod CTRL, n, exec, ${terminal} -T ${notes} -e ${getExe pkgs.core.quicknote}" ];
+    };
+
     office = mkAppAttrs {
       default = "libreoffice";
       bind = [ "$mod SHIFT, o, exec, ${office}" ];
