@@ -1,7 +1,6 @@
 {
   bemenu = import ./bemenu;
   common = import ./common;
-  gemini-cli = import ./gemini-cli;
   gpg = import ./gpg;
   hyprland = import ./hyprland;
   kitty = import ./kitty;
