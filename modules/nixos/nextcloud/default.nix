@@ -13,7 +13,7 @@ let
 
   package = pkgs.nextcloud31.overrideAttrs (old: rec {
     version = "31.0.7";
-    src = old.fetchurl {
+    src = pkgs.fetchurl {
       url = "https://download.nextcloud.com/server/releases/nextcloud-${version}.tar.bz2";
       hash = "sha256-002a5d03ae05a7f0c3056947d6da0b79a44d3d720f5728fe5155a0c5a3b4ec69";
     };
