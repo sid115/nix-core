@@ -57,31 +57,30 @@ python.pkgs.buildPythonApplication rec {
     python.pkgs.poetry-core
   ];
 
-  dependencies =
-    [
-      pdftext
-      surya-ocr
-    ]
-    ++ (with python.pkgs; [
-      anthropic
-      click
-      filetype
-      ftfy
-      google-genai
-      markdown2
-      markdownify
-      openai
-      pillow
-      pydantic
-      pydantic-settings
-      python-dotenv
-      rapidfuzz
-      regex
-      scikit-learn
-      torch
-      tqdm
-      transformers
-    ]);
+  dependencies = [
+    pdftext
+    surya-ocr
+  ]
+  ++ (with python.pkgs; [
+    anthropic
+    click
+    filetype
+    ftfy
+    google-genai
+    markdown2
+    markdownify
+    openai
+    pillow
+    pydantic
+    pydantic-settings
+    python-dotenv
+    rapidfuzz
+    regex
+    scikit-learn
+    torch
+    tqdm
+    transformers
+  ]);
 
   optional-dependencies = with python.pkgs; {
     full = [

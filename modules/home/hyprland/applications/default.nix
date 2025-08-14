@@ -74,6 +74,7 @@ in
     ./qbittorrent
     ./screenshot
     ./thunderbird
+    ./yazi
     ./zathura
     # add your application directories here
   ];
@@ -121,15 +122,13 @@ in
     };
 
     filemanager = mkAppAttrs {
-      default = "lf";
+      default = "yazi";
       bind = [ "$mod, e, exec, ${terminal} -T ${filemanager} -e ${filemanager}" ];
     };
 
     matrix-client = mkAppAttrs {
       default = "element-desktop";
-      # FIXME: screen sharing does not work
-      # bind = [ "$mod SHIFT, e, exec, ${matrix-client}" ];
-      bind = [ "$mod SHIFT, e, exec, chromium --app=https://app.element.io" ];
+      bind = [ "$mod SHIFT, e, exec, ${matrix-client}" ];
     };
 
     musicplayer = mkAppAttrs {
@@ -140,6 +139,11 @@ in
     networksettings = mkAppAttrs {
       default = "networkmanager_dmenu";
       bind = [ "$mod SHIFT, n, exec, ${networksettings}" ];
+    };
+
+    notes = mkAppAttrs {
+      default = "quicknote";
+      bind = [ "$mod CTRL, n, exec, ${terminal} -T ${notes} -e ${getExe pkgs.core.quicknote}" ];
     };
 
     office = mkAppAttrs {

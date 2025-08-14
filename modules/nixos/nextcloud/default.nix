@@ -11,6 +11,14 @@ let
   fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
   mailserver = config.mailserver;
 
+  package = pkgs.nextcloud31.overrideAttrs (old: rec {
+    version = "31.0.7";
+    src = pkgs.fetchurl {
+      url = "https://download.nextcloud.com/server/releases/nextcloud-${version}.tar.bz2";
+      hash = "sha256-ACpdA64Fp/DDBWlH1toLeaRNPXIPVyj+UVWgxaO07Gk=";
+    };
+  });
+
   inherit (lib)
     mkDefault
     mkIf
@@ -36,7 +44,7 @@ in
     environment.etc."secrets/nextcloud-initial-admin-pass".text = "nextcloud";
 
     services.nextcloud = {
-      package = pkgs.nextcloud31;
+      inherit package;
       hostName = fqdn;
       https = cfg.forceSSL;
       config = {

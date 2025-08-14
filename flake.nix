@@ -2,6 +2,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-zoom.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs-ncmpcpp.url = "github:nixos/nixpkgs/b47d4f01d4213715a1f09b999bab96bb6a5b675e"; # https://hydra.nixos.org/build/302425768
 
     # TODO: Implement test configs for runtime checks.
     # home-manager.url = "github:nix-community/home-manager";
@@ -31,26 +32,16 @@
         system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
+          mkApp = name: desc: {
+            type = "app";
+            program = pkgs.lib.getExe (pkgs.callPackage ./apps/${name} { });
+            meta.description = desc;
+          };
         in
         {
-          install = {
-            type = "app";
-            program =
-              let
-                pkg = pkgs.callPackage ./apps/install { };
-              in
-              "${pkg}/bin/install";
-            meta.description = "Install a NixOS configuration.";
-          };
-          create = {
-            type = "app";
-            program =
-              let
-                pkg = pkgs.callPackage ./apps/create { };
-              in
-              "${pkg}/bin/create";
-            meta.description = "Create a new NixOS configuration.";
-          };
+          install = mkApp "install" "Install a NixOS configuration.";
+          create = mkApp "create" "Create a new NixOS configuration.";
+          update-packages = mkApp "update-packages" "Update all packages in this flake.";
         }
       );
 

@@ -58,7 +58,7 @@ stdenv.mkDerivation {
   installPhase = ''
     # Install the compiled program into the output directory ($out)
     mkdir -p $out/bin
-    mv hello $out/bin/hello
+    cp hello $out/bin/hello
   '';
 }
 ```

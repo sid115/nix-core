@@ -70,11 +70,9 @@
                 gdb
                 gnumake
               ]);
-            shellHook =
-              self.checks.${system}.pre-commit-check.shellHook
-              + ''
-                export LD_LIBRARY_PATH=${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH
-              '';
+            shellHook = self.checks.${system}.pre-commit-check.shellHook + ''
+              export LD_LIBRARY_PATH=${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH
+            '';
           };
         }
       );

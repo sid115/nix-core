@@ -46,6 +46,7 @@ nav:
       - guacamole: modules/nixos/guacamole.md
       - home-assistant-oci: modules/nixos/home-assistant-oci.md
       - hydra: modules/nixos/hydra.md
+      - instaloader: modules/nixos/instaloader.md
       - jellyfin: modules/nixos/jellyfin.md
       - jirafeau: modules/nixos/jirafeau.md
       - mailserver: modules/nixos/mailserver.md
@@ -83,5 +84,7 @@ nav:
       - styling: modules/home/styling.md
       - virtualization: modules/home/virtualization.md
       - waybar: modules/home/waybar.md
+      - yazi: modules/home/yazi.md
   - Tips:
     - Useful Links: tips/useful-links.md
+    - Dependency Tracing: tips/dependency-tracing.md
