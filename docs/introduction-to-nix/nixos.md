@@ -92,6 +92,7 @@ It's primarily used for referencing options *within* the configuration.
 ## The Module System
 
 NixOS uses a powerful *module system*. A module is a Nix expression that declares:
+
 - **`options`**: What configurable parameters this module exposes.
 - **`config`**: How this module sets those parameters (and potentially other system parameters).
 - **`imports`**: Other modules to include.
