@@ -18,41 +18,74 @@
       ...
     }:
     let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-      lib = pkgs.lib;
-    in
-    {
-      apps = {
-        ssh = {
-          type = "app";
-          program = lib.getExe (pkgs.callPackage ./apps/ssh { });
-          meta.description = "SSH into the VM.";
-        };
-        rebuild = {
-          type = "app";
-          # program = lib.getExe self.nixosConfigurations.microvm.config.microvm.deploy.rebuild; # TODO: https://microvm-nix.github.io/microvm.nix/ssh-deploy.html
-          meta.description = "Rebuild NixOS configuration inside VM.";
-        };
-        microvm = {
-          type = "app";
-          program = lib.getExe self.nixosConfigurations.microvm.config.microvm.declaredRunner;
-          meta.description = "Run the VM.";
-        };
+      supportedSystems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+
+      mkApp = program: description: {
+        type = "app";
+        inherit program;
+        meta.description = description;
       };
 
-      packages = import ./pkgs { inherit pkgs; };
-
-      overlays = import ./overlays { inherit (self) inputs; };
-
-      nixosConfigurations = {
-        microvm = lib.nixosSystem {
+      mkNixosConfiguration =
+        system:
+        nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = { inherit (self) inputs outputs; };
           modules = [ ./config ];
         };
-      };
+    in
+    {
+      apps = forAllSystems (
+        system:
+        let
+          microvm = self.nixosConfigurations."microvm-${system}".config.microvm;
+          inherit (nixpkgs.lib) getExe;
+        in
+        {
+          rebuild = mkApp (getExe microvm.deploy.rebuild) "Rebuild the VM.";
+          microvm = mkApp (getExe microvm.declaredRunner) "Run the VM.";
+        }
+      );
+
+      packages = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        import ./pkgs { inherit pkgs; }
+      );
+
+      overlays = import ./overlays { inherit (self) inputs; };
+
+      devShells = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
+          default = pkgs.mkShell {
+            buildInputs = with pkgs; [
+              tmux
+            ];
+          };
+          # FIXME: `microvm.deploy.rebuild` does not seem to care about askpass
+          # shellHook = ''
+          #   export SSH_ASKPASS="pass <SUDO_BUILD_HOST_PASSWORD>"
+          #   export SSH_ASKPASS_REQUIRE="force"
+          # '';
+        }
+      );
 
       nixosModules = import ./modules;
+
+      nixosConfigurations = {
+        microvm-x86_64-linux = mkNixosConfiguration "x86_64-linux";
+        microvm-aarch64-linux = mkNixosConfiguration "aarch64-linux";
+      };
     };
 }
