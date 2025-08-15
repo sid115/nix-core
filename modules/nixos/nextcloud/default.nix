@@ -50,7 +50,7 @@ in
       config = {
         adminuser = mkDefault "nextcloud";
         adminpassFile = mkDefault "/etc/secrets/nextcloud-initial-admin-pass";
-        dbtype = mkDefault "sqlite";
+        dbtype = mkDefault "sqlite"; # TODO: switch to postgresql
       };
       configureRedis = mkDefault true;
       extraAppsEnable = mkDefault true;
