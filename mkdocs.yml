@@ -81,7 +81,7 @@ nav:
       - nixvim: modules/home/nixvim.md
       - password-manager: modules/home/password-manager.md
       - sops: modules/home/sops.md
-      - styling: modules/home/styling.md
+      - stylix: modules/home/stylix.md
       - virtualization: modules/home/virtualization.md
       - waybar: modules/home/waybar.md
       - yazi: modules/home/yazi.md
