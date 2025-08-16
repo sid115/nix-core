@@ -57,7 +57,7 @@ NixOS only options:
   -T, --target-host <user@example.com>  Deploy the configuration to a remote host via SSH. If '--host' is specified, it will be used as the target host.
 
 Home Manager only options:
-  -u, --user <user>      Specify the username (as in 'homeConfigurations.<user>@<host>'). Default: $(whomai)
+  -u, --user <user>      Specify the username (as in 'homeConfigurations.<user>@<host>'). Default: $(whoami)
 ```
 
 Use the environment variable `NIX_SSHOPTS` to pass additional options to ssh. SSH target specifications for `-B` and `-T` are compatible with your SSH configuration. You can use the Home Manager option [`programs.ssh.matchBlocks`](https://home-manager-options.extranix.com/?query=programs.ssh.matchBlocks&release=master) to specify per-host settings.
