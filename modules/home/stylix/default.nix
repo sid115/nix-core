@@ -14,6 +14,7 @@ let
     "ayu"
     "dracula"
     "gruvbox"
+    "moonfly"
     "nord"
     "oxocarbon"
   ];
@@ -24,6 +25,7 @@ let
   ];
   # schemes in ./schemes
   customSchemes = [
+    "moonfly"
     "oxocarbon"
   ];
   schemeName =
