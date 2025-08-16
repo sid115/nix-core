@@ -40,24 +40,24 @@ Wrapper script for 'nixos-rebuild switch' and 'home-manager switch' commands.
 Usage: rebuild <command> [OPTIONS]
 
 Commands:
-  nixos                Rebuild NixOS configuration
-  home                 Rebuild Home Manager configuration
-  all                  Rebuild both NixOS and Home Manager configurations
-  help                 Show this help message
+  nixos                  Rebuild NixOS configuration
+  home                   Rebuild Home Manager configuration
+  all                    Rebuild both NixOS and Home Manager configurations
+  help                   Show this help message
 
 Options (for NixOS and Home Manager):
-  -H, --host <host>    Specify the hostname (as in 'nixosConfiguraions.<host>'). Default: $(hostname)
-  -p, --path <path>    Set the path to the flake directory. Default: ~/.config/nixos
-  -U, --update         Update flake inputs
-  -r, --rollback       Don't build the new configuration, but use the previous generation instead
-  -t, --show-trace     Show detailed error messages
+  -H, --host <host>      Specify the hostname (as in 'nixosConfiguraions.<host>'). Default: $(hostname)
+  -p, --path <path>      Set the path to the flake directory. Default: ~/.config/nixos
+  -U, --update [inputs]  Update all flake inputs. Optionally provide comma-separated list of inputs to update instead.
+  -r, --rollback         Don't build the new configuration, but use the previous generation instead
+  -t, --show-trace       Show detailed error messages
 
 NixOS only options:
-  -B, --build-host <user@example.com>     Use a remote host for building the configuration via SSH
-  -T, --target-host <user@example.com>    Deploy the configuration to a remote host via SSH. If '--host' is specified, it will be used as the target host.
+  -B, --build-host <user@example.com>   Use a remote host for building the configuration via SSH
+  -T, --target-host <user@example.com>  Deploy the configuration to a remote host via SSH. If '--host' is specified, it will be used as the target host.
 
 Home Manager only options:
-  -u, --user <user>    Specify the username (as in 'homeConfigurations.<user>@<host>'). Default: $(whoami)
+  -u, --user <user>      Specify the username (as in 'homeConfigurations.<user>@<host>'). Default: $(whomai)
 ```
 
 Use the environment variable `NIX_SSHOPTS` to pass additional options to ssh. SSH target specifications for `-B` and `-T` are compatible with your SSH configuration. You can use the Home Manager option [`programs.ssh.matchBlocks`](https://home-manager-options.extranix.com/?query=programs.ssh.matchBlocks&release=master) to specify per-host settings.
