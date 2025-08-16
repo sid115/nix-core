@@ -40,6 +40,12 @@
     action = ":%s/<C-r><C-w>/<C-r><C-w>/gI<Left><Left><Left>";
     mode = "n";
   }
+  # search and replace selected text
+  {
+    key = "<leader>s";
+    action = "y:%s/<C-r>0/<C-r>0/gI<Left><Left><Left>";
+    mode = "v";
+  }
 
   # clipboard operations
   {
