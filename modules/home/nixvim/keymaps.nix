@@ -102,19 +102,27 @@
     mode = "n";
   }
 
-  # quickfix and location list navigation
-  # {
-  #   # previous quickfix item
-  #   key = "<C-S-J>";
-  #   action = "<cmd>cprev<CR>zz";
-  #   mode = "n";
-  # }
-  # {
-  #   # next quickfix item
-  #   key = "<C-S-K>";
-  #   action = "<cmd>cnext<CR>zz";
-  #   mode = "n";
-  # }
+  # quickfix
+  {
+    # Run make command
+    key = "<leader>m";
+    action = "<cmd>:make<CR>";
+    mode = "n";
+  }
+  {
+    # previous quickfix item
+    key = "<C-A-J>";
+    action = "<cmd>cprev<CR>zz";
+    mode = "n";
+  }
+  {
+    # next quickfix item
+    key = "<C-A-K>";
+    action = "<cmd>cnext<CR>zz";
+    mode = "n";
+  }
+
+  # location list navigation
   {
     # previous location list item
     key = "<leader>j";
@@ -219,14 +227,6 @@
       noremap = true;
       silent = true;
     };
-    mode = "n";
-  }
-
-  # formatter
-  {
-    # format code using lsp
-    key = "<leader>f";
-    action = "vim.lsp.buf.format";
     mode = "n";
   }
 
