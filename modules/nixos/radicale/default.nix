@@ -53,7 +53,7 @@ in
             "127.0.0.1:${port}"
           ];
           max_connections = mkDefault 20;
-          max_content_length = mkDefault 100000000;
+          max_content_length = mkDefault 500000000;
           timeout = mkDefault 30;
         };
         auth = {
