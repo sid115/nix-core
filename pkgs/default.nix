@@ -4,17 +4,17 @@
 }:
 
 {
+  arxiv-mcp-server = pkgs.callPackage ./arxiv-mcp-server { };
   baibot = pkgs.callPackage ./baibot { };
-  chatbox = pkgs.callPackage ./chatbox { };
+  blender-mcp = pkgs.callPackage ./blender-mcp { };
   cppman = pkgs.callPackage ./cppman { };
-  gitingest = pkgs.callPackage ./gitingest { };
-  google-genai = pkgs.callPackage ./google-genai { };
+  fetcher-mcp = pkgs.callPackage ./fetcher-mcp { };
   marker-pdf = pkgs.callPackage ./marker-pdf { };
-  pdftext = pkgs.callPackage ./pdftext { };
+  mcpo = pkgs.callPackage ./mcpo { };
   pyman = pkgs.callPackage ./pyman { };
-  surya-ocr = pkgs.callPackage ./surya-ocr { };
+  quicknote = pkgs.callPackage ./quicknote { };
+  qwen-code = pkgs.callPackage ./qwen-code { };
   synapse_change_display_name = pkgs.callPackage ./synapse_change_display_name { };
-
-  # corryvreckan = pkgs.callPackage ./corryvreckan { }; # FIXME
-  # plecs = pkgs.callPackage ./plecs { }; # FIXME
+  trelis-gitingest-mcp = pkgs.callPackage ./trelis-gitingest-mcp { };
+  visual-paradigm-community = pkgs.callPackage ./visual-paradigm-community { };
 }

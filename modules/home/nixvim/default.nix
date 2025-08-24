@@ -10,10 +10,10 @@ let
 in
 {
   imports = [
-    inputs.nixvim.homeManagerModules.nixvim
+    inputs.nixvim.homeModules.nixvim
     ./plugins
 
-    # ./spellfiles.nix # FIXME
+    ./spellfiles.nix
   ];
 
   config = {

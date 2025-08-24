@@ -18,8 +18,17 @@ let
     ${pkgs.nextcloud-client}/bin/nextcloudcmd -h -n --path $REMOTE $LOCAL https://${cfg.username}:$PASSWORD@${cfg.remote}
     ${pkgs.libnotify}/bin/notify-send "Nextcloud Sync" "Synced $LOCAL with $REMOTE"
   '';
+  manualSyncScript = pkgs.writeShellScriptBin "nextcloud-sync-all" ''
+    ${pkgs.libnotify}/bin/notify-send "Nextcloud Manual Sync" "Starting manual sync of all configured directories."
+
+    ${concatMapStrings (dir: ''
+      echo "Starting sync service: nextcloud-sync-${baseNameOf dir.local}"
+      systemctl --user start nextcloud-sync-${baseNameOf dir.local}
+    '') cfg.connections}
+  '';
 
   inherit (lib)
+    concatMapStrings
     foldl'
     mkEnableOption
     mkIf
@@ -86,7 +95,10 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ pkgs.libnotify ];
+    home.packages = [
+      pkgs.libnotify
+      manualSyncScript
+    ];
 
     # Systemd user services for Nextcloud sync.
     systemd.user.services = foldl' (

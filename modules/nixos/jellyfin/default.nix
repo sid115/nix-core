@@ -7,7 +7,8 @@
 
 let
   cfg = config.services.jellyfin;
-  fqdn = "${cfg.subdomain}.${config.networking.domain}";
+  domain = config.networking.domain;
+  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkDefault
@@ -21,7 +22,7 @@ in
     subdomain = mkOption {
       type = types.str;
       default = "jf";
-      description = "Subdomain for Nginx virtual host.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;
@@ -49,29 +50,19 @@ in
       jellyfin-ffmpeg
     ];
 
-    systemd.tmpfiles.rules = map (
-      library: "d ${cfg.dataDir}/libraries/${library} 0700 ${cfg.user} ${cfg.group} -"
-    ) cfg.libraries;
-
-    # let users in group `wheel` run `rsync` without password to be able to upload files into library directories
-    security.sudo = {
-      extraRules = [
-        {
-          groups = [ "wheel" ];
-          commands = [
-            {
-              command = "/run/current-system/sw/bin/rsync";
-              options = [ "NOPASSWD" ];
-            }
-          ];
-        }
+    systemd.tmpfiles.rules =
+      (map (
+        library: "d ${cfg.dataDir}/libraries/${library} 0770 ${cfg.user} ${cfg.group} -"
+      ) cfg.libraries)
+      ++ [
+        "z ${cfg.dataDir} 0770 ${cfg.user} ${cfg.group} -"
+        "Z ${cfg.dataDir}/libraries 0770 ${cfg.user} ${cfg.group} -"
       ];
-    };
 
     services.nginx.virtualHosts."${fqdn}" = {
       forceSSL = cfg.forceSSL;
       enableACME = cfg.forceSSL;
-      locations."/".proxyPass = "http://localhost:8096";
+      locations."/".proxyPass = mkDefault "http://localhost:8096";
     };
 
     security.acme.certs."${fqdn}".postRun = mkIf cfg.forceSSL "systemctl restart jellyfin.service";

@@ -5,12 +5,13 @@
   hyprland = import ./hyprland;
   kitty = import ./kitty;
   lf = import ./lf;
+  librewolf = import ./librewolf;
   networkmanager-dmenu = import ./networkmanager-dmenu;
   nextcloud-sync = import ./nextcloud-sync;
   nixvim = import ./nixvim;
   passwordManager = import ./password-manager;
   sops = import ./sops;
-  styling = import ./styling;
+  stylix = import ./stylix;
   virtualization = import ./virtualization;
   waybar = import ./waybar;
 }

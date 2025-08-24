@@ -3,7 +3,8 @@
 let
   _deluge = config.services.deluge;
   cfg = config.services.torrenting;
-  fqdn = "${cfg.subdomain}.${config.networking.domain}";
+  domain = config.networking.domain;
+  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkEnableOption
@@ -18,7 +19,7 @@ in
     subdomain = mkOption {
       type = types.str;
       default = "torrent";
-      description = "Subdomain for the Nginx proxy.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;

@@ -1,0 +1,29 @@
+# Byte-compiled Python files
+*.py[cod]
+__pycache__/
+
+# Distribution / packaging
+.Python
+*.egg
+*.egg-info/
+.coverage
+.htmlcov/
+.pytest_cache/
+.tox/
+.venv/
+ENV/
+build/
+dist/
+env.bak/
+env/
+venv.bak/
+venv/
+
+# IDE/editor files
+*.sublime-project
+*.sublime-workspace
+.idea/
+.vscode/
+
+# Nix-related files
+result

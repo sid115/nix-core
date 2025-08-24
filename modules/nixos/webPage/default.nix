@@ -2,7 +2,8 @@
 
 let
   cfg = config.services.webPage;
-  fqdn = "${cfg.subdomain}.${config.networking.domain}";
+  domain = config.networking.domain;
+  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
   nginxUser = config.services.nginx.user;
 
   inherit (lib)
@@ -18,7 +19,7 @@ in
     subdomain = mkOption {
       type = types.str;
       default = "www";
-      description = "The subdomain to serve the web page on.";
+      description = "The subdomain to serve the web page on. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;

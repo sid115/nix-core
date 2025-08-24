@@ -1,38 +1,75 @@
 {
   lib,
   python3,
-  fetchFromGitHub,
+  fetchPypi,
+  fetchurl,
 }:
 
 let
-  google-genai = import ../google-genai { inherit lib python3 fetchFromGitHub; };
-  pdftext = import ../pdftext { inherit lib python3 fetchFromGitHub; };
-  surya-ocr = import ../surya-ocr { inherit lib python3 fetchFromGitHub; };
-in
-python3.pkgs.buildPythonApplication rec {
-  pname = "marker-pdf";
-  version = "unstable-2025-02-13";
-  pyproject = true;
+  fontFileName = "GoNotoCurrent-Regular.ttf";
 
-  src = fetchFromGitHub {
-    owner = "sid115";
-    repo = "marker-pdf";
-    rev = "776b5183c6d3f75b9bd314349e78a452ffd84981";
-    hash = "sha256-68anNvURs5jxNb6p405iHmEJc3UnZ5hUMwfyF3nLofo=";
+  fetchFont = fetchurl {
+    url = "https://models.datalab.to/artifacts/${fontFileName}";
+    hash = "sha256-iCr7q5ZWCMLSvGJ/2AFrliqlpr4tNY+d4kp7WWfFYy4=";
   };
 
-  build-system = [
-    python3.pkgs.poetry-core
+  python = python3;
+
+  pdftext = import ./pdftext.nix { inherit lib python fetchPypi; };
+  surya-ocr = import ./surya-ocr.nix { inherit lib python fetchPypi; };
+in
+
+python.pkgs.buildPythonApplication rec {
+  pname = "marker-pdf";
+  version = "1.8.2";
+  pyproject = true;
+
+  src = fetchPypi {
+    pname = "marker_pdf";
+    inherit version;
+    hash = "sha256-k2mxOpBBtXdCzxP4hqfXnCEqUF69hQZWr/d9V/tITZ4=";
+  };
+
+  patches = [
+    ./skip-font-download.patch
+    ./fix-output-dir.patch
   ];
 
-  dependencies = with python3.pkgs; [
+  pythonRelaxDeps = [
+    "click"
+    "anthropic"
+    "markdownify"
+    "pillow"
+  ];
+
+  pythonRemoveDeps = [
+    "pre-commit"
+  ];
+
+  postInstall = ''
+    FONT_DEST_DIR="$out/lib/${python.libPrefix}/site-packages/static/fonts"
+    mkdir -p $FONT_DEST_DIR
+    cp ${fetchFont} "$FONT_DEST_DIR/${fontFileName}"
+    echo "Installed font to $FONT_DEST_DIR/${fontFileName}"
+  '';
+
+  build-system = [
+    python.pkgs.poetry-core
+  ];
+
+  dependencies = [
+    pdftext
+    surya-ocr
+  ]
+  ++ (with python.pkgs; [
+    anthropic
     click
     filetype
     ftfy
     google-genai
     markdown2
     markdownify
-    pdftext
+    openai
     pillow
     pydantic
     pydantic-settings
@@ -40,21 +77,30 @@ python3.pkgs.buildPythonApplication rec {
     rapidfuzz
     regex
     scikit-learn
-    surya-ocr
     torch
     tqdm
     transformers
-  ];
+  ]);
+
+  optional-dependencies = with python.pkgs; {
+    full = [
+      ebooklib
+      mammoth
+      openpyxl
+      python-pptx
+      weasyprint
+    ];
+  };
 
   pythonImportsCheck = [
     "marker"
   ];
 
   meta = {
-    description = "Convert PDF to markdown + JSON quickly with high accuracy";
-    homepage = "https://github.com/sid115/marker-pdf";
+    description = "Convert documents to markdown with high speed and accuracy";
+    homepage = "https://pypi.org/project/marker-pdf/";
     license = lib.licenses.gpl3Only;
     maintainers = with lib.maintainers; [ ];
-    mainProgram = "marker-pdf";
   };
+
 }

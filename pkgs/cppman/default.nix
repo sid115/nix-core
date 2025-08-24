@@ -2,16 +2,17 @@
   lib,
   python3,
   fetchPypi,
+  groff,
 }:
 
 python3.pkgs.buildPythonApplication rec {
   pname = "cppman";
-  version = "0.5.7";
+  version = "0.5.9";
   pyproject = true;
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-AIcpQW51TdL0tZ34NJbLNsgXRgX17QKBPH0ow2xWDxo=";
+    hash = "sha256-FaTkCrAltNzsWnOlDfJrfdrvfBSPyxl5QP/ySE+emQM=";
   };
 
   build-system = [
@@ -23,7 +24,19 @@ python3.pkgs.buildPythonApplication rec {
     beautifulsoup4
     distutils
     html5lib
+    lxml
+    six
+    soupsieve
+    typing-extensions
+    webencodings
   ];
+
+  postInstall = ''
+    wrapProgram $out/bin/cppman --prefix PATH : "${groff}/bin"
+  '';
+
+  pythonRelaxDeps = true;
+  pythonRemoveDeps = true; # for bs4
 
   pythonImportsCheck = [
     "cppman"

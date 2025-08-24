@@ -77,7 +77,7 @@ in
       locations."= /.well-known/matrix/server".extraConfig = mkWellKnown serverConfig;
       locations."= /.well-known/matrix/client".extraConfig = mkWellKnown clientConfig;
       locations."/_matrix".proxyPass = "http://localhost:${toString port}";
-      locations."/_synapse/client".proxyPass = "http://localhost:${toString port}";
+      locations."/_synapse".proxyPass = "http://localhost:${toString port}";
     };
 
     sops = {

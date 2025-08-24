@@ -1,3 +1,3 @@
 [
-  "$mod CTRL, b, exec, killall -SIGUSR1 waybar" # toggle bar # FIXME: waybar: no process found
+  # "$mod CTRL, b, exec, killall -SIGUSR1 waybar" # toggle bar # FIXME: waybar: no process found
 ]

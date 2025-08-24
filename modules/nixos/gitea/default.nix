@@ -6,7 +6,8 @@
 
 let
   cfg = config.services.gitea;
-  fqdn = "${cfg.subdomain}.${config.networking.domain}";
+  domain = config.networking.domain;
+  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
     elemAt
@@ -21,7 +22,7 @@ in
     subdomain = mkOption {
       type = types.str;
       default = "git";
-      description = "Subdomain for Nginx virtual host.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;
@@ -44,6 +45,7 @@ in
           DEFAULT_THEME = mkDefault "arc-green";
         };
         database.type = mkDefault "postgres";
+        mailer.SENDMAIL_PATH = "/run/wrappers/bin/sendmail"; # https://github.com/NixOS/nixpkgs/issues/421484
       };
     };
 

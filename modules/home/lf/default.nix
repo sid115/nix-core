@@ -13,45 +13,55 @@
 
 let
   cfg = config.programs.lf;
+  vidthumb = pkgs.writeShellScriptBin "vidthumb" (builtins.readFile ./vidthumb.sh);
+
+  mkCommand = path: "\${{\n" + builtins.readFile path + "\n}}\n";
 
   inherit (lib) mkDefault mkIf;
 in
 {
   config = mkIf config.programs.kitty.enable {
-    home.packages = with pkgs; [
-      font-awesome
-      jq # used in vidthumb
-      bat
-      hexyl
-      glow
-      chafa
-      poppler
-      w3m
-      ffmpeg
-      ffmpegthumbnailer # used by pistol
-      trash-cli
-      xdg-utils
-      perl540Packages.MIMETypes # used by commands
-    ];
+    home.packages =
+      with pkgs;
+      [
+        font-awesome
+        jq
+        bat
+        hexyl
+        glow
+        chafa
+        poppler_utils
+        w3m
+        ffmpeg
+        ffmpegthumbnailer
+        trash-cli
+        xdg-utils
+        perl540Packages.MIMETypes
+      ]
+      ++ [
+        vidthumb
+      ];
 
     programs.lf = {
       commands = {
-        bulk-rename = builtins.readFile ./commands/bulk-rename.sh;
-        extract = builtins.readFile ./commands/extract.sh;
-        open = builtins.readFile ./commands/open.sh;
-        paste = builtins.readFile ./commands/paste.sh;
+        bulk-rename = mkCommand ./commands/bulk-rename.sh;
+        extract = mkCommand ./commands/extract.sh;
+        open = mkCommand ./commands/open.sh;
+        paste = mkCommand ./commands/paste.sh;
         trash = "%trash-put -- $fx";
-        zip = builtins.readFile ./commands/zip.sh;
+        zip = mkCommand ./commands/zip.sh;
       };
       settings = {
         autoquit = mkDefault true;
-        #cleaner = "~/.config/lf/cleaner";
+        cleaner = mkDefault (config.home.homeDirectory + "/" + config.xdg.configFile."lf/cleaner".target);
         dircache = mkDefault true;
         globsearch = mkDefault true;
         icons = mkDefault true;
         incfilter = mkDefault true;
         number = mkDefault false;
-        #previewer = "~/.config/lf/previewer";
+        previewer = mkDefault (
+          config.home.homeDirectory + "/" + config.xdg.configFile."lf/previewer".target
+        );
         ratios = mkDefault [
           1
           1
@@ -62,11 +72,6 @@ in
         wrapscroll = mkDefault true;
       };
       keybindings = import ./keybindings.nix;
-      extraConfig = mkDefault ''
-        $mkdir -p ~/.trash
-        set previewer ~/.config/lf/previewer
-        set cleaner ~/.config/lf/cleaner
-      '';
     };
 
     programs.pistol = mkIf cfg.enable {
@@ -74,51 +79,51 @@ in
       associations = mkDefault [
         {
           fpath = ".*.log$";
-          command = "less %pistol-filename%";
+          command = "sh: less %pistol-filename%";
         }
         {
           fpath = ".*.md$";
-          command = "sh: glow %pistol-filename% | head -8";
+          command = "sh: glow %pistol-filename%";
         }
         {
           fpath = ".*.sh$";
-          command = "bat %pistol-filename%";
-        }
-        {
-          mime = "application/*";
-          command = "hexyl %pistol-filename%";
+          command = "sh: bat %pistol-filename%";
         }
         {
           mime = "application/json";
-          command = "bat %pistol-filename%";
+          command = "sh: bat %pistol-filename%";
         }
         {
-          mime = "application/pdf";
-          command = "pdftoppm -png %pistol-filename% -singlefile -scale-to 1024 -";
+          mime = "application/pdf"; # FIXME
+          command = "sh: pdftoppm -png %pistol-filename% -singlefile -scale-to 1024 | chafa";
         }
         {
-          mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-          command = "libreoffice --headless --convert-to pdf %pistol-filename% && pdftoppm -png %pistol-filename%.pdf -singlefile -scale-to 1024 -";
+          mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"; # FIXME
+          command = "sh: libreoffice --headless --convert-to png %pistol-filename% && chafa %pistol-filename%.png";
         }
+        # {
+        #   mime = "application/*";
+        #   command = "sh: hexyl %pistol-filename%";
+        # }
         {
-          mime = "audio/*";
-          command = "ffmpeg -i %pistol-filename% -f wav -";
+          mime = "audio/*"; # FIXME
+          command = "sh: ffmpeg -i %pistol-filename% -f wav -";
         }
         {
           mime = "image/*";
-          command = "chafa %pistol-filename%";
-        }
-        {
-          mime = "text/*";
-          command = "bat %pistol-filename%";
+          command = "sh: chafa %pistol-filename%";
         }
         {
           mime = "text/html";
-          command = "w3m -dump %pistol-filename%";
+          command = "sh: w3m -dump %pistol-filename%";
+        }
+        {
+          mime = "text/*";
+          command = "sh: bat %pistol-filename%";
         }
         {
           mime = "video/*";
-          command = "ffmpegthumbnailer -i %pistol-filename% -o -";
+          command = "sh: ffmpegthumbnailer -i %pistol-filename% -o - | chafa";
         }
       ];
     };
@@ -131,18 +136,13 @@ in
       "lf/cleaner" = mkDefault {
         enable = true;
         executable = true;
-        source = ./cleaner;
+        source = ./cleaner.sh;
       };
       "lf/previewer" = mkDefault {
         enable = true;
         executable = true;
-        source = ./previewer;
+        source = ./previewer.sh;
       };
-    };
-    home.file.".local/bin/vidthumb" = mkDefault {
-      enable = true;
-      executable = true;
-      source = ./vidthumb;
     };
   };
 }

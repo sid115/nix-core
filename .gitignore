@@ -1,2 +1,6 @@
+.direnv/
+.pre-commit-config.yaml
 result
-templates/**/flake.lock
+site/
+templates/**/*.lock
+templates/**/.pre-commit-config.yaml

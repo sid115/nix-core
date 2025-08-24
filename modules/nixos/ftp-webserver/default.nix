@@ -2,13 +2,14 @@
 
 let
   cfg = config.services.ftp-webserver;
-  fqdn = "${cfg.subdomain}.${config.networking.domain}";
-  _nginx = config.services.nginx;
+  domain = config.networking.domain;
+  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
+  nginx = config.services.nginx;
 
   inherit (lib)
     mkEnableOption
-    mkOption
     mkIf
+    mkOption
     types
     ;
 in
@@ -18,7 +19,7 @@ in
     subdomain = mkOption {
       type = types.str;
       default = "ftp";
-      description = "Subdomain for the FTP webserver.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;
@@ -46,6 +47,6 @@ in
       enableACME = cfg.forceSSL;
     };
 
-    systemd.tmpfiles.rules = [ "d ${cfg.root} 0755 ${_nginx.user} ${_nginx.group}" ];
+    systemd.tmpfiles.rules = [ "d ${cfg.root} 0755 ${nginx.user} ${nginx.group}" ];
   };
 }

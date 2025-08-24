@@ -29,11 +29,19 @@ in
   };
 
   config = mkIf cfg.enable {
-    mailserver = {
-      fqdn = fqdn;
-      domains = mkDefault [ config.networking.domain ];
+    assertions = [
+      {
+        assertion = cfg.subdomain != "";
+        message = "nix-core/nixos/mailserver: config.mailserver.subdomain cannot be empty.";
+      }
+    ];
 
+    mailserver = {
+      inherit fqdn;
+
+      domains = mkDefault [ config.networking.domain ];
       certificateScheme = mkDefault "acme-nginx";
+      stateVersion = mkDefault 1;
     };
 
     environment.systemPackages = [ pkgs.mailutils ];

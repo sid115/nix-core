@@ -40,6 +40,12 @@
     action = ":%s/<C-r><C-w>/<C-r><C-w>/gI<Left><Left><Left>";
     mode = "n";
   }
+  # search and replace selected text
+  {
+    key = "<leader>s";
+    action = "y:%s/<C-r>0/<C-r>0/gI<Left><Left><Left>";
+    mode = "v";
+  }
 
   # clipboard operations
   {
@@ -96,19 +102,27 @@
     mode = "n";
   }
 
-  # quickfix and location list navigation
+  # quickfix
+  {
+    # Run make command
+    key = "<leader>m";
+    action = "<cmd>:make<CR>";
+    mode = "n";
+  }
   {
     # previous quickfix item
-    key = "<C-S-J>";
+    key = "<C-A-J>";
     action = "<cmd>cprev<CR>zz";
     mode = "n";
   }
   {
     # next quickfix item
-    key = "<C-S-K>";
+    key = "<C-A-K>";
     action = "<cmd>cnext<CR>zz";
     mode = "n";
   }
+
+  # location list navigation
   {
     # previous location list item
     key = "<leader>j";
@@ -127,17 +141,6 @@
     # disable the 'Q' key
     key = "Q";
     action = "<nop>";
-    mode = "n";
-  }
-
-  # file operations
-  {
-    # make current file executable
-    key = "<leader>x";
-    action = "<cmd>!chmod +x %<CR>";
-    options = {
-      silent = true;
-    };
     mode = "n";
   }
 
@@ -227,14 +230,6 @@
     mode = "n";
   }
 
-  # formatter
-  {
-    # format code using lsp
-    key = "<leader>f";
-    action = "vim.lsp.buf.format";
-    mode = "n";
-  }
-
   # spell checking
   {
     # toggle spell checking
@@ -300,6 +295,38 @@
     # adding words to the dictionary
     key = "zg";
     action = "zg";
+    options = {
+      noremap = true;
+      silent = true;
+    };
+    mode = "n";
+  }
+
+  # buffer navigation
+  {
+    # next buffer
+    key = "<C-S-J>";
+    action = ":bnext<CR>";
+    options = {
+      noremap = true;
+      silent = true;
+    };
+    mode = "n";
+  }
+  {
+    # previous buffer
+    key = "<C-S-K>";
+    action = ":bprevious<CR>";
+    options = {
+      noremap = true;
+      silent = true;
+    };
+    mode = "n";
+  }
+  {
+    # close current buffer
+    key = "<leader>bd";
+    action = ":bdelete<CR>";
     options = {
       noremap = true;
       silent = true;

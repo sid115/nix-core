@@ -17,7 +17,7 @@ let
     {
       default,
       bind ? [ "" ],
-      windowRule ? [ "" ],
+      windowrule ? [ "" ],
     }:
     {
       default = mkOption {
@@ -32,7 +32,7 @@ let
       };
       windowrule = mkOption {
         type = types.listOf types.str;
-        default = windowRule;
+        default = windowrule;
         description = "The window rule to use for the ${default}.";
       };
     };
@@ -45,18 +45,10 @@ let
     builtins.concatLists (map (app: app.windowrule or [ "" ]) (attrValues apps))
   );
 
-  genAssociations =
-    desktop: mimeTypes:
-    builtins.listToAttrs (
-      map (mimeType: {
-        name = mimeType;
-        value = desktop;
-      }) mimeTypes
-    );
-
   inherit (lib)
     attrValues
     filter
+    getExe
     mapAttrs
     mkOption
     types
@@ -82,6 +74,7 @@ in
     ./qbittorrent
     ./screenshot
     ./thunderbird
+    ./yazi
     ./zathura
     # add your application directories here
   ];
@@ -95,7 +88,7 @@ in
     audiomixer = mkAppAttrs {
       default = "pulsemixer";
       bind = [ "$mod, a, exec, ${terminal} -T ${audiomixer} -e ${pkgs.pulsemixer}/bin/pulsemixer" ];
-      windowRule = [
+      windowrule = [
         "float, title:^${audiomixer}$"
         "size 50% 50%, title:^${audiomixer}$"
       ];
@@ -123,13 +116,14 @@ in
       bind = [ "$mod, m, exec, ${emailclient}" ];
     };
 
+    equalizer = mkAppAttrs {
+      default = "easyeffects";
+      bind = [ "$mod CTRL, e, exec, ${getExe pkgs.easyeffects}" ];
+    };
+
     filemanager = mkAppAttrs {
-      default = "lf";
-      bind = [ "$mod, e, togglespecialworkspace, ${filemanager}" ]; # lf autostarts on this workspace
-      windowRule = [
-        "float, title:^${filemanager}$"
-        "size 50% 50%, title:^${filemanager}$"
-      ];
+      default = "yazi";
+      bind = [ "$mod, e, exec, ${terminal} -T ${filemanager} -e ${filemanager}" ];
     };
 
     matrix-client = mkAppAttrs {
@@ -145,6 +139,11 @@ in
     networksettings = mkAppAttrs {
       default = "networkmanager_dmenu";
       bind = [ "$mod SHIFT, n, exec, ${networksettings}" ];
+    };
+
+    notes = mkAppAttrs {
+      default = "quicknote";
+      bind = [ "$mod CTRL, n, exec, ${terminal} -T ${notes} -e ${getExe pkgs.core.quicknote}" ];
     };
 
     office = mkAppAttrs {
@@ -198,7 +197,7 @@ in
   config = {
     wayland.windowManager.hyprland.settings = {
       bind = binds;
-      windowrulev2 = windowrules;
+      windowrule = windowrules;
     };
   };
 }

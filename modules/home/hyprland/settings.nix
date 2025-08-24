@@ -9,8 +9,11 @@ in
   # Do not add binds here. Use `./binds/default.nix` instead.
   "$mod" = cfg.modifier;
 
-  windowrulev2 = [
+  windowrule = [
     "center, floating:1, not class:^(Gimp)$, not class:^(Steam)$"
+    "float, title:^Open File"
+    "float, title:^Save File"
+    "noborder, onworkspace:w[t1]"
 
     # https://wiki.hyprland.org/Useful-Utilities/Screen-Sharing/#xwayland
     "opacity 0.0 override, class:^(xwaylandvideobridge)$"
@@ -28,7 +31,7 @@ in
     new_on_top = mkDefault true;
   };
 
-  input.kb_layout = mkDefault "de"; # does this need to be configurable?
+  input.kb_layout = mkDefault "de";
 
   xwayland = {
     force_zero_scaling = mkDefault true;

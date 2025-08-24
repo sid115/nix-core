@@ -2,7 +2,8 @@
 
 let
   cfg = config.services.peertube;
-  fqdn = "${cfg.subdomain}.${config.networking.domain}";
+  domain = config.networking.domain;
+  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkDefault
@@ -16,7 +17,7 @@ in
     subdomain = mkOption {
       type = types.str;
       default = "vid";
-      description = "Subdomain for Nginx virtual host.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
     forceSSL = mkOption {
       type = types.bool;

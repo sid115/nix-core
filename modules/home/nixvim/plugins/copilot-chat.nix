@@ -17,8 +17,10 @@ in
       plugins.copilot-lua = mkIf plugin.enable {
         # You need to authenticate manually by running `:Copilot auth`
         enable = mkDefault true;
-        suggestion.enabled = mkDefault false; # use copilot-cmp instead
-        panel.enabled = mkDefault false; # use copilot-cmp instead
+        settings = {
+          suggestion.enabled = mkDefault false; # use copilot-cmp instead
+          panel.enabled = mkDefault false; # use copilot-cmp instead
+        };
       };
       keymaps = [
         {

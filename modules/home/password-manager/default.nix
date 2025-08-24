@@ -9,6 +9,7 @@
 let
   cfg = config.programs.passwordManager;
   passmenuScript = pkgs.writeShellScriptBin "passmenu-bemenu" (builtins.readFile ./passmenu); # TODO: override original passmenu script coming from pass itself
+  passff-host = pkgs.passff-host;
 
   inherit (lib)
     mkDefault
@@ -75,32 +76,37 @@ in
       };
     };
 
-    services.gpg-agent.pinentryPackage = mkOverride 1001 pkgs.pinentry-qt; # mkDefault collides with gpg home module
+    services.gpg-agent.pinentry.package = mkOverride 1001 pkgs.pinentry-qt; # mkDefault collides with gpg home module
 
-    home.packages =
-      [
-        passmenuScript
-        pkgs.zbar
-      ]
-      ++ (
-        if cfg.wayland then
-          [
-            pkgs.bemenu
-            pkgs.ydotool
-          ]
-        else
-          [
-            pkgs.dmenu
-            pkgs.xdotool
-          ]
-      );
+    home.packages = [
+      passmenuScript
+      pkgs.zbar
+    ]
+    ++ (
+      if cfg.wayland then
+        [
+          pkgs.bemenu
+          pkgs.ydotool
+        ]
+      else
+        [
+          pkgs.dmenu
+          pkgs.xdotool
+        ]
+    );
 
     home.sessionVariables.PASSWORD_STORE_MENU = if cfg.wayland then "bemenu" else "dmenu";
 
     # FIXME: passff does not autofill OTPs
     programs.librewolf = mkIf config.programs.librewolf.enable {
-      package = mkDefault (with pkgs; librewolf.override { nativeMessagingHosts = [ passff-host ]; });
-      profiles.default.extensions =
+      package = pkgs.librewolf.override {
+        nativeMessagingHosts = [
+          passff-host
+        ];
+        hasMozSystemDirPatch = true;
+      };
+      nativeMessagingHosts = [ passff-host ];
+      profiles.default.extensions.packages =
         with inputs.nur.legacyPackages."${pkgs.system}".repos.rycee.firefox-addons; [ passff ];
     };
   };

@@ -1,9 +1,9 @@
 { config, lib, ... }:
 
 let
-  _coturn = config.services.coturn;
-  _sops = config.sops;
   cfg = config.services.matrix-synapse;
+  coturn = config.services.coturn;
+  sops = config.sops;
 
   inherit (lib) mkIf;
 in
@@ -18,7 +18,7 @@ in
       listening-port = 3478;
       tls-listening-port = 5349;
       use-auth-secret = true;
-      static-auth-secret-file = _sops.secrets."coturn/static-auth-secret".path;
+      static-auth-secret-file = sops.secrets."coturn/static-auth-secret".path;
       realm = "turn.${config.networking.domain}";
       cert = "${config.security.acme.certs.${realm}.directory}/full.pem";
       pkey = "${config.security.acme.certs.${realm}.directory}/key.pem";
@@ -52,7 +52,7 @@ in
       '';
     };
 
-    networking.firewall = with _coturn; {
+    networking.firewall = with coturn; {
       allowedUDPPortRanges = [
         {
           from = min-port;
@@ -73,13 +73,13 @@ in
       ];
     };
 
-    security.acme.certs.${_coturn.realm} = {
+    security.acme.certs.${coturn.realm} = {
       postRun = "systemctl restart coturn.service";
       group = "turnserver";
     };
 
     services.matrix-synapse.settings = {
-      turn_uris = with _coturn; [
+      turn_uris = with coturn; [
         "turn:${realm}:${toString listening-port}?transport=udp"
         "turn:${realm}:${toString listening-port}?transport=tcp"
         "turn:${realm}:${toString tls-listening-port}?transport=udp"
@@ -89,24 +89,26 @@ in
         "turn:${realm}:${toString alt-tls-listening-port}?transport=udp"
         "turn:${realm}:${toString alt-tls-listening-port}?transport=tcp"
       ];
-      extraConfigFiles = [ _sops.templates."coturn/static-auth-secret.env".path ];
+      extraConfigFiles = [ sops.templates."coturn/static-auth-secret.env".path ];
       turn_user_lifetime = "1h";
     };
 
-    sops = {
-      secrets."coturn/static-auth-secret" = {
+    sops =
+      let
         owner = "turnserver";
         group = "turnserver";
         mode = "0440";
+      in
+      {
+        secrets."coturn/static-auth-secret" = {
+          inherit owner group mode;
+        };
+        templates."coturn/static-auth-secret.env" = {
+          inherit owner group mode;
+          content = ''
+            static-auth-secret=${sops.placeholder."coturn/static-auth-secret"}
+          '';
+        };
       };
-      templates."coturn/static-auth-secret.env" = {
-        content = ''
-          static-auth-secret=${_sops.placeholder."coturn/static-auth-secret"}
-        '';
-        owner = "turnserver";
-        group = "turnserver";
-        mode = "0440";
-      };
-    };
   };
 }

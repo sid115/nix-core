@@ -4,19 +4,18 @@
 
 with pkgs;
 [
-  easyeffects
   file
   helvum
   libnotify
   python3Full
   udiskie
   udisks
-  ventoy
+  # ventoy # https://github.com/NixOS/nixpkgs/issues/404663
   wev
   wl-clipboard
 
   # screen sharing for x11 apps
   grim
   slurp
-  xwaylandvideobridge
+  kdePackages.xwaylandvideobridge
 ]

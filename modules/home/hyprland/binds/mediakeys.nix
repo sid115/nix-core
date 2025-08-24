@@ -13,6 +13,7 @@ in
   "SHIFT, XF86AudioRaiseVolume,  exec, ${volume} set-source-volume 0 +1%" # raise mic volume
   "SHIFT, XF86AudioLowerVolume,  exec, ${volume} set-source-volume 0 -1%" # lower mic volume
   ",      XF86AudioMute,         exec, ${volume} set-sink-mute 0 toggle" # mute/unmute speaker
+  "SHIFT, XF86AudioMute,         exec, ${volume} set-source-mute 0 toggle" # mute/unmute mic
   ",      XF86AudioMicMute,      exec, ${volume} set-source-mute 0 toggle" # mute/unmute mic
   ",      XF86AudioPlay,         exec, ${player} play-pause" # toggle between play and pause music
   ",      XF86AudioStop,         exec, ${player} stop" # stop music

@@ -37,12 +37,6 @@ in
 
   config = mkIf (cfg.enable && signal.enable) {
     nixpkgs = {
-      # FIXME: Does not build because "olm-3.2.16" is not in `permittedInsecurePackages` for unstable packages
-      # overlays = [
-      #   (final: prev: {
-      #     mautrix-signal = pkgs.unstable.mautrix-signal;
-      #   })
-      # ];
       config.permittedInsecurePackages = [ "olm-${olmVersion}" ];
     };
 
@@ -68,7 +62,7 @@ in
           };
           mute_bridging = true;
           network = {
-            displayname_template = "{{or .ProfileName .PhoneNumber \"Unknown user\"}} (S)";
+            displayname_template = "{{or .ContactName .ProfileName .PhoneNumber}} (S)";
           };
           permissions = {
             "*" = "relay";

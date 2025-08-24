@@ -3,11 +3,14 @@
 {
   environment.systemPackages = with pkgs; [
     cryptsetup
+    dig
     fzf
     git
     htop
+    hydra-check
     iproute2
     jq
+    lm_sensors
     lsof
     neovim
     netcat-openbsd
@@ -19,6 +22,7 @@
     psmisc
     rsync
     tldr
+    tree
     unzip
     usbutils
     wget
