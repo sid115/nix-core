@@ -12,6 +12,6 @@
   passwordManager = import ./password-manager;
   sops = import ./sops;
   stylix = import ./stylix;
-  virtualization = import ./virtualization;
+  virtualisation = import ./virtualisation;
   waybar = import ./waybar;
 }
