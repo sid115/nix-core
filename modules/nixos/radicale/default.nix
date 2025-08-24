@@ -5,9 +5,6 @@
   ...
 }:
 
-# Generate passwords with:
-# openssl passwd -6 "password"
-
 let
   cfg = config.services.radicale;
   domain = config.networking.domain;
@@ -74,6 +71,10 @@ in
       enableACME = cfg.forceSSL;
     };
 
+    environment.systemPackages = [
+      pkgs.openssl
+    ];
+
     sops =
       let
         owner = "radicale";
@@ -98,9 +99,5 @@ in
         secrets = mkSecrets cfg.users;
         templates."radicale/users" = mkTemplate cfg.users;
       };
-
-    environment.systemPackages = [
-      pkgs.openssl
-    ];
   };
 }

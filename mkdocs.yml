@@ -60,6 +60,7 @@ nav:
       - open-webui: modules/nixos/open-webui.md
       - peertube: modules/nixos/peertube.md
       - print-server: modules/nixos/print-server.md
+      - radicale: modules/nixos/radicale.md
       - rss-bridge: modules/nixos/rss-bridge.md
       - searx: modules/nixos/searx.md
       - sops: modules/nixos/sops.md
