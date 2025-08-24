@@ -11,7 +11,7 @@
   nixvim = import ./nixvim;
   passwordManager = import ./password-manager;
   sops = import ./sops;
-  styling = import ./styling;
+  stylix = import ./stylix;
   virtualization = import ./virtualization;
   waybar = import ./waybar;
 }

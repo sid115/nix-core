@@ -7,7 +7,7 @@
 }:
 
 let
-  secrets = "${toString inputs.self}/hosts/${config.networking.hostName}/secrets.yaml";
+  secrets = "${toString inputs.self}/hosts/${config.networking.hostName}/secrets/secrets.yaml";
 in
 {
   imports = [ inputs.sops-nix.nixosModules.sops ];

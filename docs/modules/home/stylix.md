@@ -1,10 +1,12 @@
-# Custom styling
+# Stylix
 
-This module wraps [stylix](https://github.com/danth/stylix) to streamline the process of setting a color scheme and styles for your applications.
+This module wraps [stylix](https://github.com/nix-community/stylix), a theming framework for NixOS, Home Manager, nix-darwin, and Nix-on-Droid.
 
-Stylix colorizes most applications by default (see [`stylix.targets`](https://stylix.danth.me/options/hm.html)). Some custom color and style settings for various applications can be found in the [`custom` directory](https://github.com/sid115/nix-core/blob/master/modules/home/styling/custom).
+View the [*nix-core* Home Manager module on GitHub](https://github.com/sid115/nix-core/tree/master/modules/home/stylix).
 
-View the [*nix-core* Home Manager module on GitHub](https://github.com/sid115/nix-core/tree/master/modules/home/styling).
+## References
+
+- [docs](https://nix-community.github.io/stylix/)
 
 ## Usage
 
@@ -12,46 +14,32 @@ Add stylix to your flake inputs:
 
 ```nix
 inputs = {
-  stylix.url = "github:danth/stylix/release-24.11";
+  stylix.url = "github:nix-community/stylix";
   stylix.inputs.nixpkgs.follows = "nixpkgs";
 };
 ```
 
-> Replace `24.11` with your `nixpkgs` version.
-
 For example, in your home configuration, set:
 
 ```nix
-imports = [ inputs.core.homeModules.styling ];
+imports = [ inputs.core.homeModules.stylix ];
 
-styling = {
+stylix = {
   enable = true;
-  gaps = 8;
-  radius = 4;
   scheme = "SCHEME";
 };
 ```
 
-Replace `SCHEME` with the name of your scheme. Available schemes can be found in the [`schemes` directory](https://github.com/sid115/nix-core/blob/master/modules/home/styling/schemes).
-
-## Print a scheme
-
-This module provides a Python script to view color schemes in the terminal:
-
-```bash
-print-colors PATH/TO/colors.yaml
-```
+Replace `SCHEME` with the name of your scheme. Available schemes are listed as `validSchemes` in [our stylix module](https://github.com/sid115/nix-core/tree/master/modules/home/stylix/default.nix).
 
 ## Create a scheme
 
-You can create your own scheme in the `schemes` directory by creating a subdirectory with the name of your scheme. Inside this subdirectory, you need two files: `colors.yaml` and `wallpaper.png`.
+You can create your own scheme in `schemes/<scheme>.yaml`. To make it available via `stylix.scheme`, you need to add it to `validSchemes` and `customSchemes` in [the module's `default.nix`](https://github.com/sid115/nix-core/tree/master/modules/home/stylix/default.nix). Make sure that the resulting scheme name is a valid [colorscheme in nixvim](https://github.com/nix-community/nixvim/tree/main/plugins/colorschemes).
 
 It is recommended to set colors according to their purpose / name. This means that `base00` should always be a rather dark color for the background and `base08` a reddish color.
 
-### 1. Color scheme
-
 ```yaml
-# colors.yaml
+# <scheme>.yaml
 system: "base16"
 name: "SCHEME"
 author: "AUTHOR"
@@ -79,9 +67,19 @@ palette:
 
 Refer to [Stylix's style guide](https://stylix.danth.me/styling.html) for more information on where and how these colors will be used.
 
-You can preview your color schemes with the [base16-viewer](https://sesh.github.io/base16-viewer/) (*Disable your dark reader*).
+You can preview your color schemes with the [base16-viewer](https://sesh.github.io/base16-viewer/) (*Disable your dark reader*) or `print-colors` - a Python script to view color schemes in the terminal:
 
-### 2. Wallpaper
+```bash
+print-colors PATH/TO/colors.yaml
+```
+
+## Wallpaper
+
+You can set a wallpaper with:
+
+```nix
+stylix.image = ./path/to/wallpaper.png;
+```
 
 This can be any image as a PNG file. You might want to take a look at [some Nix themed wallpapers](https://github.com/NixOS/nixos-artwork/tree/master/wallpapers) or [nix-wallpaper](https://github.com/lunik1/nix-wallpaper/tree/master) to create your own wallpaper with the Nix logo and custom colors.
 

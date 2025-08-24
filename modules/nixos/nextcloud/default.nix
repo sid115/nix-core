@@ -50,7 +50,7 @@ in
       config = {
         adminuser = mkDefault "nextcloud";
         adminpassFile = mkDefault "/etc/secrets/nextcloud-initial-admin-pass";
-        dbtype = mkDefault "sqlite";
+        dbtype = mkDefault "sqlite"; # TODO: switch to postgresql
       };
       configureRedis = mkDefault true;
       extraAppsEnable = mkDefault true;
@@ -58,8 +58,7 @@ in
       webfinger = mkDefault true;
       settings = {
         # Logging
-        log_type = mkDefault "file"; # systemd not available: https://github.com/NixOS/nixpkgs/issues/262142
-        logfile = "${cfg.datadir}/data/nextcloud.log";
+        log_type = mkDefault "systemd";
         loglevel = mkDefault 2;
         syslog_tag = mkDefault "Nextcloud";
 
@@ -83,9 +82,9 @@ in
         error_reporting = "E_ALL & ~E_DEPRECATED & ~E_STRICT";
         expose_php = "Off";
         "opcache.fast_shutdown" = "1";
-        "opcache.interned_strings_buffer" = "16";
+        "opcache.interned_strings_buffer" = "64";
         "opcache.max_accelerated_files" = "10000";
-        "opcache.memory_consumption" = "128";
+        "opcache.memory_consumption" = "512";
         "opcache.revalidate_freq" = "1";
         output_buffering = "0";
         short_open_tag = "Off";

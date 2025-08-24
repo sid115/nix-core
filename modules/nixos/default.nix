@@ -32,6 +32,7 @@
   openssh = import ./openssh;
   peertube = import ./peertube;
   print-server = import ./print-server;
+  radicale = import ./radicale;
   rss-bridge = import ./rss-bridge;
   searx = import ./searx;
   sops = import ./sops;

@@ -16,24 +16,33 @@ in
     Netmask: {netmask}
     CIDR: {cidr}
     ESSID: {essid}
-    Signal Strength: {signalStrength}%
-    Signal dBm: {signaldBm} dBm
+    Signal: {signaldBm} dBm / {signalStrength}%
     Frequency: {frequency} GHz
-    Bandwidth Up: {bandwidthUpBits} bps / {bandwidthUpBytes} Bps
-    Bandwidth Down: {bandwidthDownBits} bps / {bandwidthDownBytes} Bps
-    Total Bandwidth: {bandwidthTotalBits} bps / {bandwidthTotalBytes} Bps
+    Bandwidth Up: {bandwidthUpBits} / {bandwidthUpBytes}
+    Bandwidth Down: {bandwidthDownBits} / {bandwidthDownBytes}
+    Total Bandwidth: {bandwidthTotalBits} / {bandwidthTotalBytes}
     Icon: {icon}
   '';
   tooltip-format-wifi = mkDefault ''
+    Interface: {ifname}
+    IP Address: {ipaddr}/{cidr}
+    Gateway: {gwaddr}
+    Netmask: {netmask}
     ESSID: {essid}
-    Signal Strength: {signalStrength}%
-    Signal dBm: {signaldBm} dBm
+    Signal: {signaldBm} dBm / {signalStrength}%
     Frequency: {frequency} GHz
+    Bandwidth Up: {bandwidthUpBits} / {bandwidthUpBytes}
+    Bandwidth Down: {bandwidthDownBits} / {bandwidthDownBytes}
+    Total Bandwidth: {bandwidthTotalBits} / {bandwidthTotalBytes}
   '';
   tooltip-format-ethernet = mkDefault ''
     Interface: {ifname}
     IP Address: {ipaddr}/{cidr}
     Gateway: {gwaddr}
+    Netmask: {netmask}
+    Bandwidth Up: {bandwidthUpBits} / {bandwidthUpBytes}
+    Bandwidth Down: {bandwidthDownBits} / {bandwidthDownBytes}
+    Total Bandwidth: {bandwidthTotalBits} / {bandwidthTotalBytes}
   '';
   tooltip-format-disconnected = mkDefault "Disconnected";
 }
