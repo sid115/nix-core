@@ -56,5 +56,12 @@ Remote rebuilding:
 nix run .#rebuild <build-host> uvm
 ```
 
-> `<build-host>` needs to be a remote host where you login as root via ssh with no password.   
-> TODO: Add an askpass helper
+> Note: `<build-host>` needs to be a remote host where you login as root via ssh with no password.
+
+If you need to use remote sudo, you can also use [nix-core's rebuild script](https://github.com/sid115/nix-core/blob/master/modules/nixos/common/rebuild.sh) for remote rebuilds. But then, the root user password cannot be empty:
+
+```bash
+rebuild -p . -H uvm -T uvm -B <build-host>
+```
+
+You might want to set up [PAM's SSH agent Auth](https://search.nixos.org/options?channel=unstable&query=sshAgentAuth) or use an [askpass helper](https://search.nixos.org/options?channel=unstable&query=askpass).
