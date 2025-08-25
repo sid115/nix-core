@@ -39,7 +39,7 @@
   torrenting = import ./torrenting;
   tt-rss = import ./tt-rss;
   vaultwarden = import ./vaultwarden;
-  virtualization = import ./virtualization;
+  virtualisation = import ./virtualisation;
   webPage = import ./webPage;
   xrdp = import ./xrdp;
 }

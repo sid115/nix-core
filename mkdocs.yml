@@ -67,7 +67,7 @@ nav:
       - torrenting: modules/nixos/torrenting.md
       - tt-rss: modules/nixos/tt-rss.md
       - vaultwarden: modules/nixos/vaultwarden.md
-      - virtualization: modules/nixos/virtualization.md
+      - vfio: modules/nixos/vfio.md
       - webPage: modules/nixos/webpage.md
       - xrdp: modules/nixos/xrdp.md
     - Home Manager:
@@ -83,7 +83,7 @@ nav:
       - password-manager: modules/home/password-manager.md
       - sops: modules/home/sops.md
       - stylix: modules/home/stylix.md
-      - virtualization: modules/home/virtualization.md
+      - vfio: modules/home/vfio.md
       - waybar: modules/home/waybar.md
       - yazi: modules/home/yazi.md
   - Tips:
