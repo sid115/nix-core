@@ -16,11 +16,16 @@ MAX_ATTEMPTS=3
 
 # check if website is up
 check_website() {
-  if curl -s -w "%{http_code} %{url_effective}\n" -I "$FQDN" > /dev/null; then
-    return 0
-  else
-    return 1
-  fi
+  local http_code
+  http_code=$(curl -s -w "%{http_code}" -o /dev/null -I "$FQDN" 2>/dev/null)
+
+  [ -n "$http_code" ] || return 1
+  [ "$http_code" == "000" ] && return 1
+  [[ $http_code =~ ^[45] ]] && return 1
+
+  [[ $http_code =~ ^[23] ]] && return 0
+
+  return 1
 }
 
 # send notification via ntfy
