@@ -91,7 +91,8 @@ in
       "vfio_pci"
       "vfio_iommu_type1"
       "vfio"
-    ] ++ optionals (versionOlder pkgs.linux.version "6.2") [ "vfio_virqfd" ];
+    ]
+    ++ optionals (versionOlder pkgs.linux.version "6.2") [ "vfio_virqfd" ];
 
     # boot.blacklistedKernelModules = optionals cfg.blacklistNvidia [
     #   "nouveau"

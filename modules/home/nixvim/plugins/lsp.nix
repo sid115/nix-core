@@ -49,7 +49,7 @@ in
             nil_ls = {
               enable = mkDefault true;
               settings.nix.flake.autoArchive = false;
-              settings.formatting.command = mkDefault [ "${pkgs.nixfmt-rfc-style}/bin/nixfmt" ];
+              settings.formatting.command = mkDefault [ "${pkgs.nixfmt-tree}/bin/treefmt" ];
             };
             pyright.enable = mkDefault true;
             rust_analyzer = {
