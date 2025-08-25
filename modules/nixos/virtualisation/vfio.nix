@@ -1,4 +1,9 @@
-{ lib, config, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.virtualisation.vfio;
@@ -10,12 +15,11 @@ let
     optional
     optionals
     types
+    versionOlder
     ;
 in
-
 {
   options.virtualisation.vfio = {
-
     enable = mkEnableOption "VFIO Configuration";
 
     IOMMUType = mkOption {
@@ -40,6 +44,7 @@ in
     disableEFIfb = mkOption {
       type = types.bool;
       default = false;
+      example = true;
       description = "Disables the usage of the EFI framebuffer on boot.";
     };
 
@@ -52,6 +57,7 @@ in
     ignoreMSRs = mkOption {
       type = types.bool;
       default = false;
+      example = true;
       description = "Enables or disables kvm guest access to model-specific registers";
     };
   };
@@ -71,31 +77,26 @@ in
         else
           [ "amd_iommu=on" ]
       )
-      ++ (optional (builtins.length cfg.devices > 0) (
-        "vfio-pci.ids=" + builtins.concatStringsSep "," cfg.devices
-      ))
+      ++ optional (cfg.devices != [ ]) ("vfio-pci.ids=" + builtins.concatStringsSep "," cfg.devices)
       ++ (optional cfg.disableEFIfb "video=efifb:off")
-      ++ (optionals cfg.ignoreMSRs [
-        "kvm.ignore_msrs=1"
-        "kvm.report_ignored_msrs=0"
-      ]);
+      ++ (
+        optionals cfg.ignoreMSRs [
+          "kvm.ignore_msrs=1"
+          "kvm.report_ignored_msrs=0"
+        ]
+        ++ optional cfg.blacklistNvidia "modprobe.blacklist=nouveau,nvidia,nvidia_drm,nvidia"
+      );
 
-    boot.kernelModules = [
-      "vfio_virqfd"
-      "vfio_pci"
-      "vfio_iommu_type1"
-      "vfio"
-    ];
     boot.initrd.kernelModules = [
-      "vfio_virqfd"
       "vfio_pci"
       "vfio_iommu_type1"
       "vfio"
-    ];
+    ] ++ optionals (versionOlder pkgs.linux.version "6.2") [ "vfio_virqfd" ];
 
-    boot.blacklistedKernelModules = optionals cfg.blacklistNvidia [
-      "nvidia"
-      "nouveau"
-    ];
+    # boot.blacklistedKernelModules = optionals cfg.blacklistNvidia [
+    #   "nouveau"
+    #   "nvidia"
+    #   "nvidia_drm"
+    # ];
   };
 }
