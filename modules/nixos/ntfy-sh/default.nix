@@ -23,10 +23,11 @@ let
 
   fqdn = stripProtocol cfg.settings.base-url;
 
-  check-domain = pkgs.writeShellApplication {
+  check-domain = pkgs.writeShellApplication rec {
     name = "check-domain";
     runtimeInputs = [ pkgs.curl ];
-    text = readFile ./check-domain.sh;
+    text = readFile ./${name}.sh;
+    meta.mainProgram = name;
   };
 
   mkMonitorDomainService =
@@ -44,7 +45,7 @@ let
         Type = "oneshot";
         User = "nobody";
         Group = "nogroup";
-        ExecStart = "${pkgs.bash}/bin/bash ${check-domain}/bin/check-domain ${escapedDomain} ${escapedTopic}";
+        ExecStart = "${getExe check-domain} ${escapedDomain} ${escapedTopic}";
         Restart = "on-failure";
         RestartSec = "300s";
       };
@@ -53,6 +54,7 @@ let
   inherit (lib)
     escapeShellArg
     foldl'
+    getExe
     hasPrefix
     mkDefault
     mkEnableOption

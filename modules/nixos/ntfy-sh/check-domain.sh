@@ -16,12 +16,20 @@ MAX_ATTEMPTS=3
 
 # check if website is up
 check_website() {
-  curl -s -w "%{http_code} %{url_effective}\n" -I "$FQDN" > /dev/null && return 0 || return 1
+  if curl -s -w "%{http_code} %{url_effective}\n" -I "$FQDN" > /dev/null; then
+    return 0
+  else
+    return 1
+  fi
 }
 
 # send notification via ntfy
 send_notification() {
-  curl -s -d "$1" http://127.0.0.1:2586/"$NTFY_TOPIC" && return 0 || return 1
+  if curl -s -d "$1" http://127.0.0.1:2586/"$NTFY_TOPIC"; then
+    return 0
+  else
+    return 1
+  fi
 }
 
 # perform checks
