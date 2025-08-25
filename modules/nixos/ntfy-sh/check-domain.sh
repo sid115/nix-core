@@ -17,7 +17,7 @@ MAX_ATTEMPTS=3
 # check if website is up
 check_website() {
   local http_code
-  http_code=$(curl -s -w "%{http_code}" -o /dev/null -I "$FQDN" 2>/dev/null)
+  http_code=$(curl -s -w "%{http_code}" -o /dev/null -I "https://$FQDN" 2>/dev/null)
 
   [ -n "$http_code" ] || return 1
   [ "$http_code" == "000" ] && return 1
