@@ -115,7 +115,7 @@
               nixfmt-rfc-style = {
                 enable = true;
                 package = pkgs.nixfmt-tree;
-                entry = "${pkgs.nixfmt-tree}/bin/treefmt";
+                entry = "${pkgs.nixfmt-tree}/bin/treefmt --no-cache";
               };
             };
           };
