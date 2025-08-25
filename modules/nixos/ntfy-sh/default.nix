@@ -46,8 +46,21 @@ let
         User = "nobody";
         Group = "nogroup";
         ExecStart = "${getExe check-domain} ${escapedDomain} ${escapedTopic}";
-        Restart = "on-failure";
-        RestartSec = "300s";
+      };
+    };
+
+  mkMonitorDomainTimer =
+    domain:
+    let
+      serviceName = "ntfy-sh-monitor-domain-${domain}";
+    in
+    {
+      description = "Timer for monitoring domain ${domain}";
+      wantedBy = [ "timers.target" ];
+      partOf = [ "${serviceName}.service" ];
+      timerConfig = {
+        OnBootSec = "1min";
+        OnUnitActiveSec = "10min";
       };
     };
 
@@ -121,15 +134,28 @@ in
       };
     };
 
-    systemd.services = foldl' (
-      acc: domainCfg:
-      let
-        serviceName = "ntfy-sh-monitor-domain-${domainCfg.fqdn}";
-      in
-      acc
-      // {
-        "${serviceName}" = mkMonitorDomainService domainCfg.fqdn domainCfg.topic;
-      }
-    ) { } cfg.notifiers.monitor-domains;
+    systemd = {
+      services = foldl' (
+        acc: domainCfg:
+        let
+          serviceName = "ntfy-sh-monitor-domain-${domainCfg.fqdn}";
+        in
+        acc
+        // {
+          "${serviceName}" = mkMonitorDomainService domainCfg.fqdn domainCfg.topic;
+        }
+      ) { } cfg.notifiers.monitor-domains;
+
+      timers = foldl' (
+        acc: domainCfg:
+        let
+          timerName = "ntfy-sh-monitor-domain-${domainCfg.fqdn}";
+        in
+        acc
+        // {
+          "${timerName}" = mkMonitorDomainTimer domainCfg.fqdn;
+        }
+      ) { } cfg.notifiers.monitor-domains;
+    };
   };
 }
