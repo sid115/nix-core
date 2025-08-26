@@ -9,7 +9,7 @@ let
   cfg = config.programs.nixvim;
   plugin = cfg.plugins.lsp;
 
-  inherit (lib) mkDefault mkIf;
+  inherit (lib) getExe mkDefault mkIf;
 in
 {
   config = {
@@ -49,7 +49,7 @@ in
             nil_ls = {
               enable = mkDefault true;
               settings.nix.flake.autoArchive = false;
-              settings.formatting.command = mkDefault [ "${pkgs.nixfmt-tree}/bin/treefmt" ];
+              settings.formatting.command = mkDefault [ "${getExe pkgs.nixfmt-rfc-style}" ];
             };
             pyright.enable = mkDefault true;
             rust_analyzer = {
