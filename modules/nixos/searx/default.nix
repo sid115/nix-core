@@ -54,11 +54,17 @@ in
       };
       limiterSettings = {
         botdetection = {
+          ipv4_prefix = mkDefault 32;
+          ipv6_prefix = mkDefault 48;
+          trusted_proxies = mkDefault [
+            "127.0.0.0/8"
+            "::1"
+          ];
           ip_limit = {
             filter_link_local = mkDefault false;
             link_token = mkDefault false;
           };
-          ip_lists.pass_ip = mkDefault [ "127.0.0.1" ];
+          pass_searxng_org = mkDefault true;
         };
       };
     };
