@@ -13,7 +13,6 @@ let
     mkDefault
     mkIf
     mkOption
-    optional
     types
     ;
 in
@@ -37,6 +36,7 @@ in
       settings = {
         WebService = {
           AllowUnencrypted = mkDefault true;
+          ProtocolHeader = mkDefault "X-Forwarded-Proto";
         };
         Log = {
           Fatal = mkDefault "criticals warnings";
@@ -45,8 +45,9 @@ in
       allowed-origins = [
         "http://localhost:${toString cfg.port}"
         "http://${fqdn}"
-      ]
-      ++ optional (cfg.forceSSL) "https://${fqdn}";
+        "https://${fqdn}"
+        "wss://${fqdn}"
+      ];
     };
 
     # https://github.com/NixOS/nixpkgs/issues/179676
@@ -56,7 +57,23 @@ in
       "${fqdn}" = {
         enableACME = cfg.forceSSL;
         forceSSL = cfg.forceSSL;
-        locations."/".proxyPass = mkDefault "http://localhost:${toString cfg.port}";
+        locations."/" = {
+          proxyPass = mkDefault "http://localhost:${toString cfg.port}";
+          extraConfig = ''
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            # Required for web sockets to function
+            proxy_http_version 1.1;
+            proxy_buffering off;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+
+            # Pass ETag header from Cockpit to clients.
+            # See: https://github.com/cockpit-project/cockpit/issues/5239
+            gzip off;
+          '';
+        };
       };
     };
   };
