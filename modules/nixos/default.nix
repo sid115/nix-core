@@ -4,6 +4,7 @@
   baibot = import ./baibot;
   bluetooth = import ./bluetooth;
   cifsMount = import ./cifsMount;
+  cockpit = import ./cockpit;
   common = import ./common;
   device = import ./device;
   firefly-iii = import ./firefly-iii;
