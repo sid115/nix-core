@@ -13,6 +13,7 @@ let
     mkDefault
     mkIf
     mkOption
+    optional
     types
     ;
 in
@@ -43,7 +44,9 @@ in
       };
       allowed-origins = [
         "http://localhost:${toString cfg.port}"
-      ];
+        "http://${fqdn}"
+      ]
+      ++ optional (cfg.forceSSL) "https://${fqdn}";
     };
 
     # https://github.com/NixOS/nixpkgs/issues/179676
