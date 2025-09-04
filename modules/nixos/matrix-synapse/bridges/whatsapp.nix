@@ -79,7 +79,7 @@ in
         encryption = {
           allow = mkDefault true;
           default = mkDefault true;
-          require = mkDefault true;
+          require = mkDefault false;
           pickle_key = mkDefault "generate";
         };
       };
