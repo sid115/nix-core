@@ -6,11 +6,11 @@
 }:
 
 let
-  cfg = config.networking.vpn-server;
+  cfg = config.networking.wg-server;
 
   mkPeer = name: {
     inherit name;
-    inherit (cfg.peers.${name}) publicKey;
+    inherit (cfg.peers.${name}) publicKey presharedKeyFile;
     allowedIPs = [ "${cfg.peers.${name}.allowedIP}/${toString cfg.peerAddressMask}" ];
     persistentKeepalive = mkDefault 25;
   };
@@ -28,8 +28,13 @@ let
     ;
 in
 {
-  options.networking.vpn-server = {
+  options.networking.wg-server = {
     enable = mkEnableOption "Enable VPN server";
+    openFirewall = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Whether to allow VPN and DNS traffic through the firewall";
+    };
     externalInterface = mkOption {
       type = types.str;
       example = "eth0";
@@ -45,11 +50,6 @@ in
       default = 51820;
       description = "The port number for the VPN server";
     };
-    subnet = mkOption {
-      type = types.str;
-      default = "10.100.0.0";
-      description = "The subnet for the VPN network";
-    };
     subnetMask = mkOption {
       type = types.ints.u8;
       default = 24;
@@ -57,7 +57,7 @@ in
     };
     serverAddress = mkOption {
       type = types.str;
-      default = "10.100.0.1";
+      default = "10.0.0.1";
       description = "The server's IP address within the VPN subnet";
     };
     peerAddressMask = mkOption {
@@ -72,6 +72,11 @@ in
             publicKey = mkOption {
               type = types.str;
               description = "The public key of the peer";
+            };
+            presharedKeyFile = mkOption {
+              type = types.nullOr types.path;
+              default = null;
+              description = "Path to the preshared key file for the peer (optional)";
             };
             allowedIP = mkOption {
               type = types.str;
@@ -90,6 +95,7 @@ in
           };
           laptop = {
             publicKey = "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy=";
+            presharedKeyFile = "/path/to/preshared_key"; # optional
             allowedIP = "10.100.0.3";
           };
         }
@@ -98,61 +104,43 @@ in
   };
 
   config = mkIf cfg.enable {
-    assertions =
-      let
-        optionPrefix = "networking.vpn-server.";
-        messagePrefix = "nix-core/nixos/vpn-server:";
-      in
-      [
-        {
-          assertion = cfg.internalInterface != cfg.externalInterface;
-          message = "${messagePrefix} `${optionPrefix}internalInterface` must not be the same as `${optionPrefix}externalInterface`";
-        }
-        # TODO: check for IP collisions
-        # TODO: make sure every IP is in the same subnet
-      ];
-
-    boot = {
-      extraModulePackages = [ config.boot.kernelPackages.wireguard ];
-      kernel.sysctl = {
-        "net.ipv4.ip_forward" = true;
-      };
-    };
-
-    environment.systemPackages = with pkgs; [
-      wireguard-tools
-    ];
-
     networking = {
-      firewall.allowedUDPPorts = [ cfg.port ];
-
       nat = {
         enable = true;
+        # enableIPv6 = true; # TODO
         externalInterface = cfg.externalInterface;
         internalInterfaces = [ cfg.internalInterface ];
       };
+      firewall = mkIf cfg.openFirewall {
+        allowedTCPPorts = [ 53 ];
+        allowedUDPPorts = [
+          53
+          cfg.port
+        ];
+      };
+      wg-quick.interfaces = {
+        "${cfg.internalInterface}" = {
+          address = [ "${cfg.serverAddress}/${cfg.subnetMask}" ];
+          listenPort = cfg.port;
+          privateKeyFile = config.sops.secrets."wireguard/private-key".path;
+          postUp = ''
+            ${iptables} -A FORWARD -i ${cfg.internalInterface} -j ACCEPT
+            ${iptables} -t nat -A POSTROUTING -s ${cfg.serverAddress}/${cfg.subnetMask} -o ${cfg.externalInterface} -j MASQUERADE
+          '';
+          preDown = ''
+            ${iptables} -D FORWARD -i ${cfg.internalInterface} -j ACCEPT
+            ${iptables} -t nat -D POSTROUTING -s ${cfg.serverAddress}/${cfg.subnetMask} -o ${cfg.externalInterface} -j MASQUERADE
+          '';
 
-      wireguard = {
-        enable = true;
-        interfaces = {
-          "${cfg.internalInterface}" = {
-            ips = [ "${cfg.serverAddress}/${toString cfg.subnetMask}" ];
-            listenPort = cfg.port;
-            dynamicEndpointRefreshSeconds = mkDefault 300;
-
-            postSetup = ''
-              ${iptables} -t nat -A POSTROUTING -s ${cfg.subnet}/${toString cfg.subnetMask} -o ${cfg.externalInterface} -j MASQUERADE
-            '';
-            postShutdown = ''
-              ${iptables} -t nat -D POSTROUTING -s ${cfg.subnet}/${toString cfg.subnetMask} -o ${cfg.externalInterface} -j MASQUERADE
-            '';
-
-            privateKeyFile = config.sops.secrets."wireguard/private-key".path;
-            generatePrivateKeyFile = false;
-
-            peers = mkPeers (builtins.attrNames cfg.peers);
-          };
+          peers = mkPeers (builtins.attrNames cfg.peers);
         };
+      };
+    };
+
+    services = {
+      dnsmasq = {
+        enable = mkDefault true;
+        settings.interface = cfg.internalInterface;
       };
     };
 

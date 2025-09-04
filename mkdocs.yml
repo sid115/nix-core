@@ -68,8 +68,9 @@ nav:
           - tt-rss: modules/nixos/tt-rss.md
           - vaultwarden: modules/nixos/vaultwarden.md
           - virtualisation: modules/nixos/virtualisation.md
-          - vpn-server: modules/nixos/vpn-server.md
           - webPage: modules/nixos/webpage.md
+          - wg-client: modules/nixos/wg-client.md
+          - wg-server: modules/nixos/wg-server.md
           - xrdp: modules/nixos/xrdp.md
       - Home Manager:
           - bemenu: modules/home/bemenu.md
