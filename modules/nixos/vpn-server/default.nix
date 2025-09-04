@@ -31,8 +31,7 @@ in
   options.networking.vpn-server = {
     enable = mkEnableOption "Enable VPN server";
     externalInterface = mkOption {
-      type = types.strMatching ".+";
-      default = "";
+      type = types.str;
       example = "eth0";
       description = "The external network interface for VPN traffic";
     };
@@ -113,9 +112,16 @@ in
         # TODO: make sure every IP is in the same subnet
       ];
 
-    boot.kernel.sysctl = {
-      "net.ipv4.ip_forward" = true;
+    boot = {
+      extraModulePackages = [ config.boot.kernelPackages.wireguard ];
+      kernel.sysctl = {
+        "net.ipv4.ip_forward" = true;
+      };
     };
+
+    environment.systemPackages = with pkgs; [
+      wireguard-tools
+    ];
 
     networking = {
       firewall.allowedUDPPorts = [ cfg.port ];
