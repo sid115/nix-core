@@ -19,10 +19,10 @@ in
     ""
   ];
   tooltip-format = mkDefault ''
-    Capacity: {capacity}%
-    Power Draw: {power} W
     {timeTo}
+    Capacity:      {capacity}%
+    Power Draw:    {power} W
     Charge Cycles: {cycles}
-    Health: {health}%
+    Health:        {health}%
   '';
 }
