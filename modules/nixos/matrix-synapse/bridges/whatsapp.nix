@@ -7,11 +7,10 @@
 
 let
   cfg = config.services.matrix-synapse;
+  bridge = cfg.bridges.whatsapp;
   matrixPort = 8008;
   fqdn = config.networking.domain;
   olmVersion = "3.2.16";
-
-  bridge = config.services.mautrix-whatsapp;
 
   inherit (lib)
     mkDefault
@@ -35,7 +34,7 @@ in
     };
   };
 
-  config = mkIf (cfg.enable && cfg.bridges.whatsapp.enable) {
+  config = mkIf (cfg.enable && bridge.enable) {
     nixpkgs = {
       config.permittedInsecurePackages = [ "olm-${olmVersion}" ];
     };
@@ -55,7 +54,7 @@ in
           permissions = {
             "*" = mkDefault "relay";
             "${fqdn}" = mkDefault "user";
-            "${cfg.bridges.whatsapp.admin}" = mkDefault "admin";
+            "${bridge.admin}" = mkDefault "admin";
           };
         };
         homeserver = {
@@ -63,7 +62,7 @@ in
           domain = mkDefault fqdn;
         };
         appservice = {
-          address = mkDefault "http://localhost:${toString bridge.settings.appservice.port}";
+          address = mkDefault "http://localhost:29318";
           public_address = mkDefault "https://${fqdn}";
           hostname = mkDefault "localhost";
           port = mkDefault 29318;
