@@ -1,7 +1,6 @@
 {
   bemenu = import ./bemenu;
   common = import ./common;
-  gemini-cli = import ./gemini-cli;
   gpg = import ./gpg;
   hyprland = import ./hyprland;
   kitty = import ./kitty;
@@ -12,7 +11,7 @@
   nixvim = import ./nixvim;
   passwordManager = import ./password-manager;
   sops = import ./sops;
-  styling = import ./styling;
-  virtualization = import ./virtualization;
+  stylix = import ./stylix;
+  virtualisation = import ./virtualisation;
   waybar = import ./waybar;
 }

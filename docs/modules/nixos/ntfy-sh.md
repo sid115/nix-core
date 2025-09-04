@@ -24,6 +24,7 @@ services.ntfy-sh = {
   settings.base-url = "https://ntfy.example.tld";
   # add notifiers. See `default.nix`
   notifiers = {
+    # your FQDNs need working HTTPS
     monitor-domains = [
       {
         fqdn = "foo.bar";

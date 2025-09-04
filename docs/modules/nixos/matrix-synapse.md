@@ -41,8 +41,8 @@ Make sure you have a CNAME record for `turn` pointing to your domain.
 
 The `config.yaml` for each bridge is managed through `services.mautrix-BRIDGE.settings`:
 
-- [services.mautrix-signal.settings](https://search.nixos.org/options?channel=unstable&query=services.mautrix-signal.settings): [example configuration file](https://github.com/mautrix/signal/blob/main/pkg/connector/example-config.yaml)
-- [services.mautrix-whatsapp.settings](https://search.nixos.org/options?channel=unstable&query=services.mautrix-whatsapp.settings): [example configuration file](https://github.com/mautrix/whatsapp/blob/main/pkg/connector/example-config.yaml)
+- [services.mautrix-signal.settings](https://search.nixos.org/options?channel=unstable&query=services.mautrix-signal.settings): Generate an example config with: `mautrix-signal -c signal.yaml --generate-example-config`
+- [services.mautrix-whatsapp.settings](https://search.nixos.org/options?channel=unstable&query=services.mautrix-whatsapp.settings): Generate an example config with: `mautrix-whatsapp -c whatsapp.yaml --generate-example-config`
 
 ### Authentication
 
@@ -56,7 +56,7 @@ The `config.yaml` for each bridge is managed through `services.mautrix-BRIDGE.se
 
 ## Troubleshooting
 
-### Specified admin user is not an admin in portal rooms
+### Bridges: Specified admin user is not an admin in portal rooms
 
 There seems to be a bug that the user specified under `services.matrix-synapse.bridges.whatsapp.admin` does not have admin permissions in portal rooms. You can set the power level manually inside each portal room:
 

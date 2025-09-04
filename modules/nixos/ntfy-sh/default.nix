@@ -23,10 +23,11 @@ let
 
   fqdn = stripProtocol cfg.settings.base-url;
 
-  check-domain = pkgs.writeShellApplication {
+  check-domain = pkgs.writeShellApplication rec {
     name = "check-domain";
     runtimeInputs = [ pkgs.curl ];
-    text = readFile ./check-domain.sh;
+    text = readFile ./${name}.sh;
+    meta.mainProgram = name;
   };
 
   mkMonitorDomainService =
@@ -44,15 +45,29 @@ let
         Type = "oneshot";
         User = "nobody";
         Group = "nogroup";
-        ExecStart = "${pkgs.bash}/bin/bash ${check-domain}/bin/check-domain ${escapedDomain} ${escapedTopic}";
-        Restart = "on-failure";
-        RestartSec = "300s";
+        ExecStart = "${getExe check-domain} ${escapedDomain} ${escapedTopic}";
+      };
+    };
+
+  mkMonitorDomainTimer =
+    domain:
+    let
+      serviceName = "ntfy-sh-monitor-domain-${domain}";
+    in
+    {
+      description = "Timer for monitoring domain ${domain}";
+      wantedBy = [ "timers.target" ];
+      partOf = [ "${serviceName}.service" ];
+      timerConfig = {
+        OnBootSec = "1min";
+        OnUnitActiveSec = "10min";
       };
     };
 
   inherit (lib)
     escapeShellArg
     foldl'
+    getExe
     hasPrefix
     mkDefault
     mkEnableOption
@@ -119,15 +134,28 @@ in
       };
     };
 
-    systemd.services = foldl' (
-      acc: domainCfg:
-      let
-        serviceName = "ntfy-sh-monitor-domain-${domainCfg.fqdn}";
-      in
-      acc
-      // {
-        "${serviceName}" = mkMonitorDomainService domainCfg.fqdn domainCfg.topic;
-      }
-    ) { } cfg.notifiers.monitor-domains;
+    systemd = {
+      services = foldl' (
+        acc: domainCfg:
+        let
+          serviceName = "ntfy-sh-monitor-domain-${domainCfg.fqdn}";
+        in
+        acc
+        // {
+          "${serviceName}" = mkMonitorDomainService domainCfg.fqdn domainCfg.topic;
+        }
+      ) { } cfg.notifiers.monitor-domains;
+
+      timers = foldl' (
+        acc: domainCfg:
+        let
+          timerName = "ntfy-sh-monitor-domain-${domainCfg.fqdn}";
+        in
+        acc
+        // {
+          "${timerName}" = mkMonitorDomainTimer domainCfg.fqdn;
+        }
+      ) { } cfg.notifiers.monitor-domains;
+    };
   };
 }

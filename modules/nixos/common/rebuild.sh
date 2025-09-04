@@ -7,6 +7,7 @@ NIXOS_HOST="$(hostname)"         # Default hostname. Used to identify the NixOS 
 BUILD_HOST=""                    # Default build host. Empty means localhost
 TARGET_HOST=""                   # Default target host. Empty means localhost
 UPDATE=0                         # Default to not update flake repositories
+UPDATE_INPUTS=""                 # Default list of inputs to update. Empty means all
 ROLLBACK=0                       # Default to not rollback
 SHOW_TRACE=0                     # Default to not show detailed error messages
 
@@ -16,24 +17,25 @@ Help() {
   echo "Usage: rebuild <command> [OPTIONS]"
   echo
   echo "Commands:"
-  echo "  nixos                Rebuild NixOS configuration"
-  echo "  home                 Rebuild Home Manager configuration"
-  echo "  all                  Rebuild both NixOS and Home Manager configurations"
-  echo "  help                 Show this help message"
+  echo "  nixos                  Rebuild NixOS configuration"
+  echo "  home                   Rebuild Home Manager configuration"
+  echo "  all                    Rebuild both NixOS and Home Manager configurations"
+  echo "  help                   Show this help message"
   echo
   echo "Options (for NixOS and Home Manager):"
-  echo "  -H, --host <host>    Specify the hostname (as in 'nixosConfiguraions.<host>'). Default: $NIXOS_HOST"
-  echo "  -p, --path <path>    Set the path to the flake directory. Default: $FLAKE_PATH"
-  echo "  -U, --update         Update flake inputs"
-  echo "  -r, --rollback       Don't build the new configuration, but use the previous generation instead"
-  echo "  -t, --show-trace     Show detailed error messages"
+  echo "  -H, --host <host>      Specify the hostname (as in 'nixosConfiguraions.<host>'). Default: $NIXOS_HOST"
+  echo "  -p, --path <path>      Set the path to the flake directory. Default: $FLAKE_PATH"
+  echo "  -U, --update [inputs]  Update all flake inputs. Optionally provide comma-separated list of inputs to update instead."
+
+  echo "  -r, --rollback         Don't build the new configuration, but use the previous generation instead"
+  echo "  -t, --show-trace       Show detailed error messages"
   echo
   echo "NixOS only options:"
-  echo "  -B, --build-host <user@example.com>     Use a remote host for building the configuration via SSH"
-  echo "  -T, --target-host <user@example.com>    Deploy the configuration to a remote host via SSH. If '--host' is specified, it will be used as the target host."
+  echo "  -B, --build-host <user@example.com>   Use a remote host for building the configuration via SSH"
+  echo "  -T, --target-host <user@example.com>  Deploy the configuration to a remote host via SSH. If '--host' is specified, it will be used as the target host."
   echo
   echo "Home Manager only options:"
-  echo "  -u, --user <user>    Specify the username (as in 'homeConfigurations.<user>@<host>'). Default: $HOME_USER"
+  echo "  -u, --user <user>      Specify the username (as in 'homeConfigurations.<user>@<host>'). Default: $HOME_USER"
 }
 
 # Function to handle errors
@@ -101,8 +103,20 @@ Rebuild_home() {
 
 # Function to Update flake repositories
 Update() {
-  echo "Updating flake repositories..."
-  nix flake update --flake "$FLAKE_PATH" || error "Failed to update flake repositories"
+  echo "Updating flake inputs..."
+
+  # Construct update command
+  CMD="nix flake update --flake $FLAKE_PATH"
+  if [ -n "$UPDATE_INPUTS" ]; then
+    # Split comma-separated inputs and pass them to nix flake update
+    IFS=',' read -ra INPUTS <<< "$UPDATE_INPUTS"
+    for input in "${INPUTS[@]}"; do
+      CMD="$CMD $input"
+    done
+  fi
+
+  echo "Executing command: $CMD"
+  $CMD || error "Failed to update flake repositories"
   echo "Flake repositories updated successfully."
 }
 
@@ -141,7 +155,13 @@ while [ $# -gt 0 ]; do
       ;;
     -U|--update)
       UPDATE=1
-      shift
+      # Check if next argument is a non-option
+      if [ $# -gt 1 ] && [ "${2#-}" = "$2" ]; then
+        UPDATE_INPUTS="$2"
+        shift 2
+      else
+        shift
+      fi
       ;;
     -r|--rollback)
       ROLLBACK=1

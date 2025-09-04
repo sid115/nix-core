@@ -22,13 +22,13 @@ inputs = {
 
 {
   imports = [
-    inputs.core.homeModules.styling # This module works great with the styling module
+    inputs.core.homeModules.stylix # This module works great with stylix
     inputs.core.homeMmodules.nixvim # You need to import this module
   ];
 
   programs.nixvim = {
     enable = true;
-    #colorschemes.SCHEME.enable = true; # If you do not use the styling module, set a scheme manually
+    #colorschemes.SCHEME.enable = true; # If you do not use the stylix module, set a scheme manually
     # This module provides defaults for the following plugins.
     # They are all enabled by default.
     plugins = {
@@ -46,7 +46,7 @@ inputs = {
     };
   };
 
-  styling = {
+  stylix = {
     enable = true;
     scheme = "dracula"; # This automatically sets the nixvim scheme as well
   };
@@ -62,7 +62,7 @@ This module sets some keymaps. Here are some important ones:
 key | action
 ---|---
 `<leader>pv` | ex command (file explorer)
-`<leader>s` | search and replace word under cursor
+`<leader>s` | search and replace
 `<C-a>` | select whole buffer
 `<leader>ss` | toggle spell checking
 `<leader>se` | switch to english spell checking
@@ -78,7 +78,7 @@ key | action
 `<C-S-K>` | previous buffer
 `<leader>fb` or `<C-e>` | open file browser
 `<leader>ff` | find files by name
-`<leader>fg` | find files containing string
+`<leader>fg` or `<C-f>` | find files containing string
 `<leader>xd` | toggle diagnostics
 `<leader>xq` | toggle quick fix list
 `<leader>ce` | let copilot explains the selected code
@@ -87,6 +87,12 @@ key | action
 `<leader>co` | let copilot optimize the selected code
 `<leader>cd` | let copilot comment the selected code
 `<leader>ct` | let copilot generate tests for the selected code
+`<leader>m` | run make command
+`<leader>xl` | toggle loclist list
+`<leader>xx` | toggle diagnostics list
+`<leader>xq` | toggle quifick list
+`<C-A-J>` | previous quickfix item
+`<C-A-K>` | next quickfix item
 
 See [keymaps.nix](https://github.com/sid115/nix-core/blob/master/modules/home/nixvim/keymaps.nix) and [plugins](https://github.com/sid115/nix-core/blob/master/modules/home/nixvim/plugins/) for more details.
 

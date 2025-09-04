@@ -4,6 +4,7 @@
   baibot = import ./baibot;
   bluetooth = import ./bluetooth;
   cifsMount = import ./cifsMount;
+  cockpit = import ./cockpit;
   common = import ./common;
   device = import ./device;
   firefly-iii = import ./firefly-iii;
@@ -14,6 +15,7 @@
   home-assistant-oci = import ./home-assistant-oci;
   hydra = import ./hydra;
   hyprland = import ./hyprland;
+  instaloader = import ./instaloader;
   jellyfin = import ./jellyfin;
   jirafeau = import ./jirafeau;
   krdpserver = import ./krdpserver;
@@ -31,13 +33,14 @@
   openssh = import ./openssh;
   peertube = import ./peertube;
   print-server = import ./print-server;
+  radicale = import ./radicale;
   rss-bridge = import ./rss-bridge;
   searx = import ./searx;
   sops = import ./sops;
   torrenting = import ./torrenting;
   tt-rss = import ./tt-rss;
   vaultwarden = import ./vaultwarden;
-  virtualization = import ./virtualization;
+  virtualisation = import ./virtualisation;
   vpn-server = import ./vpn-server;
   webPage = import ./webPage;
   xrdp = import ./xrdp;

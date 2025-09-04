@@ -105,9 +105,9 @@ in
     };
 
     calculator = mkAppAttrs {
-      default = "sage";
+      default = "octave";
       bind = [
-        ", XF86Calculator, exec, ${terminal} -T ${calculator} -e ${pkgs.sageWithDoc}/bin/sage"
+        ", XF86Calculator, exec, ${terminal} -T ${calculator} -e ${pkgs.octave}/bin/octave"
       ];
     };
 
@@ -139,6 +139,11 @@ in
     networksettings = mkAppAttrs {
       default = "networkmanager_dmenu";
       bind = [ "$mod SHIFT, n, exec, ${networksettings}" ];
+    };
+
+    notes = mkAppAttrs {
+      default = "quicknote";
+      bind = [ "$mod CTRL, n, exec, ${terminal} -T ${notes} -e ${getExe pkgs.core.quicknote}" ];
     };
 
     office = mkAppAttrs {

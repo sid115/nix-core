@@ -30,7 +30,7 @@ in
   config = mkIf cfg.enable {
     services.searx = {
       redisCreateLocally = mkDefault true;
-      runInUwsgi = mkForce false;
+      configureUwsgi = mkForce false;
       environmentFile = config.sops.templates."searx/env-file".path;
       settings = {
         debug = mkDefault false;
@@ -53,7 +53,19 @@ in
         };
       };
       limiterSettings = {
-        botdetection.ip_lists.pass_ip = mkDefault [ "127.0.0.1" ];
+        botdetection = {
+          ipv4_prefix = mkDefault 32;
+          ipv6_prefix = mkDefault 48;
+          trusted_proxies = mkDefault [
+            "127.0.0.0/8"
+            "::1"
+          ];
+          ip_limit = {
+            filter_link_local = mkDefault false;
+            link_token = mkDefault false;
+          };
+          pass_searxng_org = mkDefault true;
+        };
       };
     };
 
