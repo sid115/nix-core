@@ -7,13 +7,14 @@
 
 let
   cfg = config.services.matrix-synapse;
-  port = 8008;
+  matrixPort = 8008;
   fqdn = "${config.networking.domain}";
   olmVersion = "3.2.16";
 
-  signal = cfg.bridges.signal;
+  bridge = cfg.bridges.signal;
 
   inherit (lib)
+    mkDefault
     mkEnableOption
     mkIf
     mkOption
@@ -27,7 +28,6 @@ in
         enable = mkEnableOption "Enable mautrix-signal for your matrix-synapse instance.";
         admin = mkOption {
           type = types.str;
-          default = "";
           description = "The user to give admin permissions to.";
           example = "@admin:example.com";
         };
@@ -35,7 +35,7 @@ in
     };
   };
 
-  config = mkIf (cfg.enable && signal.enable) {
+  config = mkIf (cfg.enable && bridge.enable) {
     nixpkgs = {
       config.permittedInsecurePackages = [ "olm-${olmVersion}" ];
     };
@@ -45,34 +45,39 @@ in
     services.mautrix-signal = {
       enable = true;
       settings = {
-        homeserver = {
-          address = "http://localhost:${toString port}";
+        network = {
+          displayname_template = mkDefault "{{or .ContactName .ProfileName .PhoneNumber \"Unknown user\" }} (S)";
         };
         bridge = {
-          encryption = {
-            allow = true;
-            default = true;
-            require = true;
-          };
-          double_puppet_server_map = {
-            "${cfg.settings.server_name}" = "https://${cfg.settings.server_name}";
-          };
-          history_sync = {
-            request_full_sync = true;
-          };
-          mute_bridging = true;
-          network = {
-            displayname_template = "{{or .ContactName .ProfileName .PhoneNumber}} (S)";
-          };
           permissions = {
-            "*" = "relay";
-            "${fqdn}" = "user";
-            "${signal.admin}" = mkIf (signal.admin != "") "admin";
+            "*" = mkDefault "relay";
+            "${fqdn}" = mkDefault "user";
+            "${bridge.admin}" = mkDefault "admin";
           };
-          private_chat_portal_meta = true;
-          provisioning = {
-            shared_secret = "disable";
-          };
+        };
+        homeserver = {
+          address = mkDefault "http://localhost:${toString matrixPort}";
+          domain = mkDefault fqdn;
+        };
+        appservice = {
+          address = mkDefault "http://localhost:${toString bridge.settings.appservice.port}";
+          public_address = mkDefault "https://${fqdn}";
+          hostname = mkDefault "localhost";
+          port = mkDefault 29318;
+        };
+        public_media = {
+          enabled = mkDefault false;
+        };
+        direct_media = {
+          enabled = mkDefault false;
+        };
+        backfill = {
+          enabled = mkDefault true;
+        };
+        encryption = {
+          allow = mkDefault true;
+          default = mkDefault true;
+          require = mkDefault true;
         };
       };
     };
