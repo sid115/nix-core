@@ -80,6 +80,7 @@ in
           allow = mkDefault true;
           default = mkDefault true;
           require = mkDefault true;
+          pickle_key = mkDefault "generate";
         };
       };
     };
