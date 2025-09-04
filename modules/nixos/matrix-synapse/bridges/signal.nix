@@ -8,10 +8,10 @@
 let
   cfg = config.services.matrix-synapse;
   matrixPort = 8008;
-  fqdn = "${config.networking.domain}";
+  fqdn = config.networking.domain;
   olmVersion = "3.2.16";
 
-  bridge = cfg.bridges.signal;
+  bridge = config.services.mautrix-signal;
 
   inherit (lib)
     mkDefault
@@ -35,7 +35,7 @@ in
     };
   };
 
-  config = mkIf (cfg.enable && bridge.enable) {
+  config = mkIf (cfg.enable && cfg.bridges.signal.enable) {
     nixpkgs = {
       config.permittedInsecurePackages = [ "olm-${olmVersion}" ];
     };
@@ -52,7 +52,7 @@ in
           permissions = {
             "*" = mkDefault "relay";
             "${fqdn}" = mkDefault "user";
-            "${bridge.admin}" = mkDefault "admin";
+            "${cfg.bridges.signal.admin}" = mkDefault "admin";
           };
         };
         homeserver = {

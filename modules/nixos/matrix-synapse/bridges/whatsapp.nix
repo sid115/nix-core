@@ -11,7 +11,7 @@ let
   fqdn = config.networking.domain;
   olmVersion = "3.2.16";
 
-  bridge = cfg.bridges.whatsapp;
+  bridge = config.services.mautrix-whatsapp;
 
   inherit (lib)
     mkDefault
@@ -35,7 +35,7 @@ in
     };
   };
 
-  config = mkIf (cfg.enable && bridge.enable) {
+  config = mkIf (cfg.enable && cfg.bridges.whatsapp.enable) {
     nixpkgs = {
       config.permittedInsecurePackages = [ "olm-${olmVersion}" ];
     };
@@ -55,7 +55,7 @@ in
           permissions = {
             "*" = mkDefault "relay";
             "${fqdn}" = mkDefault "user";
-            "${bridge.admin}" = mkDefault "admin";
+            "${cfg.bridges.whatsapp.admin}" = mkDefault "admin";
           };
         };
         homeserver = {
