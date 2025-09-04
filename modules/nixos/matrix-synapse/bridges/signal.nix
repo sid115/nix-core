@@ -59,10 +59,10 @@ in
           domain = mkDefault fqdn;
         };
         appservice = {
-          address = mkDefault "http://localhost:29318";
+          address = mkDefault "http://localhost:29328";
           public_address = mkDefault "https://${fqdn}";
           hostname = mkDefault "localhost";
-          port = mkDefault 29318;
+          port = mkDefault 29328;
         };
         public_media = {
           enabled = mkDefault false;
