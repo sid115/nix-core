@@ -54,12 +54,16 @@ Here is an example configuration.
     interfaces = {
       wg0 = {
         clientAddress = "10.0.0.2";
-        peer.publicIP = "12.34.56.78";
+        peer = {
+          publicIP = "12.34.56.78";
+          publicKey = "server-public-key";
+        };
       };
       wg1 = {
         clientAddress = "10.100.0.12";
         peer = {
           publicIP = "59.51.51.211";
+          publicKey = "another-server-public-key";
           internalIP = "10.100.0.1";
           presharedKeyFile = config.secrets."wireguard/wg1/psk".path;
         };
