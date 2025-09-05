@@ -12,6 +12,8 @@ View the [*nix-core* NixOS module on GitHub](https://github.com/sid116/nix-core/
 
 ## Setup
 
+### Key generation
+
 Generate a WireGuard public private key pair:
 
 ```bash
@@ -20,7 +22,7 @@ nix-shell -p wireguard-tools --run "wg genkey | tee privkey | wg pubkey > pubkey
 
 This will create two files: `privkey` and `pubkey`.
 
-## Sops
+### Sops
 
 Provide a private key for each interface in your `secrets.yaml`. You can also add a preshared key:
 
@@ -36,6 +38,8 @@ wireguard:
 ```
 
 ## Config
+
+### NixOS
 
 Here is an example configuration.
 
@@ -62,6 +66,39 @@ Here is an example configuration.
 
   sops.secrets."wireguard/wg1/psk" = { };
 }
+```
+
+### Android
+
+Create a WireGuard client configuration file `client.conf`. For example:
+
+```ini
+[Interface]
+Address = 10.0.0.2/24
+DNS = 10.0.0.1
+PrivateKey = CLIENT_PRIVATE_KEY
+
+[Peer]
+PublicKey = SERVER_PUBLIC_KEY
+Endpoint = EXAMPLE.COM:51820
+PersistentKeepalive = 25
+AllowedIPs = 0.0.0.0/0
+```
+
+Generate a QR code for your Android device to scan:
+
+```bash
+nix-shell -p qrencode --run "qrencode -t ansiutf8 -r client.conf"
+```
+
+## Usage
+
+Each interface is managed through a systemd service (`wg-quick@.service`):
+
+```bash
+sudo systemctl start wg-quick-wg0.service
+
+sudo systemctl stop wg-quick-wg0.service
 ```
 
 ## Server
