@@ -49,17 +49,20 @@ Here is an example configuration.
 {
   imports = [ inputs.core.nixosModules.client ];
 
-  networking.wg-client.interfaces = {
-    wg0 = {
-      clientAddress = "10.0.0.2";
-      peer.publicIP = "12.34.56.78";
-    };
-    wg1 = {
-      clientAddress = "10.100.0.12";
-      peer = {
-        publicIP = "59.51.51.211";
-        internalIP = "10.100.0.1";
-        presharedKeyFile = config.secrets."wireguard/wg1/psk".path;
+  networking.wg-client = {
+    enable = true;
+    interfaces = {
+      wg0 = {
+        clientAddress = "10.0.0.2";
+        peer.publicIP = "12.34.56.78";
+      };
+      wg1 = {
+        clientAddress = "10.100.0.12";
+        peer = {
+          publicIP = "59.51.51.211";
+          internalIP = "10.100.0.1";
+          presharedKeyFile = config.secrets."wireguard/wg1/psk".path;
+        };
       };
     };
   };
