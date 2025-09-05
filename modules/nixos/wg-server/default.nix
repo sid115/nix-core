@@ -125,11 +125,11 @@ in
           privateKeyFile = config.sops.secrets."wireguard/private-key".path;
           postUp = ''
             ${iptables} -A FORWARD -i ${cfg.internalInterface} -j ACCEPT
-            ${iptables} -t nat -A POSTROUTING -s ${cfg.serverAddress}/${cfg.subnetMask} -o ${cfg.externalInterface} -j MASQUERADE
+            ${iptables} -t nat -A POSTROUTING -s ${cfg.serverAddress}/${toString cfg.subnetMask} -o ${cfg.externalInterface} -j MASQUERADE
           '';
           preDown = ''
             ${iptables} -D FORWARD -i ${cfg.internalInterface} -j ACCEPT
-            ${iptables} -t nat -D POSTROUTING -s ${cfg.serverAddress}/${cfg.subnetMask} -o ${cfg.externalInterface} -j MASQUERADE
+            ${iptables} -t nat -D POSTROUTING -s ${cfg.serverAddress}/${toString cfg.subnetMask} -o ${cfg.externalInterface} -j MASQUERADE
           '';
 
           peers = mkPeers (builtins.attrNames cfg.peers);
