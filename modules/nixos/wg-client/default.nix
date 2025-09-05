@@ -80,7 +80,7 @@ in
       privateKeyFile = config.sops.secrets."wireguard/${name}/private-key".path;
       peers = [
         {
-          inherit (ifaceCfg.peer) publicKeyFile presharedKeyFile;
+          inherit (ifaceCfg.peer) publicKey presharedKeyFile;
           allowedIPs = mkDefault [ "0.0.0.0/0" ];
           endpoint = "${ifaceCfg.peer.publicIP}:${toString ifaceCfg.peer.port}";
           persistentKeepalive = mkDefault 25;
