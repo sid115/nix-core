@@ -9,7 +9,6 @@ let
   cfg = config.networking.wg-server;
 
   mkPeer = name: {
-    inherit name;
     inherit (cfg.peers.${name}) publicKey presharedKeyFile;
     allowedIPs = [ "${cfg.peers.${name}.allowedIP}/${toString cfg.peerAddressMask}" ];
     persistentKeepalive = mkDefault 25;
