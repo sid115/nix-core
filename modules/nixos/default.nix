@@ -41,6 +41,8 @@
   tt-rss = import ./tt-rss;
   vaultwarden = import ./vaultwarden;
   virtualisation = import ./virtualisation;
+  wg-server = import ./wg-server;
+  wg-client = import ./wg-client;
   webPage = import ./webPage;
   xrdp = import ./xrdp;
 }
