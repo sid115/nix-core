@@ -7,6 +7,8 @@ View the [*nix-core* NixOS module on GitHub](https://github.com/sid116/nix-core/
 ## References
 
 - [NixOS Wiki](https://wiki.nixos.org/wiki/WireGuard)
+- [Arch Wiki](https://wiki.archlinux.org/title/WireGuard)
+- [WireGuard Website](https://www.wireguard.com/)
 
 ## Setup
 
@@ -20,18 +22,47 @@ This will create two files: `privkey` and `pubkey`.
 
 ## Sops
 
-Provide the following entries to your `secrets.yaml`:
+Provide a private key for each interface in your `secrets.yaml`. You can also add a preshared key:
 
-> Replace `abc124` with your actual secrets
+> Replace `abc123` with your actual secrets
 
 ```yaml
 wireguard:
-    private-key: abc124
+    wg0:
+        private-key: abc123
+    wg1:
+        private-key: abc123
+        psk: abc123
 ```
 
 ## Config
 
-> TODO
+Here is an example configuration.
+
+```nix
+{ inputs, config, ... }:
+
+{
+  imports = [ inputs.core.nixosModules.client ];
+
+  networking.wg-client = {
+    wg0 = {
+      clientAddress = "10.0.0.2";
+      peer.publicIP = "12.34.56.78";
+    };
+    wg1 = {
+      clientAddress = "10.100.0.12";
+      peer = {
+        publicIP = "59.51.51.211";
+        internalIP = "10.100.0.1";
+        presharedKeyFile = config.secrets."wireguard/wg1/psk".path;
+      };
+    };
+  };
+
+  sops.secrets."wireguard/wg1/psk" = { };
+}
+```
 
 ## Server
 

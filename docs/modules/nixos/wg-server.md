@@ -7,6 +7,8 @@ View the [*nix-core* NixOS module on GitHub](https://github.com/sid116/nix-core/
 ## References
 
 - [NixOS Wiki](https://wiki.nixos.org/wiki/WireGuard)
+- [Arch Wiki](https://wiki.archlinux.org/title/WireGuard)
+- [WireGuard Website](https://www.wireguard.com/)
 
 ## Setup
 
@@ -31,7 +33,27 @@ wireguard:
 
 ## Config
 
-> TODO
+Here is an example configuration.
+
+```nix
+{ inputs, ... }:
+
+{
+  imports = [ inputs.core.nixosModules.wg-server ];
+
+  networking.wg-server = {
+    enable = true;
+    openFirewall = true;
+    externalInterface = "enp1s0";
+    peers = {
+      "you@your-client" = {
+        publicKey = "pckrA7asNfa5AyGnAG/UWgl6PZDFO+cLtWVbuhw3pH0=";
+        allowedIP = "10.100.0.2";
+      };
+    };
+  };
+}
+```
 
 ## Client
 
