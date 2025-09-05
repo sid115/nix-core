@@ -120,7 +120,7 @@ in
       };
       wg-quick.interfaces = {
         "${cfg.internalInterface}" = {
-          address = [ "${cfg.serverAddress}/${cfg.subnetMask}" ];
+          address = [ "${cfg.serverAddress}/${toString cfg.subnetMask}" ];
           listenPort = cfg.port;
           privateKeyFile = config.sops.secrets."wireguard/private-key".path;
           postUp = ''
