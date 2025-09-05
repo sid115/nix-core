@@ -49,7 +49,7 @@ Here is an example configuration.
 {
   imports = [ inputs.core.nixosModules.client ];
 
-  networking.wg-client = {
+  networking.wg-client.interfaces = {
     wg0 = {
       clientAddress = "10.0.0.2";
       peer.publicIP = "12.34.56.78";
