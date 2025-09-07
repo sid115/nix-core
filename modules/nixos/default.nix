@@ -45,4 +45,5 @@
   wg-client = import ./wg-client;
   webPage = import ./webPage;
   xrdp = import ./xrdp;
+  zfs = import ./zfs;
 }
