@@ -1,4 +1,9 @@
-{ pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 # Set `networking.hostId` to:
 # $ head -c 8 /etc/machine-id
@@ -42,6 +47,19 @@ in
     username = mkDefault "root";
     identityFilePath = mkDefault "/root/.ssh/zfs-replication";
     followDelete = mkDefault true;
+  };
+
+  services.zfs.zed = {
+    enableMail = config.mailserver.enable;
+    settings = {
+      ZED_EMAIL_ADDR = mkDefault "postmaster@${config.networking.domain}";
+      ZED_EMAIL_PROG = mkDefault "sendmail";
+      ZED_EMAIL_OPTS = mkDefault "-t -f root@localhost";
+      ZED_NOTIFY_VERBOSE = mkDefault "1";
+      ZED_NOTIFY_DATA = mkDefault "1";
+      ZED_NOTIFY_ERROR = mkDefault "1";
+      ZED_NOTIFY_WARNING = mkDefault "1";
+    };
   };
 
   environment.systemPackages = with pkgs; [ lz4 ];
