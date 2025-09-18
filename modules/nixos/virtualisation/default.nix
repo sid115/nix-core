@@ -64,6 +64,7 @@ in
             ${aclString}
           ]
         '';
+        qemu.swtpm.enable = mkDefault true; # TPM 2.0
       };
       spiceUSBRedirection.enable = mkDefault true;
     };
@@ -82,6 +83,7 @@ in
       (pkgs.writeShellScriptBin "iommu-groups" (builtins.readFile ./iommu-groups.sh))
       pkgs.dnsmasq
       pkgs.qemu_full
+      pkgs.virtio-win
     ];
   };
 }
