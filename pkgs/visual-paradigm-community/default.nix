@@ -17,7 +17,7 @@ stdenv.mkDerivation rec {
   inherit version;
 
   src = builtins.fetchTarball {
-    url = "https://eu8.dl.visual-paradigm.com/visual-paradigm/vpce${version}/${v_suffix}/Visual_Paradigm_CE_${underscores version}_Linux64_InstallFree.tar.gz";
+    url = "https://eu8.dl.visual-paradigm.com/visual-paradigm/vpce${v_patch}/${v_suffix}/Visual_Paradigm_CE_${underscores version}_Linux64_InstallFree.tar.gz";
     sha256 = "sha256:0hycxn2ndjs1pl3zhw33ykpxcc5ca077vrx0jdf8jk3kjlan44qx";
   };
 
