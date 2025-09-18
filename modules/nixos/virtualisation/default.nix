@@ -25,6 +25,7 @@ in
 {
   imports = [
     ./hugepages.nix
+    ./kvmfr.nix
     ./vfio.nix
   ];
 
