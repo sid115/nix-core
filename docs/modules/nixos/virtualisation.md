@@ -35,10 +35,11 @@ View the [*nix-core* NixOS module on GitHub](https://github.com/sid115/nix-core/
 ## Setup
 
 1. Import this module in your NixOS config. It is recommended to use the [Virtualisation Manager module](../home/virtualisation.md) as well.
-1. Add your user to the `libvirtd` and `qemu-libvirtd` group:
+1. Add your user to the `libvirtd`, `qemu-libvirtd` and `kvm` group:
     ```nix
     users.extraGroups.libvirtd.members = [ "<you>" ];
     users.extraGroups.qemu-libvirtd.members = [ "<you>" ];
+    users.extraGroups.kvm.members = [ "<you>" ];
     ```
 1. Rebuild and reboot: `rebuild all && sudo reboot now`
 1. Enable and start the default network and reboot again: `virsh net-autostart default && virsh net-start default`
