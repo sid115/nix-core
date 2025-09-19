@@ -6,8 +6,8 @@
 }:
 
 let
-  v_patch = "17.3";
-  v_suffix = "20250906";
+  v_patch = "17.2";
+  v_suffix = "20250617";
   version = "${v_patch}.${v_suffix}";
 
   underscores = s: builtins.replaceStrings [ "." ] [ "_" ] s;
