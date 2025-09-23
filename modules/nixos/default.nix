@@ -4,6 +4,7 @@
   baibot = import ./baibot;
   bluetooth = import ./bluetooth;
   cifsMount = import ./cifsMount;
+  cockpit = import ./cockpit;
   common = import ./common;
   device = import ./device;
   firefly-iii = import ./firefly-iii;
@@ -39,7 +40,9 @@
   torrenting = import ./torrenting;
   tt-rss = import ./tt-rss;
   vaultwarden = import ./vaultwarden;
-  virtualization = import ./virtualization;
+  virtualisation = import ./virtualisation;
+  wg-server = import ./wg-server;
+  wg-client = import ./wg-client;
   webPage = import ./webPage;
   xrdp = import ./xrdp;
 }

@@ -6,18 +6,18 @@
 }:
 
 let
-  v_patch = "17.2";
-  version = "${v_patch}.20250617";
+  v_patch = "17.3";
+  v_suffix = "20250906";
+  version = "${v_patch}.${v_suffix}";
 
-  # Possible values: ca1 usa10 usa11 usa13 usa14 uk3 uk5 germany5 germany6 france3
-  server = "germany4";
+  underscores = s: builtins.replaceStrings [ "." ] [ "_" ] s;
 in
 stdenv.mkDerivation rec {
   pname = "visual-paradigm-community";
   inherit version;
 
   src = builtins.fetchTarball {
-    url = "https://www.visual-paradigm.com/downloads/${server}/vpce/Visual_Paradigm_CE_Linux64_InstallFree.tar.gz";
+    url = "https://eu8.dl.visual-paradigm.com/visual-paradigm/vpce${v_patch}/${v_suffix}/Visual_Paradigm_CE_${underscores version}_Linux64_InstallFree.tar.gz";
     sha256 = "sha256:0hycxn2ndjs1pl3zhw33ykpxcc5ca077vrx0jdf8jk3kjlan44qx";
   };
 

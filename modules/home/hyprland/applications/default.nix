@@ -105,9 +105,9 @@ in
     };
 
     calculator = mkAppAttrs {
-      default = "sage";
+      default = "octave";
       bind = [
-        ", XF86Calculator, exec, ${terminal} -T ${calculator} -e ${pkgs.sageWithDoc}/bin/sage"
+        ", XF86Calculator, exec, ${terminal} -T ${calculator} -e ${pkgs.octave}/bin/octave"
       ];
     };
 

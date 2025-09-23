@@ -8,8 +8,8 @@
     # home-manager.url = "github:nix-community/home-manager";
     # home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    pre-commit-hooks.url = "github:cachix/git-hooks.nix";
-    pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
+    git-hooks.url = "github:cachix/git-hooks.nix";
+    git-hooks.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -59,7 +59,26 @@
           pkgs = nixpkgs.legacyPackages.${system};
         in
         {
-          default = import ./shell.nix { inherit pkgs; };
+          default =
+            let
+              inherit (self.checks.${system}.pre-commit-check) shellHook enabledPackages;
+            in
+            pkgs.mkShell {
+              inherit shellHook;
+              nativeBuildInputs = [
+                enabledPackages
+              ]
+              ++ (with pkgs; [
+                (python313.withPackages (
+                  p: with p; [
+                    mkdocs
+                    mkdocs-material
+                    mkdocs-material-extensions
+                    pygments
+                  ]
+                ))
+              ]);
+            };
         }
       );
 
@@ -80,7 +99,7 @@
       #   };
       # };
 
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
 
       checks = forAllSystems (
         system:
@@ -89,10 +108,15 @@
           flakePkgs = self.packages.${system};
         in
         {
-          pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
+          pre-commit-check = inputs.git-hooks.lib.${system}.run {
             src = ./.;
             hooks = {
-              nixfmt-rfc-style.enable = true;
+              # TODO: Change to nixfmt-tree when git-hooks supports it
+              nixfmt-rfc-style = {
+                enable = true;
+                package = pkgs.nixfmt-tree;
+                entry = "${pkgs.nixfmt-tree}/bin/treefmt --no-cache";
+              };
             };
           };
           build-packages = pkgs.linkFarm "flake-packages-${system}" flakePkgs;

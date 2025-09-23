@@ -11,6 +11,7 @@
   fetcher-mcp = pkgs.callPackage ./fetcher-mcp { };
   marker-pdf = pkgs.callPackage ./marker-pdf { };
   mcpo = pkgs.callPackage ./mcpo { };
+  pass2bw = pkgs.callPackage ./pass2bw { };
   pyman = pkgs.callPackage ./pyman { };
   quicknote = pkgs.callPackage ./quicknote { };
   qwen-code = pkgs.callPackage ./qwen-code { };
