@@ -7,7 +7,6 @@ with pkgs;
   file
   helvum
   libnotify
-  python3Full
   udiskie
   udisks
   # ventoy # https://github.com/NixOS/nixpkgs/issues/404663
