@@ -148,6 +148,10 @@
           path = ./templates/dev/esp-blink;
           description = "ESP32 blink template.";
         };
+        flask-hello = {
+          path = ./templates/dev/flask-hello;
+          description = "Python Flask hello template.";
+        };
         py-hello = {
           path = ./templates/dev/py-hello;
           description = "Python hello world template.";
