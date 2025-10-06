@@ -15,6 +15,7 @@
   home-assistant-oci = import ./home-assistant-oci;
   hydra = import ./hydra;
   hyprland = import ./hyprland;
+  i2pd = import ./i2pd;
   instaloader = import ./instaloader;
   jellyfin = import ./jellyfin;
   jirafeau = import ./jirafeau;
@@ -41,8 +42,8 @@
   tt-rss = import ./tt-rss;
   vaultwarden = import ./vaultwarden;
   virtualisation = import ./virtualisation;
-  wg-server = import ./wg-server;
-  wg-client = import ./wg-client;
   webPage = import ./webPage;
+  wg-client = import ./wg-client;
+  wg-server = import ./wg-server;
   xrdp = import ./xrdp;
 }
