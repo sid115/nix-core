@@ -11,14 +11,15 @@ let
     mkIf
     mkOption
     optional
+    types
     ;
 in
 {
   options.services.i2pd = {
     openFirewall = mkOption {
-      type = lib.types.bool;
+      type = types.bool;
       default = false;
-      description = "Whether to open the necessary firewall ports for enabled protocls of i2pd.";
+      description = "Whether to open the necessary firewall ports for enabled protoclos of i2pd.";
     };
   };
 
