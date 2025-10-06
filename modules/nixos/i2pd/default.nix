@@ -41,7 +41,7 @@ in
       ++ optional httpProxy.enable httpProxy.port
       ++ optional i2cp.enable i2cp.port
       ++ optional i2pControl.enable i2pControl.port
-      ++ optional samProxy.enable sam.port
+      ++ optional sam.enable sam.port
       ++ optional socksProxy.enable socksProxy.port
     );
   };
