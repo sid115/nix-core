@@ -17,5 +17,5 @@
   qwen-code = pkgs.callPackage ./qwen-code { };
   synapse_change_display_name = pkgs.callPackage ./synapse_change_display_name { };
   trelis-gitingest-mcp = pkgs.callPackage ./trelis-gitingest-mcp { };
-  visual-paradigm-community = pkgs.callPackage ./visual-paradigm-community { };
+  # visual-paradigm-community = pkgs.callPackage ./visual-paradigm-community { }; # FIXME
 }
