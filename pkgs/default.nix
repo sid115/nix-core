@@ -7,6 +7,7 @@
   arxiv-mcp-server = pkgs.callPackage ./arxiv-mcp-server { };
   baibot = pkgs.callPackage ./baibot { };
   blender-mcp = pkgs.callPackage ./blender-mcp { };
+  cpntools = pkgs.callPackage ./cpntools { };
   cppman = pkgs.callPackage ./cppman { };
   fetcher-mcp = pkgs.callPackage ./fetcher-mcp { };
   marker-pdf = pkgs.callPackage ./marker-pdf { };
