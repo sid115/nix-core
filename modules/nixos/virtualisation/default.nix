@@ -57,7 +57,6 @@ in
         enable = mkDefault true;
         onBoot = mkDefault "ignore";
         onShutdown = mkDefault "shutdown";
-        qemu.ovmf.enable = mkDefault true;
         qemu.runAsRoot = mkDefault false;
         qemu.verbatimConfig = ''
           clear_emulation_capabilities = ${boolToZeroOne cfg.libvirtd.clearEmulationCapabilities}
