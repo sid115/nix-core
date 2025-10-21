@@ -66,7 +66,6 @@ in
     ./librewolf
     ./mpv
     ./ncmpcpp
-    ./neochat
     ./networkmanager_dmenu
     ./newsboat
     ./passwordmanager
@@ -128,7 +127,7 @@ in
     };
 
     matrix-client = mkAppAttrs {
-      default = "neochat";
+      default = "element-desktop";
       bind = [ "$mod SHIFT, e, exec, ${matrix-client}" ];
     };
 
