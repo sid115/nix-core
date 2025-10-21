@@ -57,6 +57,7 @@ in
 {
   imports = [
     ./bemenu
+    ./cinny-desktop
     ./dmenu-bluetooth
     ./element-desktop
     ./feh
@@ -127,7 +128,7 @@ in
     };
 
     matrix-client = mkAppAttrs {
-      default = "element-desktop";
+      default = "cinny-desktop";
       bind = [ "$mod SHIFT, e, exec, ${matrix-client}" ];
     };
 
