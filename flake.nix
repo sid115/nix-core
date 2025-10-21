@@ -1,8 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-zoom.url = "github:nixos/nixpkgs/nixos-24.05";
-    nixpkgs-ncmpcpp.url = "github:nixos/nixpkgs/b47d4f01d4213715a1f09b999bab96bb6a5b675e"; # https://hydra.nixos.org/build/302425768
+    open-webui-0-6-18.url = "github:nixos/nixpkgs/5b38c7435fb1112a8b36b1652286996a7998c5b5";
 
     # TODO: Implement test configs for runtime checks.
     # home-manager.url = "github:nix-community/home-manager";
@@ -106,6 +105,10 @@
         let
           pkgs = nixpkgs.legacyPackages.${system};
           flakePkgs = self.packages.${system};
+          overlaidPkgs = import nixpkgs {
+            inherit system;
+            overlays = [ self.overlays.modifications ];
+          };
         in
         {
           pre-commit-check = inputs.git-hooks.lib.${system}.run {
@@ -120,6 +123,10 @@
             };
           };
           build-packages = pkgs.linkFarm "flake-packages-${system}" flakePkgs;
+          build-overlays = pkgs.linkFarm "flake-overlays-${system}" {
+            kicad = overlaidPkgs.kicad;
+            open-webui = overlaidPkgs.open-webui;
+          };
         }
       );
 
