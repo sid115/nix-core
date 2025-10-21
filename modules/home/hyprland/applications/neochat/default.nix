@@ -14,5 +14,9 @@ in
 {
   config = mkIf (cfg.enable && app == "neochat") {
     home.packages = [ pkgs.kdePackages.neochat ];
+
+    nixpkgs.config.permittedInsecurePackages = [
+      "olm-3.2.16"
+    ];
   };
 }
