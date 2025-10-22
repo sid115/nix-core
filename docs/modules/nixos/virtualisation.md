@@ -105,9 +105,9 @@ This is an example with the Nvidia GPU above:
 
 You may repeat this process for as many devices as you want to add to your VM.
 
-### Looking Glass
+### Looking Glass with KVMFR
 
-TODO
+*This has not yet been tested.*
 
 ### Troubleshooting
 
