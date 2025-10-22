@@ -41,7 +41,10 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.etc."secrets/nextcloud-initial-admin-pass".text = "nextcloud";
+    environment = {
+      etc."secrets/nextcloud-initial-admin-pass".text = "nextcloud";
+      systemPackages = [ pkgs.sqlite ]; # TODO: switch to postgresql
+    };
 
     services.nextcloud = {
       inherit package;
