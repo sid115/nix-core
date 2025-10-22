@@ -126,7 +126,6 @@
           build-packages = pkgs.linkFarm "flake-packages-${system}" flakePkgs;
           build-overlays = pkgs.linkFarm "flake-overlays-${system}" {
             kicad = overlaidPkgs.kicad;
-            open-webui = overlaidPkgs.open-webui;
           };
         }
       );
