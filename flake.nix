@@ -1,7 +1,6 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    open-webui-0-6-18.url = "github:nixos/nixpkgs/5b38c7435fb1112a8b36b1652286996a7998c5b5";
 
     # TODO: Implement test configs for runtime checks.
     # home-manager.url = "github:nix-community/home-manager";

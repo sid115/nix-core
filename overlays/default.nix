@@ -10,7 +10,5 @@
         stable = true;
       }
     );
-
-    open-webui = inputs.open-webui-0-6-18.legacyPackages.${final.system}.open-webui;
   };
 }

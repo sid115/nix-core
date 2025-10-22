@@ -10,6 +10,7 @@
   cppman = pkgs.callPackage ./cppman { };
   fetcher-mcp = pkgs.callPackage ./fetcher-mcp { };
   mcpo = pkgs.callPackage ./mcpo { };
+  open-webui = pkgs.callPackage ./open-webui { };
   pass2bw = pkgs.callPackage ./pass2bw { };
   pyman = pkgs.callPackage ./pyman { };
   quicknote = pkgs.callPackage ./quicknote { };
