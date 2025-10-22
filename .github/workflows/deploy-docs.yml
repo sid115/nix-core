@@ -13,4 +13,4 @@ jobs:
       - uses: cachix/install-nix-action@v31
         with:
           nix_path: nixpkgs=channel:nixos-unstable
-      - run: nix-shell --run "mkdocs gh-deploy --force"
+      - run: nix --experimental-features "nix-command flakes" develop --command bash -c "mkdocs gh-deploy --force"
