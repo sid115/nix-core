@@ -1,4 +1,3 @@
-# https://voidcruiser.nl/rambles/i2p-on-nixos/
 # TODO: HM config for i2p profile in LibreWolf
 
 { config, lib, ... }:
