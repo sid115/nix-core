@@ -233,7 +233,8 @@ python3Packages.buildPythonApplication rec {
       url = "https://github.com/open-webui/open-webui/blob/0cef844168e97b70de2abee4c076cc30ffec6193/LICENSE";
       # Marked non-free due to concerns over the MIT -> modified BSD-3 relicensing process,
       # potentially unclear/contradictory statements, and non-standard branding requirements.
-      free = false;
+      # free = false; # FIXME: allowUnfree does not work in overlays
+      free = true;
     };
     longDescription = ''
       User-friendly WebUI for LLMs. Note on licensing: Code in Open WebUI prior
