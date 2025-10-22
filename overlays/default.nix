@@ -11,6 +11,11 @@
       }
     );
 
+    # ERROR Missing dependencies: poetry-core<=2.1.3,>=1.1.0
+    matrix-synapse = prev.matrix-synapse.overrideAttrs (oldAttrs: {
+      pythonRemoveDeps = (oldAttrs.pythonRemoveDeps or [ ]) ++ [ "poetry-core" ];
+    });
+
     open-webui = inputs.open-webui-0-6-18.legacyPackages.${final.system}.open-webui;
   };
 }
