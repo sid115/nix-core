@@ -1,8 +1,14 @@
+# TODO: Handle endpoints behind DynDNS
+# https://wiki.archlinux.org/title/WireGuard#Endpoint_with_changing_IP
+
+# TODO: NetworkManager support
+
 {
   config,
   lib,
   ...
 }:
+
 let
   cfg = config.networking.wg-client;
 
