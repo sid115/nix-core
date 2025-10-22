@@ -1,15 +1,13 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-zoom.url = "github:nixos/nixpkgs/nixos-24.05";
-    nixpkgs-ncmpcpp.url = "github:nixos/nixpkgs/b47d4f01d4213715a1f09b999bab96bb6a5b675e"; # https://hydra.nixos.org/build/302425768
 
     # TODO: Implement test configs for runtime checks.
     # home-manager.url = "github:nix-community/home-manager";
     # home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    pre-commit-hooks.url = "github:cachix/git-hooks.nix";
-    pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
+    git-hooks.url = "github:cachix/git-hooks.nix";
+    git-hooks.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -45,7 +43,9 @@
         }
       );
 
-      packages = forAllSystems (system: import ./pkgs { pkgs = nixpkgs.legacyPackages.${system}; });
+      packages = forAllSystems (system: import ./pkgs { pkgs = nixpkgs.legacyPackages.${system}; }) // {
+        x86_64-linux.open-webui = nixpkgs.legacyPackages.x86_64-linux.callPackage ./pkgs/open-webui { };
+      };
 
       overlays = import ./overlays { inherit inputs; };
 
@@ -59,7 +59,26 @@
           pkgs = nixpkgs.legacyPackages.${system};
         in
         {
-          default = import ./shell.nix { inherit pkgs; };
+          default =
+            let
+              inherit (self.checks.${system}.pre-commit-check) shellHook enabledPackages;
+            in
+            pkgs.mkShell {
+              inherit shellHook;
+              nativeBuildInputs = [
+                enabledPackages
+              ]
+              ++ (with pkgs; [
+                (python313.withPackages (
+                  p: with p; [
+                    mkdocs
+                    mkdocs-material
+                    mkdocs-material-extensions
+                    pygments
+                  ]
+                ))
+              ]);
+            };
         }
       );
 
@@ -80,22 +99,34 @@
       #   };
       # };
 
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
 
       checks = forAllSystems (
         system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
           flakePkgs = self.packages.${system};
+          overlaidPkgs = import nixpkgs {
+            inherit system;
+            overlays = [ self.overlays.modifications ];
+          };
         in
         {
-          pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
+          pre-commit-check = inputs.git-hooks.lib.${system}.run {
             src = ./.;
             hooks = {
-              nixfmt-rfc-style.enable = true;
+              # TODO: Change to nixfmt-tree when git-hooks supports it
+              nixfmt-rfc-style = {
+                enable = true;
+                package = pkgs.nixfmt-tree;
+                entry = "${pkgs.nixfmt-tree}/bin/treefmt --no-cache";
+              };
             };
           };
           build-packages = pkgs.linkFarm "flake-packages-${system}" flakePkgs;
+          build-overlays = pkgs.linkFarm "flake-overlays-${system}" {
+            kicad = overlaidPkgs.kicad;
+          };
         }
       );
 
@@ -123,6 +154,10 @@
         esp-blink = {
           path = ./templates/dev/esp-blink;
           description = "ESP32 blink template.";
+        };
+        flask-hello = {
+          path = ./templates/dev/flask-hello;
+          description = "Python Flask hello template.";
         };
         py-hello = {
           path = ./templates/dev/py-hello;

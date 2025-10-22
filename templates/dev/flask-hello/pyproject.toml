@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flask_hello"
+version = "0.1.0"
+dependencies = [
+    "flask",
+]
+
+[tool.setuptools.packages.find]
+include = ["flask_hello*"]

@@ -4,6 +4,7 @@
   baibot = import ./baibot;
   bluetooth = import ./bluetooth;
   cifsMount = import ./cifsMount;
+  cockpit = import ./cockpit;
   common = import ./common;
   device = import ./device;
   firefly-iii = import ./firefly-iii;
@@ -14,6 +15,7 @@
   home-assistant-oci = import ./home-assistant-oci;
   hydra = import ./hydra;
   hyprland = import ./hyprland;
+  i2pd = import ./i2pd;
   instaloader = import ./instaloader;
   jellyfin = import ./jellyfin;
   jirafeau = import ./jirafeau;
@@ -39,7 +41,10 @@
   torrenting = import ./torrenting;
   tt-rss = import ./tt-rss;
   vaultwarden = import ./vaultwarden;
-  virtualization = import ./virtualization;
+  virtualisation = import ./virtualisation;
   webPage = import ./webPage;
+  wg-client = import ./wg-client;
+  wg-server = import ./wg-server;
+  windows-oci = import ./windows-oci;
   xrdp = import ./xrdp;
 }

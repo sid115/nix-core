@@ -26,7 +26,7 @@ radicale:
 Generate hashed passwords with:
 
 ```sh
-nix-shell -p openssl --run 'passwd -6 <password>'
+nix-shell -p openssl --run 'openssl passwd -6 <password>'
 ```
 
 ## Setup

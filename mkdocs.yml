@@ -20,72 +20,75 @@ markdown_extensions:
 nav:
   - Home: index.md # do not change
   - Introduction to Nix:
-    - Overview: introduction-to-nix/overview.md
-    - Install Nix: introduction-to-nix/install-nix.md
-    - Nix Speedrun: introduction-to-nix/nix-speedrun.md
-    - Derivations: introduction-to-nix/derivations.md
-    - Nix Store: introduction-to-nix/nix-store.md
-    - Nixpkgs: introduction-to-nix/nixpkgs.md
-    - Flakes: introduction-to-nix/flakes.md
-    - NixOS: introduction-to-nix/nixos.md
+      - Overview: introduction-to-nix/overview.md
+      - Install Nix: introduction-to-nix/install-nix.md
+      - Nix Speedrun: introduction-to-nix/nix-speedrun.md
+      - Derivations: introduction-to-nix/derivations.md
+      - Nix Store: introduction-to-nix/nix-store.md
+      - Nixpkgs: introduction-to-nix/nixpkgs.md
+      - Flakes: introduction-to-nix/flakes.md
+      - NixOS: introduction-to-nix/nixos.md
   - Getting Started:
-    - Create your nix-config flake: getting-started/create-nix-config.md
-    - Add configs to your flake: getting-started/add-configs.md
-    - Install instructions: getting-started/install-instructions.md
+      - Create your nix-config flake: getting-started/create-nix-config.md
+      - Add configs to your flake: getting-started/add-configs.md
+      - Install instructions: getting-started/install-instructions.md
   - Modules:
-    - NixOS:
-      - audio: modules/nixos/audio.md
-      - baibot: modules/nixos/baibot.md
-      - cifsMount: modules/nixos/cifsmount.md
-      - common: modules/nixos/common.md
-      - device: modules/nixos/device.md
-      - firefly-iii: modules/nixos/firefly-iii.md
-      - ftp-webserver: modules/nixos/ftp-webserver.md
-      - gitea: modules/nixos/gitea.md
-      - grafana: modules/nixos/grafana.md
-      - guacamole: modules/nixos/guacamole.md
-      - home-assistant-oci: modules/nixos/home-assistant-oci.md
-      - hydra: modules/nixos/hydra.md
-      - instaloader: modules/nixos/instaloader.md
-      - jellyfin: modules/nixos/jellyfin.md
-      - jirafeau: modules/nixos/jirafeau.md
-      - mailserver: modules/nixos/mailserver.md
-      - matrix-synapse: modules/nixos/matrix-synapse.md
-      - mcpo: modules/nixos/mcpo.md
-      - nextcloud: modules/nixos/nextcloud.md
-      - nix-serve: modules/nixos/nix-serve.md
-      - normalUsers: modules/nixos/normalUsers.md
-      - ntfy-sh: modules/nixos/ntfy-sh.md
-      - nvidia: modules/nixos/nvidia.md
-      - open-webui: modules/nixos/open-webui.md
-      - peertube: modules/nixos/peertube.md
-      - print-server: modules/nixos/print-server.md
-      - radicale: modules/nixos/radicale.md
-      - rss-bridge: modules/nixos/rss-bridge.md
-      - searx: modules/nixos/searx.md
-      - sops: modules/nixos/sops.md
-      - torrenting: modules/nixos/torrenting.md
-      - tt-rss: modules/nixos/tt-rss.md
-      - vaultwarden: modules/nixos/vaultwarden.md
-      - virtualization: modules/nixos/virtualization.md
-      - webPage: modules/nixos/webpage.md
-      - xrdp: modules/nixos/xrdp.md
-    - Home Manager:
-      - bemenu: modules/home/bemenu.md
-      - common: modules/home/common.md
-      - gpg: modules/home/gpg.md
-      - hyprland: modules/home/hyprland.md
-      - kitty: modules/home/kitty.md
-      - lf: modules/home/lf.md
-      - networkmanager-dmenu: modules/home/networkmanager-dmenu.md
-      - nextcloud-sync: modules/home/nextcloud-sync.md
-      - nixvim: modules/home/nixvim.md
-      - password-manager: modules/home/password-manager.md
-      - sops: modules/home/sops.md
-      - stylix: modules/home/stylix.md
-      - virtualization: modules/home/virtualization.md
-      - waybar: modules/home/waybar.md
-      - yazi: modules/home/yazi.md
+      - NixOS:
+          - audio: modules/nixos/audio.md
+          - baibot: modules/nixos/baibot.md
+          - cifsMount: modules/nixos/cifsmount.md
+          - common: modules/nixos/common.md
+          - device: modules/nixos/device.md
+          - firefly-iii: modules/nixos/firefly-iii.md
+          - ftp-webserver: modules/nixos/ftp-webserver.md
+          - gitea: modules/nixos/gitea.md
+          - grafana: modules/nixos/grafana.md
+          - guacamole: modules/nixos/guacamole.md
+          - home-assistant-oci: modules/nixos/home-assistant-oci.md
+          - hydra: modules/nixos/hydra.md
+          - i2pd: modules/nixos/i2pd.md
+          - instaloader: modules/nixos/instaloader.md
+          - jellyfin: modules/nixos/jellyfin.md
+          - jirafeau: modules/nixos/jirafeau.md
+          - mailserver: modules/nixos/mailserver.md
+          - matrix-synapse: modules/nixos/matrix-synapse.md
+          - mcpo: modules/nixos/mcpo.md
+          - nextcloud: modules/nixos/nextcloud.md
+          - nix-serve: modules/nixos/nix-serve.md
+          - normalUsers: modules/nixos/normalUsers.md
+          - ntfy-sh: modules/nixos/ntfy-sh.md
+          - nvidia: modules/nixos/nvidia.md
+          - open-webui: modules/nixos/open-webui.md
+          - peertube: modules/nixos/peertube.md
+          - print-server: modules/nixos/print-server.md
+          - radicale: modules/nixos/radicale.md
+          - rss-bridge: modules/nixos/rss-bridge.md
+          - searx: modules/nixos/searx.md
+          - sops: modules/nixos/sops.md
+          - torrenting: modules/nixos/torrenting.md
+          - tt-rss: modules/nixos/tt-rss.md
+          - vaultwarden: modules/nixos/vaultwarden.md
+          - virtualisation: modules/nixos/virtualisation.md
+          - webPage: modules/nixos/webpage.md
+          - wg-client: modules/nixos/wg-client.md
+          - wg-server: modules/nixos/wg-server.md
+          - xrdp: modules/nixos/xrdp.md
+      - Home Manager:
+          - bemenu: modules/home/bemenu.md
+          - common: modules/home/common.md
+          - gpg: modules/home/gpg.md
+          - hyprland: modules/home/hyprland.md
+          - kitty: modules/home/kitty.md
+          - lf: modules/home/lf.md
+          - networkmanager-dmenu: modules/home/networkmanager-dmenu.md
+          - nextcloud-sync: modules/home/nextcloud-sync.md
+          - nixvim: modules/home/nixvim.md
+          - password-manager: modules/home/password-manager.md
+          - sops: modules/home/sops.md
+          - stylix: modules/home/stylix.md
+          - virtualisation: modules/home/virtualisation.md
+          - waybar: modules/home/waybar.md
+          - yazi: modules/home/yazi.md
   - Tips:
-    - Useful Links: tips/useful-links.md
-    - Dependency Tracing: tips/dependency-tracing.md
+      - Useful Links: tips/useful-links.md
+      - Dependency Tracing: tips/dependency-tracing.md
