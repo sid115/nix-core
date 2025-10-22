@@ -43,7 +43,9 @@
         }
       );
 
-      packages = forAllSystems (system: import ./pkgs { pkgs = nixpkgs.legacyPackages.${system}; });
+      packages = forAllSystems (system: import ./pkgs { pkgs = nixpkgs.legacyPackages.${system}; }) // {
+        x86_64-linux.open-webui = nixpkgs.legacyPackages.x86_64-linux.callPackage ./pkgs/open-webui { };
+      };
 
       overlays = import ./overlays { inherit inputs; };
 
