@@ -37,6 +37,26 @@ Make sure you have a CNAME record for `turn` pointing to your domain.
 
 > Warning: Bridges use [`mautrix-go`](https://github.com/mautrix/go) which relies on [deprecated `libolm`](https://github.com/mautrix/go/issues/262).
 
+### Sops
+
+Provide the following entries to your secrets.yaml:
+
+> Replace `abc123` with your actual secret(s) and `BRIDGE` with the name of your bridge (e.g., `whatsapp` or `signal`)
+
+```yaml
+mautrix-BRIDGE:
+    encryption-pickle-key: abc123
+    provisioning-shared-secret: abc123
+    public-media-signing-key: abc123
+    direct-media-server-key: abc123
+```
+
+Generate the secrets with:
+
+```bash
+nix-shell -p openssl --run "openssl rand -base64 32"
+```
+
 ### NixOS configuration
 
 The `config.yaml` for each bridge is managed through `services.mautrix-BRIDGE.settings`:
