@@ -43,6 +43,7 @@ in
 
     services.mautrix-whatsapp = {
       enable = true;
+      environmentFile = config.sops.templates."mautrix-whatsapp/env-file".path;
       settings = {
         network = {
           displayname_template = mkDefault "{{or .FullName .BusinessName .PushName .Phone}} (WA)";
@@ -67,11 +68,14 @@ in
           hostname = mkDefault "localhost";
           port = mkDefault 29318;
         };
+        provisioning.shared_secret = "$MAUTRIX_WHATSAPP_PROVISIONING_SHARED_SECRET";
         public_media = {
           enabled = mkDefault false;
+          signing_key = "$MAUTRIX_WHATSAPP_PUBLIC_MEDIA_SIGNING_KEY";
         };
         direct_media = {
           enabled = mkDefault false;
+          server_key = "$MAUTRIX_WHATSAPP_DIRECT_MEDIA_SERVER_KEY";
         };
         backfill = {
           enabled = mkDefault true;
@@ -80,9 +84,47 @@ in
           allow = mkDefault true;
           default = mkDefault true;
           require = mkDefault false;
-          pickle_key = mkDefault "generate";
+          pickle_key = "$MAUTRIX_WHATSAPP_ENCRYPTION_PICKLE_KEY";
         };
       };
     };
+
+    sops =
+      let
+        owner = "mautrix-whatsapp";
+        group = "mautrix-whatsapp";
+        mode = "0440";
+      in
+      {
+        secrets."mautrix-whatsapp/encryption-pickle-key" = {
+          inherit owner group mode;
+        };
+        secrets."mautrix-whatsapp/provisioning-shared-secret" = {
+          inherit owner group mode;
+        };
+        secrets."mautrix-whatsapp/public-media-signing-key" = {
+          inherit owner group mode;
+        };
+        secrets."mautrix-whatsapp/direct-media-server-key" = {
+          inherit owner group mode;
+        };
+        templates."mautrix-whatsapp/env-file" = {
+          inherit owner group mode;
+          content = ''
+            MAUTRIX_WHATSAPP_ENCRYPTION_PICKLE_KEY=${
+              config.sops.placeholder."mautrix-whatsapp/encryption-pickle-key"
+            }
+            MAUTRIX_WHATSAPP_PROVISIONING_SHARED_SECRET=${
+              config.sops.placeholder."mautrix-whatsapp/provisioning-shared-secret"
+            }
+            MAUTRIX_WHATSAPP_PUBLIC_MEDIA_SIGNING_KEY=${
+              config.sops.placeholder."mautrix-whatsapp/public-media-signing-key"
+            }
+            MAUTRIX_WHATSAPP_DIRECT_MEDIA_SERVER_KEY=${
+              config.sops.placeholder."mautrix-whatsapp/direct-media-server-key"
+            }
+          '';
+        };
+      };
   };
 }
