@@ -16,7 +16,7 @@
     }@inputs:
     let
       inherit (self) outputs;
-      lib = nixpkgs.lib // self.inputs.core.lib;
+      lib = nixpkgs.lib;
       supportedSystems = [
         "x86_64-linux"
         "aarch64-linux"

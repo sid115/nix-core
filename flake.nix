@@ -99,7 +99,18 @@
       #   };
       # };
 
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
+      formatter = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          config = self.checks.${system}.pre-commit-check.config;
+          inherit (config) package configFile;
+          script = ''
+            ${pkgs.lib.getExe package} run --all-files --config ${configFile}
+          '';
+        in
+        pkgs.writeShellScriptBin "pre-commit-run" script
+      );
 
       checks = forAllSystems (
         system:
@@ -115,12 +126,7 @@
           pre-commit-check = inputs.git-hooks.lib.${system}.run {
             src = ./.;
             hooks = {
-              # TODO: Change to nixfmt-tree when git-hooks supports it
-              nixfmt-rfc-style = {
-                enable = true;
-                package = pkgs.nixfmt-tree;
-                entry = "${pkgs.nixfmt-tree}/bin/treefmt --no-cache";
-              };
+              nixfmt.enable = true;
             };
           };
           build-packages = pkgs.linkFarm "flake-packages-${system}" flakePkgs;

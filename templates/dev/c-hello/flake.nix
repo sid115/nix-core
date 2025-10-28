@@ -77,7 +77,18 @@
         }
       );
 
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
+      formatter = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          config = self.checks.${system}.pre-commit-check.config;
+          inherit (config) package configFile;
+          script = ''
+            ${pkgs.lib.getExe package} run --all-files --config ${configFile}
+          '';
+        in
+        pkgs.writeShellScriptBin "pre-commit-run" script
+      );
 
       checks = forAllSystems (
         system:
@@ -118,7 +129,7 @@
           pre-commit-check = pre-commit-hooks.lib.${system}.run {
             src = ./.;
             hooks = {
-              nixfmt-rfc-style = {
+              nixfmt = {
                 enable = true;
               };
               clang-format = {

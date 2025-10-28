@@ -80,3 +80,13 @@ nix flake init -t github:sid115/nix-core#TEMPLATE
 ## Contributing
 
 Please see the [CONTRIBUTING.md](./CONTRIBUTING.md) file.
+
+Format your code with:
+```bash
+nix fmt
+```
+
+Run checks with:
+```bash
+nix flake check
+```
