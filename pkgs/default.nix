@@ -7,6 +7,7 @@
   arxiv-mcp-server = pkgs.callPackage ./arxiv-mcp-server { };
   baibot = pkgs.callPackage ./baibot { };
   blender-mcp = pkgs.callPackage ./blender-mcp { };
+  bulk-rename = pkgs.callPackage ./bulk-rename { };
   cppman = pkgs.callPackage ./cppman { };
   fetcher-mcp = pkgs.callPackage ./fetcher-mcp { };
   mcpo = pkgs.callPackage ./mcpo { };
