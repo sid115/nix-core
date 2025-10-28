@@ -43,9 +43,20 @@
         }
       );
 
-      packages = forAllSystems (system: import ./pkgs { pkgs = nixpkgs.legacyPackages.${system}; }) // {
-        x86_64-linux.open-webui = nixpkgs.legacyPackages.x86_64-linux.callPackage ./pkgs/open-webui { };
-      };
+      packages = forAllSystems (
+        system:
+        let
+          basePkgs = import ./pkgs { pkgs = nixpkgs.legacyPackages.${system}; };
+          extraPkgs =
+            if system == "x86_64-linux" then
+              {
+                open-webui = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/open-webui { };
+              }
+            else
+              { };
+        in
+        basePkgs // extraPkgs
+      );
 
       overlays = import ./overlays { inherit inputs; };
 
