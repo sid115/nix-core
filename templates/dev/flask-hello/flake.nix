@@ -50,14 +50,25 @@
         flask_hello = import ./nix/module.nix;
       };
 
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
+      formatter = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          config = self.checks.${system}.pre-commit-check.config;
+          inherit (config) package configFile;
+          script = ''
+            ${pkgs.lib.getExe package} run --all-files --config ${configFile}
+          '';
+        in
+        pkgs.writeShellScriptBin "pre-commit-run" script
+      );
 
       checks = forAllSystems (system: {
         build-packages = nixpkgsFor."${system}".linkFarm "flake-packages-${system}" self.packages.${system};
         pre-commit-check = self.inputs.pre-commit-hooks.lib.${system}.run {
           src = ./.;
           hooks = {
-            nixfmt-rfc-style.enable = true;
+            nixfmt.enable = true;
             black.enable = true;
           };
         };

@@ -16,6 +16,7 @@
   hydra = import ./hydra;
   hyprland = import ./hyprland;
   i2pd = import ./i2pd;
+  immich = import ./immich;
   instaloader = import ./instaloader;
   jellyfin = import ./jellyfin;
   jirafeau = import ./jirafeau;
