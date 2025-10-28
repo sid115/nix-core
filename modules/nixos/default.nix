@@ -48,4 +48,5 @@
   wg-server = import ./wg-server;
   windows-oci = import ./windows-oci;
   xrdp = import ./xrdp;
+  zfs = import ./zfs;
 }
