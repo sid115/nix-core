@@ -30,7 +30,7 @@ in
         hexyl
         glow
         chafa
-        poppler_utils
+        poppler-utils
         w3m
         ffmpeg
         ffmpegthumbnailer
