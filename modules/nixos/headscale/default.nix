@@ -1,86 +1,73 @@
-# todo siqtch to posthres, sll optinal, etc
-
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 
 let
   cfg = config.services.headscale;
-  inherit (lib)
-    mkIf
-    mkOption
-    mkDefault
-    types
-    ;
   domain = config.networking.domain;
   fqdn = if cfg.subdomain == "" then domain else "${cfg.subdomain}.${domain}";
 
+  inherit (lib)
+    mkDefault
+    mkIf
+    mkOption
+    optional
+    types
+    ;
 in
 {
   options.services.headscale = {
     subdomain = mkOption {
       type = types.str;
       default = "headscale";
-      description = "Subdomain for the Headscale service. Combined with networking.domain.";
+      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
     };
-    internalPort = mkOption {
-      type = types.port;
-      default = 8077;
-      description = "The internal port Headscale listens on for the reverse proxy.";
-    };
-    enableDerpServer = mkOption {
+    forceSSL = mkOption {
       type = types.bool;
       default = true;
-      description = "Whether to enable the self-hosted DERP relay server.";
-    };
-    baseDomain = mkOption {
-      type = types.str;
-      default = "headscale.local";
-      description = "The base domain used for MagicDNS.";
+      description = "Force SSL for Nginx virtual host.";
     };
     openFirewall = mkOption {
       type = types.bool;
-      default = true;
-      description = "Whether to automatically open firewall ports (80, 443, 3478).";
-    };
-
-    overrideLocalDns = mkOption {
-      type = types.bool;
       default = false;
-      description = "If true, Headscale overrides all DNS settings on clients. Requires globalNameservers.";
-    };
-    globalNameservers = mkOption {
-      type = types.listOf types.str;
-      default = [ ];
-      description = "List of global DNS servers to use when overrideLocalDns is true. E.g., [ \"1.1.1.1\" ].";
+      description = "Whether to automatically open firewall ports. TCP: 80, 443; UDP: 3478.";
     };
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = !cfg.settings.derp.server.enable || cfg.forceSSL;
+        message = "nix-core/nixos/headscale: DERP requires TLS";
+      }
+      {
+        assertion = fqdn != cfg.settings.dns.base_domain;
+        message = "nix-core/nixos/headscale: `settings.server_url` must be different from `settings.dns.base_domain`";
+      }
+    ];
+
     services.headscale = {
-      address = "127.0.0.1";
-      port = cfg.internalPort;
+      address = mkDefault "127.0.0.1";
+      port = mkDefault 8077;
       settings = {
-        database.type = mkDefault "sqlite";
-        server_url = "https://" + fqdn;
-        derp.server.enable = cfg.enableDerpServer;
+        database.type = "sqlite"; # postgres is highly discouraged as it is only supported for legacy reasons
+        server_url = if cfg.forceSSL then "https://${fqdn}" else "http://${fqdn}";
+        derp.server.enable = cfg.forceSSL;
         dns = {
           magic_dns = mkDefault true;
-          base_domain = cfg.baseDomain;
-          override_local_dns = cfg.overrideLocalDns;
-          nameservers.global = cfg.globalNameservers;
+          base_domain = mkDefault "headscale.internal";
+          override_local_dns = mkDefault true;
         };
       };
     };
 
     services.nginx.virtualHosts.${fqdn} = {
-      forceSSL = true;
-      enableACME = true;
+      forceSSL = cfg.forceSSL;
+      enableACME = cfg.forceSSL;
       locations."/" = {
-        proxyPass = "http://127.0.0.1:${toString cfg.internalPort}";
+        proxyPass = mkDefault "http://${cfg.address}:${toString cfg.port}";
         proxyWebsockets = true;
       };
     };
@@ -90,7 +77,7 @@ in
         80
         443
       ];
-      allowedUDPPorts = if cfg.enableDerpServer then [ 3478 ] else [ ];
+      allowedUDPPorts = optional cfg.settings.derp.server.enable 3478;
     };
   };
 }
