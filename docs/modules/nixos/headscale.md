@@ -36,6 +36,6 @@ Set a CNAME record for your Headscale subdomain (`headscale` by default) pointin
 
 2.  **On a client**, connect:
     ```bash
-    tailscale login --login-server https://headscale.example.tld
+    sudo tailscale login --login-server https://headscale.example.tld
     ```
     Then, run the displayed `headscale nodes register ...` command on the **server** to register the device.
