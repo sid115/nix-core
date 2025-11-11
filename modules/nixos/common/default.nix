@@ -1,5 +1,6 @@
 {
   imports = [
+    ./htop.nix
     ./nationalization.nix
     ./networking.nix
     ./nix.nix
