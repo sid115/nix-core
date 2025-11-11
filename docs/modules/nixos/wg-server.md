@@ -1,5 +1,7 @@
 # WireGuard VPN Server
 
+> Warning: This module is not actively maintained. Expect things to break!
+
 A wrapper module for WireGuard to set up a VPN server.
 
 View the [*nix-core* NixOS module on GitHub](https://github.com/sid116/nix-core/tree/master/modules/nixos/wg-server).

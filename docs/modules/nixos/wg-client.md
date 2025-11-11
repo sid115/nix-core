@@ -1,5 +1,7 @@
 # WireGuard VPN Client
 
+> Warning: This module is not actively maintained. Expect things to break!
+
 A wrapper module to connect to a WireGuard VPN server.
 
 View the [*nix-core* NixOS module on GitHub](https://github.com/sid116/nix-core/tree/master/modules/nixos/wg-client).
