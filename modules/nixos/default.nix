@@ -13,6 +13,7 @@
   grafana = import ./grafana;
   guacamole = import ./guacamole;
   home-assistant-oci = import ./home-assistant-oci;
+  headscale = import ./headscale;
   hydra = import ./hydra;
   hyprland = import ./hyprland;
   i2pd = import ./i2pd;
