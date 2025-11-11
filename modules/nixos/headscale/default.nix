@@ -14,6 +14,7 @@ let
     mkIf
     mkOption
     optional
+    optionals
     types
     ;
 in
@@ -46,6 +47,10 @@ in
         assertion = fqdn != cfg.settings.dns.base_domain;
         message = "nix-core/nixos/headscale: `settings.server_url` must be different from `settings.dns.base_domain`";
       }
+      {
+        assertion = !cfg.settings.dns.override_local_dns || cfg.settings.dns.nameservers.global != [ ];
+        message = "nix-core/nixos/headscale: `settings.dns.nameservers.global` must be set when `settings.dns.override_local_dns` is true";
+      }
     ];
 
     services.headscale = {
@@ -59,6 +64,12 @@ in
           magic_dns = mkDefault true;
           base_domain = mkDefault "headscale.internal";
           override_local_dns = mkDefault true;
+          nameservers.global = optionals cfg.settings.dns.override_local_dns [
+            "1.1.1.1"
+            "1.0.0.1"
+            "2606:4700:4700::1111"
+            "2606:4700:4700::1001"
+          ];
         };
       };
     };
