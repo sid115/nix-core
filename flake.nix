@@ -2,10 +2,6 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # TODO: Implement test configs for runtime checks.
-    # home-manager.url = "github:nix-community/home-manager";
-    # home-manager.inputs.nixpkgs.follows = "nixpkgs";
-
     git-hooks.url = "github:cachix/git-hooks.nix";
     git-hooks.inputs.nixpkgs.follows = "nixpkgs";
   };
@@ -92,23 +88,6 @@
             };
         }
       );
-
-      # TODO: Implement test configs for runtime checks.
-      # nixosConfigurations = {
-      #   nixos-test = nixpkgs.lib.nixosSystem {
-      #     specialArgs = { inherit inputs outputs; };
-      #     modules = [ ./tests/nixos-test ];
-      #   };
-      # };
-
-      # TODO: Implement test configs for runtime checks.
-      # homeConfigurations = {
-      #   hm-test = home-manager.lib.homeManagerConfiguration {
-      #     pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      #     extraSpecialArgs = { inherit inputs outputs; };
-      #     modules = [ ./tests/hm-test ];
-      #   };
-      # };
 
       formatter = forAllSystems (
         system:
