@@ -10,6 +10,7 @@
   bulk-rename = pkgs.callPackage ./bulk-rename { };
   cppman = pkgs.callPackage ./cppman { };
   fetcher-mcp = pkgs.callPackage ./fetcher-mcp { };
+  freecad-mcp = pkgs.callPackage ./freecad-mcp { };
   mcpo = pkgs.callPackage ./mcpo { };
   pass2bw = pkgs.callPackage ./pass2bw { };
   pyman = pkgs.callPackage ./pyman { };
