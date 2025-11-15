@@ -67,6 +67,7 @@ nav:
           - rss-bridge: modules/nixos/rss-bridge.md
           - searx: modules/nixos/searx.md
           - sops: modules/nixos/sops.md
+          - tailscale: modules/nixos/tailscale.md
           - torrenting: modules/nixos/torrenting.md
           - tt-rss: modules/nixos/tt-rss.md
           - vaultwarden: modules/nixos/vaultwarden.md
