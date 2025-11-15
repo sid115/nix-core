@@ -8,6 +8,7 @@ let
   cfg = config.services.headscale;
   domain = config.networking.domain;
   fqdn = if cfg.subdomain == "" then domain else "${cfg.subdomain}.${domain}";
+  acl = "headscale/acl.hujson";
 
   inherit (lib)
     mkDefault
@@ -53,10 +54,16 @@ in
       }
     ];
 
+    environment.etc.${acl} = {
+      inherit (config.services.headscale) user group;
+      text = "{}"; # https://headscale.net/stable/ref/acls/#simple-examples
+    };
+
     services.headscale = {
       address = mkDefault "127.0.0.1";
       port = mkDefault 8077;
       settings = {
+        policy.path = "/etc/${acl}";
         database.type = "sqlite"; # postgres is highly discouraged as it is only supported for legacy reasons
         server_url = if cfg.forceSSL then "https://${fqdn}" else "http://${fqdn}";
         derp.server.enable = cfg.forceSSL;
