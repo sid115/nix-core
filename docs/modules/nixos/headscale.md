@@ -29,13 +29,22 @@ Set a CNAME record for your Headscale subdomain (`headscale` by default) pointin
 
 ## Usage
 
-1.  **On the server**, create a user:
-    ```bash
-    sudo headscale users create <your_username>
-    ```
+Create a new user:
 
-2.  **On a client**, connect:
-    ```bash
-    sudo tailscale login --login-server https://headscale.example.tld
-    ```
-    Then, run the displayed `headscale nodes register ...` command on the **server** to register the device.
+```bash
+sudo headscale users create <USER>
+```
+
+Get the user's id:
+
+```bash
+sudo headscale users list
+```
+
+Create a pre auth key for that user:
+
+```bash
+sudo headscale preauthkeys create --expiration 99y --reusable --user <ID>
+```
+
+Give the user the pre-auth key.
