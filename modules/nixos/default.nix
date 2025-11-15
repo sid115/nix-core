@@ -12,8 +12,8 @@
   gitea = import ./gitea;
   grafana = import ./grafana;
   guacamole = import ./guacamole;
-  home-assistant-oci = import ./home-assistant-oci;
   headscale = import ./headscale;
+  home-assistant-oci = import ./home-assistant-oci;
   hydra = import ./hydra;
   hyprland = import ./hyprland;
   i2pd = import ./i2pd;
@@ -40,6 +40,7 @@
   rss-bridge = import ./rss-bridge;
   searx = import ./searx;
   sops = import ./sops;
+  tailscale = import ./tailscale;
   torrenting = import ./torrenting;
   tt-rss = import ./tt-rss;
   vaultwarden = import ./vaultwarden;

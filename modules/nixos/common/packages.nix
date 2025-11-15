@@ -6,7 +6,6 @@
     dig
     fzf
     git
-    htop
     hydra-check
     iproute2
     jq
