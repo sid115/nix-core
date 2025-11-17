@@ -14,6 +14,10 @@ in
   };
 
   config = mkIf cfg.enable {
+    environment.shellAliases = {
+      ts = "${cfg.package}/bin/tailscale";
+    };
+
     services.tailscale = {
       authKeyFile = config.sops.secrets."tailscale/auth-key".path;
       extraUpFlags = [
