@@ -51,4 +51,5 @@
   wg-server = import ./wg-server;
   windows-oci = import ./windows-oci;
   xrdp = import ./xrdp;
+  postgresql = import ./postgresql;
 }
