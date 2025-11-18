@@ -1,7 +1,14 @@
 {
-  "ssh": [
+  "acls": [
     {
       "action": "accept",
+      "src": ["*"],
+      "dst": ["*:*"]
+    }
+  ],
+  "ssh": [
+    {
+      "action": "check",
       "src": ["*"],
       "dst": ["*"],
       "users": ["*"]
