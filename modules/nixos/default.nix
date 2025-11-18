@@ -43,6 +43,7 @@
   tailscale = import ./tailscale;
   torrenting = import ./torrenting;
   tt-rss = import ./tt-rss;
+  uptime-kuma = import ./uptime-kuma;
   vaultwarden = import ./vaultwarden;
   virtualisation = import ./virtualisation;
   webPage = import ./webPage;
