@@ -1,20 +1,10 @@
 {
-  "groups": {
-    "group:all": ["*"]
-  },
-  "acls": [
-    {
-      "action": "accept",
-      "src": ["*"],
-      "dst": ["*:*"]
-    }
-  ],
   "ssh": [
     {
       "action": "check",
-      "src": ["group:all"],
-      "dst": ["*"],
-      "users": ["*"]
-    }
+      "src": ["autogroup:member"],
+      "dst": ["autogroup:self"],
+      "users": ["autogroup:nonroot"]
+    },
   ]
 }
