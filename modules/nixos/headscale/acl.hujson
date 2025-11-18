@@ -1,4 +1,7 @@
 {
+  "groups": {
+    "group:all": ["*"]
+  },
   "acls": [
     {
       "action": "accept",
@@ -9,7 +12,7 @@
   "ssh": [
     {
       "action": "check",
-      "src": ["*"],
+      "src": ["group:all"],
       "dst": ["*"],
       "users": ["*"]
     }
