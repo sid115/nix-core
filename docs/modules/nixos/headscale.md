@@ -48,3 +48,11 @@ sudo headscale preauthkeys create --expiration 99y --reusable --user <ID>
 ```
 
 Give the user the pre-auth key.
+
+## Troubleshooting
+
+Check if your ACL config is valid:
+
+```bash
+sudo headscale policy check --file PATH/TO/acl.hujson
+```

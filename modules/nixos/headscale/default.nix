@@ -56,7 +56,11 @@ in
 
     environment.etc.${acl} = {
       inherit (config.services.headscale) user group;
-      text = "{}"; # https://headscale.net/stable/ref/acls/#simple-examples
+      source = ./acl.hujson;
+    };
+
+    environment.shellAliases = {
+      hs = "${cfg.package}/bin/headscale";
     };
 
     services.headscale = {

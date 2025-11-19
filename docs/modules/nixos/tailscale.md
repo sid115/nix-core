@@ -29,6 +29,7 @@ tailscale:
 
   services.tailscale = {
     enable = true;
+    enableSSH = true;
     loginServer = "<your-headscale-instance>";
   };
 }

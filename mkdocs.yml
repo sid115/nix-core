@@ -44,6 +44,7 @@ nav:
           - gitea: modules/nixos/gitea.md
           - grafana: modules/nixos/grafana.md
           - guacamole: modules/nixos/guacamole.md
+          - headplane: modules/nixos/headplane.md
           - headscale: modules/nixos/headscale.md
           - home-assistant-oci: modules/nixos/home-assistant-oci.md
           - hydra: modules/nixos/hydra.md

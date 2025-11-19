@@ -12,6 +12,7 @@
   gitea = import ./gitea;
   grafana = import ./grafana;
   guacamole = import ./guacamole;
+  headplane = import ./headplane;
   headscale = import ./headscale;
   home-assistant-oci = import ./home-assistant-oci;
   hydra = import ./hydra;
@@ -43,6 +44,7 @@
   tailscale = import ./tailscale;
   torrenting = import ./torrenting;
   tt-rss = import ./tt-rss;
+  uptime-kuma = import ./uptime-kuma;
   vaultwarden = import ./vaultwarden;
   virtualisation = import ./virtualisation;
   webPage = import ./webPage;
