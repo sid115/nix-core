@@ -13,11 +13,14 @@ let
 
   inherit (lib)
     mkDefault
+    mkIf
     mkOption
     types
     ;
 in
 {
+  imports = [ inputs.headplane.nixosModules.headplane ];
+
   options.services.headplane = {
     subdomain = mkOption {
       type = types.str;
@@ -31,9 +34,7 @@ in
     };
   };
 
-  config = {
-    imports = [ inputs.headplane.nixosModules.headplane ];
-
+  config = mkIf cfg.enable {
     nixpkgs.overlays = [
       inputs.headplane.overlays.default
     ];
