@@ -9,9 +9,9 @@
   "ssh": [
     {
       "action": "accept",
-      "src": ["autogroup:members"],
-      "dst": ["autogroup:self"],
-      "users": ["autogroup:nonroot"]
+      "src": ["autogroup:member"],
+      "dst": ["autogroup:member"],
+      "users": ["autogroup:nonroot", "root"]
     }
   ]
 }
