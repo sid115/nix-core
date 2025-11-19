@@ -1,6 +1,7 @@
 {
   inputs,
   config,
+  lib,
   ...
 }:
 
@@ -10,7 +11,7 @@ let
   fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
   headscale = config.services.headscale;
 
-  inherit (inputs.lib)
+  inherit (lib)
     mkDefault
     mkIf
     mkOption
