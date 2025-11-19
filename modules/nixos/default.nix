@@ -12,6 +12,7 @@
   gitea = import ./gitea;
   grafana = import ./grafana;
   guacamole = import ./guacamole;
+  headplane = import ./headplane;
   headscale = import ./headscale;
   home-assistant-oci = import ./home-assistant-oci;
   hydra = import ./hydra;
