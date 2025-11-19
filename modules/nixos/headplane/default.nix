@@ -13,7 +13,6 @@ let
 
   inherit (lib)
     mkDefault
-    mkIf
     mkOption
     types
     ;
@@ -32,7 +31,7 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
+  config = {
     imports = [ inputs.headplane.nixosModules.headplane ];
 
     nixpkgs.overlays = [
