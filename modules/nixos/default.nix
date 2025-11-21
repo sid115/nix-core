@@ -45,6 +45,7 @@
   torrenting = import ./torrenting;
   tt-rss = import ./tt-rss;
   uptime-kuma = import ./uptime-kuma;
+  uptime-kuma-agent = import ./uptime-kuma-agent;
   vaultwarden = import ./vaultwarden;
   virtualisation = import ./virtualisation;
   webPage = import ./webPage;

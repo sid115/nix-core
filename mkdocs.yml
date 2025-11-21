@@ -71,6 +71,7 @@ nav:
           - tailscale: modules/nixos/tailscale.md
           - torrenting: modules/nixos/torrenting.md
           - tt-rss: modules/nixos/tt-rss.md
+          - uptime-kuma-agent: modules/nixos/uptime-kuma-agent.md
           - vaultwarden: modules/nixos/vaultwarden.md
           - virtualisation: modules/nixos/virtualisation.md
           - webPage: modules/nixos/webpage.md
