@@ -89,7 +89,7 @@ in
     virtualisation.oci-containers.backend = "podman";
 
     virtualisation.oci-containers.containers."open-webui" = {
-      image = "localhost/ghcr.io/open-webui/open-webui:main";
+      image = "ghcr.io/open-webui/open-webui:main";
       environment = {
         "ANONYMIZED_TELEMETRY" = mkDefault "False";
         "BYPASS_MODEL_ACCESS_CONTROL" = mkDefault "True";
