@@ -11,6 +11,8 @@ let
   domain = config.networking.domain;
   fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
 
+  opt2env = opt: if opt then "True" else "False";
+
   inherit (lib)
     mkDefault
     mkEnableOption
@@ -93,7 +95,7 @@ in
         "BYPASS_MODEL_ACCESS_CONTROL" = mkDefault "True";
         "DEFAULT_USER_ROLE" = mkDefault "user";
         "DO_NOT_TRACK" = mkDefault "True";
-        "ENABLE_SIGNUP" = cfg.enableSignUp;
+        "ENABLE_SIGNUP" = opt2env cfg.enableSignUp;
         "SCARF_NO_ANALYTICS" = mkDefault "True";
         # TODO: More environment variables necessary? Maybe for searx integration? Or should we rely on admin config in the web interface?
       };
