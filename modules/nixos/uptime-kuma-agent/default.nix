@@ -37,7 +37,7 @@ let
 
   mkCheckScript =
     name: monitorCfg:
-    pkgs.writeShellScriptBin "check-kuma-${name}" ''
+    pkgs.writeShellScript "check-kuma-${name}" ''
 
       if [ ! -f "${monitorCfg.secretFile}" ]; then
         echo "Secret file ${monitorCfg.secretFile} not found. Skipping."
