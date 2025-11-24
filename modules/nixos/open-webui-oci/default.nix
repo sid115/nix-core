@@ -12,7 +12,14 @@ let
   fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
   internalPort = "8080";
 
+  baseUrl =
+    if cfg.reverseProxy.enable then
+      (if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}")
+    else
+      "http://${fqdn}:${toString cfg.port}";
+
   inherit (lib)
+    concatStringsSep
     mkDefault
     mkEnableOption
     mkIf
@@ -116,7 +123,15 @@ in
     virtualisation.oci-containers.containers."open-webui" = {
       image = "ghcr.io/open-webui/open-webui:main";
       environment = {
+        ENV = "prod";
         PORT = internalPort;
+        USER_AGENT = "OpenWebUI";
+        CORS_ALLOW_ORIGIN = concatStringsSep ";" [
+          baseUrl
+          "http://localhost:${toString cfg.port}"
+          "http://127.0.0.1:${toString cfg.port}"
+          "http://0.0.0.0:${toString cfg.port}"
+        ];
       }
       // cfg.environment;
       environmentFiles = optional (cfg.environmentFile != null) cfg.environmentFile;
