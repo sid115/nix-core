@@ -62,6 +62,7 @@ nav:
           - ntfy-sh: modules/nixos/ntfy-sh.md
           - nvidia: modules/nixos/nvidia.md
           - open-webui: modules/nixos/open-webui.md
+          - open-webui-oci: modules/nixos/open-webui-oci.md
           - peertube: modules/nixos/peertube.md
           - print-server: modules/nixos/print-server.md
           - radicale: modules/nixos/radicale.md
