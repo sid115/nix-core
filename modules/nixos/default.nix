@@ -34,6 +34,7 @@
   nvidia = import ./nvidia;
   ollama = import ./ollama;
   open-webui = import ./open-webui;
+  open-webui-oci = import ./open-webui-oci;
   openssh = import ./openssh;
   peertube = import ./peertube;
   print-server = import ./print-server;
