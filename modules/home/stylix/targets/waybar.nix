@@ -33,7 +33,7 @@ let
 in
 {
   options.stylix.targets.waybar' = {
-    enable = mkEnableOption "Enable waybar' target for Stylix.";
+    enable = mkEnableOption "waybar' target for Stylix.";
     gaps = mkOption {
       type = types.int;
       default = cfg.targets.hyprland.gaps;

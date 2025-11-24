@@ -1,8 +1,8 @@
-# Open WebUI
+# Open WebUI OCI
 
 Open WebUI is an extensible, self-hosted AI interface that adapts to your workflow, all while operating entirely offline.
 
-View the [*nix-core* NixOS module on GitHub](https://github.com/sid115/nix-core/tree/master/modules/nixos/open-webui).
+View the [*nix-core* NixOS module on GitHub](https://github.com/sid115/nix-core/tree/master/modules/nixos/open-webui-oci).
 
 ## References
 
@@ -16,9 +16,9 @@ View the [*nix-core* NixOS module on GitHub](https://github.com/sid115/nix-core/
 { inputs, ... }:
 
 {
-  imports = [ inputs.core.nixosModules.open-webui ];
+  imports = [ inputs.core.nixosModules.open-webui-oci ];
 
-  services.open-webui.enable = true;
+  services.open-webui-oci.enable = true;
 }
 ```
 
@@ -26,7 +26,7 @@ View the [*nix-core* NixOS module on GitHub](https://github.com/sid115/nix-core/
 
 Visit the web interface at your specified location to create an admin account.
 
-> The default location is `http://127.0.0.1:8082`.
+> The default location is `http://127.0.0.1:8080`.
 
 ## Troubleshooting
 

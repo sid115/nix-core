@@ -15,7 +15,7 @@ let
 in
 {
   options.stylix.targets.bemenu' = {
-    enable = mkEnableOption "Enable bemenu' target for Stylix.";
+    enable = mkEnableOption "bemenu' target for Stylix.";
     radius = mkOption {
       type = types.int;
       default = cfg.targets.hyprland.radius;

@@ -20,7 +20,7 @@ let
 in
 {
   options.services.mcpo = {
-    enable = mkEnableOption "Enable mcpo, an MCP-to-OpenAPI proxy server.";
+    enable = mkEnableOption "mcpo, an MCP-to-OpenAPI proxy server.";
 
     package = mkOption {
       type = types.nullOr types.package;

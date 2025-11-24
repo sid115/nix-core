@@ -28,7 +28,7 @@ let
 in
 {
   options.networking.wg-server = {
-    enable = mkEnableOption "Enable VPN server";
+    enable = mkEnableOption "VPN server via wireguard.";
     openFirewall = mkOption {
       type = types.bool;
       default = false;

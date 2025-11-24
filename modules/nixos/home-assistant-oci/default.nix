@@ -18,7 +18,7 @@ let
 in
 {
   options.services.home-assistant-oci = {
-    enable = mkEnableOption "Enable the Home Assistant container with Podman.";
+    enable = mkEnableOption "Home Assistant container with Podman.";
 
     dataDir = mkOption {
       type = types.path;

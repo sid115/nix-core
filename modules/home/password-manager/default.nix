@@ -22,7 +22,7 @@ let
 in
 {
   options.programs.passwordManager = {
-    enable = mkEnableOption "Whether to enable a password manager using pass, passmenu, and passff.";
+    enable = mkEnableOption "password manager using pass, passmenu, and passff.";
     length = mkOption {
       type = types.str;
       default = "20";

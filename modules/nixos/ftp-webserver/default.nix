@@ -15,7 +15,7 @@ let
 in
 {
   options.services.ftp-webserver = {
-    enable = mkEnableOption "Whether to enable the FTP webserver.";
+    enable = mkEnableOption "FTP webserver.";
     subdomain = mkOption {
       type = types.str;
       default = "ftp";

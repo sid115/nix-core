@@ -24,7 +24,7 @@ in
   options.services.matrix-synapse = {
     bridges = {
       whatsapp = {
-        enable = mkEnableOption "Enable mautrix-whatsapp for your matrix-synapse instance.";
+        enable = mkEnableOption "Mautrix-Whatsapp for your Matrix-Synapse instance.";
         admin = mkOption {
           type = types.str;
           description = "The user to give admin permissions to.";

@@ -21,7 +21,7 @@ in
 {
 
   options.services.guacamole = {
-    enable = mkEnableOption "Whether to enable Guacamole server and client.";
+    enable = mkEnableOption "Guacamole server and client.";
     subdomain = mkOption {
       type = types.str;
       default = "guac";

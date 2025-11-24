@@ -85,7 +85,7 @@ in
 {
   options.services.ntfy-sh = {
     reverseProxy = {
-      enable = mkEnableOption "Enable an Nginx reverse proxy for `settings.base-url`.";
+      enable = mkEnableOption "Nginx reverse proxy for `settings.base-url`.";
       forceSSL = mkOption {
         type = types.bool;
         default = true;

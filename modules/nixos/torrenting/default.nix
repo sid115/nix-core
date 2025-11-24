@@ -15,7 +15,7 @@ let
 in
 {
   options.services.torrenting = {
-    enable = mkEnableOption "Enable torrenting via deluge and deluge-web.";
+    enable = mkEnableOption "torrenting via deluge and deluge-web.";
     subdomain = mkOption {
       type = types.str;
       default = "torrent";

@@ -71,7 +71,7 @@ let
 in
 {
   options.networking.wg-client = {
-    enable = mkEnableOption "Enable VPN clients";
+    enable = mkEnableOption "VPN clients";
     interfaces = mkOption {
       type = types.attrsOf wgClientInterface;
       default = { };

@@ -15,7 +15,7 @@ let
 in
 {
   options.services.webPage = {
-    enable = mkEnableOption "Whether to enable the web page service.";
+    enable = mkEnableOption "static web page hosting";
     subdomain = mkOption {
       type = types.str;
       default = "www";
