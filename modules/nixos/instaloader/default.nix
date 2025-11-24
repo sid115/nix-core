@@ -54,7 +54,7 @@ let
 in
 {
   options.services.instaloader = {
-    enable = mkEnableOption "The instaloader periodic download service.";
+    enable = mkEnableOption "instaloader periodic download service.";
 
     package = mkPackageOption pkgs "instaloader" { };
 

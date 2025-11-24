@@ -13,7 +13,7 @@ in
 {
 
   options.services.cifsMount = {
-    enable = mkEnableOption "Enable CIFS mounting of predefined remote directories.";
+    enable = mkEnableOption "CIFS mounting of predefined remote directories.";
 
     # List of predefined remote CIFS shares to mount
     remotes = mkOption {

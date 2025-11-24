@@ -17,7 +17,7 @@ let
 in
 {
   options.programs.networkmanager-dmenu = {
-    enable = mkEnableOption "Whether to enable networkmanager-dmenu.";
+    enable = mkEnableOption "networkmanager-dmenu.";
 
     package = mkOption {
       type = types.package;

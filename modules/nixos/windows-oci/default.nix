@@ -19,7 +19,7 @@ let
 in
 {
   options.services.windows-oci = {
-    enable = mkEnableOption "Run Windows in an OCI container using Podman";
+    enable = mkEnableOption "Windows in an OCI container using Podman";
     volume = mkOption {
       type = types.str;
       default = "/opt/windows";

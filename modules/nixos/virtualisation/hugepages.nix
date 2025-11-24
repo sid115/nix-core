@@ -16,7 +16,7 @@ let
 in
 {
   options.virtualisation.hugepages = {
-    enable = mkEnableOption "Whether to enable huge pages.";
+    enable = mkEnableOption "huge pages.";
 
     defaultPageSize = mkOption {
       type = types.strMatching "[0-9]*[kKmMgG]";

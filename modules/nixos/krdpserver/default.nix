@@ -16,7 +16,7 @@ let
 in
 {
   options.services.krdpserver = {
-    enable = mkEnableOption "Whether to enable the krdpserver service.";
+    enable = mkEnableOption "krdpserver";
 
     package = mkOption {
       type = types.package;

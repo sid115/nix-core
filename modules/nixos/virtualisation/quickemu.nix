@@ -12,7 +12,7 @@ let
 in
 {
   options.virtualisation.quickemu = {
-    enable = mkEnableOption "Whether to enable quickemu.";
+    enable = mkEnableOption "quickemu";
   };
 
   config = mkIf cfg.enable {

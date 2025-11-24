@@ -20,7 +20,7 @@ in
 {
   options = {
     services.baibot = {
-      enable = mkEnableOption "Enable the baibot service, a Matrix AI bot.";
+      enable = mkEnableOption "Baibot, a Matrix AI bot.";
 
       configFile = mkOption {
         type = types.nullOr types.path;

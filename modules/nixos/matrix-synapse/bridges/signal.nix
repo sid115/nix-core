@@ -24,7 +24,7 @@ in
   options.services.matrix-synapse = {
     bridges = {
       signal = {
-        enable = mkEnableOption "Enable mautrix-signal for your matrix-synapse instance.";
+        enable = mkEnableOption "Mautrix-Signal for your Matrix-Synapse instance.";
         admin = mkOption {
           type = types.str;
           description = "The user to give admin permissions to.";

@@ -20,7 +20,7 @@ let
 in
 {
   options.services.print-server = {
-    enable = mkEnableOption "Enable print server.";
+    enable = mkEnableOption "print server";
     subdomain = mkOption {
       type = types.str;
       default = "print";

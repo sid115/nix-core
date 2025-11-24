@@ -38,7 +38,7 @@ let
 in
 {
   options.services.nextcloud-sync = {
-    enable = mkEnableOption "Enable Nextcloud sync systemd services via nextcloudcmd.";
+    enable = mkEnableOption "Nextcloud sync systemd services via nextcloudcmd.";
     username = mkOption {
       type = types.str;
       default = config.home.username;
