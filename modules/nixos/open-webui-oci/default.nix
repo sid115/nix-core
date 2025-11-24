@@ -8,7 +8,8 @@
 let
   cfg = config.services.open-webui-oci;
   domain = config.networking.domain;
-  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
+  subdomain = cfg.reverseProxy.subdomain;
+  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
   internalPort = "8080";
 
   inherit (lib)
