@@ -31,7 +31,7 @@ let
 in
 {
   options.services.open-webui-oci = {
-    enable = mkEnableOption "Enable Open WebUI container with Podman.";
+    enable = mkEnableOption "Open WebUI container with Podman.";
     port = mkOption {
       type = types.port;
       default = 8080;
@@ -66,30 +66,17 @@ in
       default = null;
       example = "config.sops.templates.open-webui-env.path";
     };
-    reverseProxy = mkOption {
-      type = types.submodule {
-        options = {
-          enable = mkEnableOption "Enable Nginx reverse proxy for Open WebUI." // {
-            enable = false;
-          };
-          subdomain = mkOption {
-            type = types.str;
-            default = "ai";
-            description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-          };
-          forceSSL = mkOption {
-            type = types.bool;
-            default = true;
-            description = "Force SSL for Nginx virtual host.";
-          };
-        };
-        default = { };
-        description = "Nginx reverse proxy configuration for Open WebUI.";
-        example = {
-          enable = true;
-          subdomain = "oi";
-          forceSSL = true;
-        };
+    reverseProxy = {
+      enable = mkEnableOption "Nginx reverse proxy for Open WebUI.";
+      subdomain = mkOption {
+        type = types.str;
+        default = "ai";
+        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
+      };
+      forceSSL = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Force SSL for Nginx virtual host.";
       };
     };
   };
