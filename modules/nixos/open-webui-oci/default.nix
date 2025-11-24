@@ -7,32 +7,56 @@
 
 let
   cfg = config.services.open-webui-oci;
-  searx = config.services.searx; # TODO: searx web search integration
   domain = config.networking.domain;
   fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
-
-  opt2env = opt: if opt then "True" else "False";
+  internalPort = "8080";
 
   inherit (lib)
     mkDefault
     mkEnableOption
     mkIf
     mkOption
+    mkOverride
+    optional
     types
     ;
 in
 {
   options.services.open-webui-oci = {
     enable = mkEnableOption "Enable Open WebUI container with Podman.";
-    enableSignUp = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Enable user sign up.";
-    };
-    port = lib.mkOption {
+    port = mkOption {
       type = types.port;
       default = 8080;
       description = "Which port the Open-WebUI server listens to.";
+    };
+    environment = mkOption {
+      type = types.attrsOf types.str;
+      default = {
+        ANONYMIZED_TELEMETRY = "False";
+        BYPASS_MODEL_ACCESS_CONTROL = "True";
+        DEFAULT_LOCALE = "en";
+        DEFAULT_USER_ROLE = "user";
+        DO_NOT_TRACK = "True";
+        ENABLE_IMAGE_GENERATION = "True";
+        ENABLE_PERSISTENT_CONFIG = "False";
+        ENABLE_SIGNUP = "False";
+        ENABLE_SIGNUP_PASSWORD_CONFIRMATION = "False";
+        ENABLE_USER_WEBHOOKS = "True";
+        ENABLE_WEBSEARCH = "True";
+        SCARF_NO_ANALYTICS = "True";
+        USER_PERMISSIONS_FEATURES_DIRECT_TOOL_SERVERS = "True";
+        WEB_SEARCH_ENGINE = "DuckDuckGo";
+      };
+      description = ''
+        Extra environment variables for Open-WebUI.
+        For more details see <https://docs.openwebui.com/getting-started/advanced-topics/env-configuration/>
+      '';
+    };
+    environmentFile = mkOption {
+      description = "Environment file to be passed to the Open WebUI container.";
+      type = types.nullOr types.path;
+      default = null;
+      example = "config.sops.templates.open-webui-env.path";
     };
     reverseProxy = mkOption {
       type = types.submodule {
@@ -63,9 +87,9 @@ in
   };
 
   config = mkIf cfg.enable {
-    services.nginx.virtualHosts."${fqdn}" = {
-      enableACME = cfg.forceSSL;
-      forceSSL = cfg.forceSSL;
+    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
+      enableACME = cfg.reverseProxy.forceSSL;
+      forceSSL = cfg.reverseProxy.forceSSL;
       locations."/" = {
         proxyPass = mkDefault "http://localhost:${toString cfg.port}";
         proxyWebsockets = true;
@@ -91,19 +115,15 @@ in
     virtualisation.oci-containers.containers."open-webui" = {
       image = "ghcr.io/open-webui/open-webui:main";
       environment = {
-        "ANONYMIZED_TELEMETRY" = mkDefault "False";
-        "BYPASS_MODEL_ACCESS_CONTROL" = mkDefault "True";
-        "DEFAULT_USER_ROLE" = mkDefault "user";
-        "DO_NOT_TRACK" = mkDefault "True";
-        "ENABLE_SIGNUP" = opt2env cfg.enableSignUp;
-        "SCARF_NO_ANALYTICS" = mkDefault "True";
-        # TODO: More environment variables necessary? Maybe for searx integration? Or should we rely on admin config in the web interface?
-      };
+        PORT = internalPort;
+      }
+      // cfg.environment;
+      environmentFiles = optional (cfg.environmentFile != null) cfg.environmentFile;
       volumes = [
         "open-webui_open-webui:/app/backend/data:rw"
       ];
       ports = [
-        "${toString cfg.port}:8080/tcp"
+        "${toString cfg.port}:${internalPort}/tcp"
       ];
       log-driver = "journald";
       extraOptions = [
@@ -114,7 +134,7 @@ in
     };
     systemd.services."podman-open-webui" = {
       serviceConfig = {
-        Restart = lib.mkOverride 90 "always";
+        Restart = mkOverride 90 "always";
       };
       after = [
         "podman-network-open-webui_default.service"
@@ -157,21 +177,6 @@ in
       '';
       partOf = [ "podman-compose-open-webui-root.target" ];
       wantedBy = [ "podman-compose-open-webui-root.target" ];
-    };
-
-    systemd.services."podman-build-open-webui" = {
-      path = [
-        pkgs.podman
-        pkgs.git
-      ];
-      serviceConfig = {
-        Type = "oneshot";
-        TimeoutSec = 300;
-      };
-      script = ''
-        cd /home/sid/src/open-webui
-        podman build -t ghcr.io/open-webui/open-webui:main .
-      '';
     };
 
     systemd.targets."podman-compose-open-webui-root" = {
