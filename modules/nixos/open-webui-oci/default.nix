@@ -12,6 +12,26 @@ let
   fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
   internalPort = "8080";
 
+  defaultEnv = {
+    ANONYMIZED_TELEMETRY = "False";
+    BYPASS_MODEL_ACCESS_CONTROL = "True";
+    DEFAULT_LOCALE = "en";
+    DEFAULT_USER_ROLE = "user";
+    DO_NOT_TRACK = "True";
+    ENABLE_DIRECT_CONNECTIONS = "True";
+    ENABLE_IMAGE_GENERATION = "True";
+    ENABLE_PERSISTENT_CONFIG = "False";
+    ENABLE_SIGNUP = "False";
+    ENABLE_SIGNUP_PASSWORD_CONFIRMATION = "True";
+    ENABLE_USER_WEBHOOKS = "True";
+    ENABLE_WEBSEARCH = "True";
+    ENV = "prod";
+    SCARF_NO_ANALYTICS = "True";
+    USER_AGENT = "OpenWebUI";
+    USER_PERMISSIONS_FEATURES_DIRECT_TOOL_SERVERS = "True";
+    WEB_SEARCH_ENGINE = "DuckDuckGo";
+  };
+
   baseUrl =
     if cfg.reverseProxy.enable then
       (if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}")
@@ -38,23 +58,8 @@ in
       description = "Which port the Open-WebUI server listens to.";
     };
     environment = mkOption {
+      default = { };
       type = types.attrsOf types.str;
-      default = {
-        ANONYMIZED_TELEMETRY = "False";
-        BYPASS_MODEL_ACCESS_CONTROL = "True";
-        DEFAULT_LOCALE = "en";
-        DEFAULT_USER_ROLE = "user";
-        DO_NOT_TRACK = "True";
-        ENABLE_IMAGE_GENERATION = "True";
-        ENABLE_PERSISTENT_CONFIG = "False";
-        ENABLE_SIGNUP = "False";
-        ENABLE_SIGNUP_PASSWORD_CONFIRMATION = "False";
-        ENABLE_USER_WEBHOOKS = "True";
-        ENABLE_WEBSEARCH = "True";
-        SCARF_NO_ANALYTICS = "True";
-        USER_PERMISSIONS_FEATURES_DIRECT_TOOL_SERVERS = "True";
-        WEB_SEARCH_ENGINE = "DuckDuckGo";
-      };
       description = ''
         Extra environment variables for Open-WebUI.
         For more details see <https://docs.openwebui.com/getting-started/advanced-topics/env-configuration/>
@@ -109,18 +114,18 @@ in
 
     virtualisation.oci-containers.containers."open-webui" = {
       image = "ghcr.io/open-webui/open-webui:main";
-      environment = {
-        ENV = "prod";
-        PORT = internalPort;
-        USER_AGENT = "OpenWebUI";
-        CORS_ALLOW_ORIGIN = concatStringsSep ";" [
-          baseUrl
-          "http://localhost:${toString cfg.port}"
-          "http://127.0.0.1:${toString cfg.port}"
-          "http://0.0.0.0:${toString cfg.port}"
-        ];
-      }
-      // cfg.environment;
+      environment =
+        defaultEnv
+        // cfg.environment
+        // {
+          PORT = internalPort;
+          CORS_ALLOW_ORIGIN = concatStringsSep ";" [
+            baseUrl
+            "http://localhost:${toString cfg.port}"
+            "http://127.0.0.1:${toString cfg.port}"
+            "http://0.0.0.0:${toString cfg.port}"
+          ];
+        };
       environmentFiles = optional (cfg.environmentFile != null) cfg.environmentFile;
       volumes = [
         "open-webui_open-webui:/app/backend/data:rw"
