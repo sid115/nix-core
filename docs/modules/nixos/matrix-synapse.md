@@ -30,7 +30,11 @@ matrix:
 livekit:
     key: abc123
 ```
-_Had to add cmd to create livekit api secret + api key_
+Generate the livekit key with:
+
+```bash
+nix-shell -p livekit --run "livekit-server generate-keys | tail -1 | awk '{print $3}'"
+```
 
 ## DNS
 

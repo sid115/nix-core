@@ -16,7 +16,7 @@ let
     "m.identity_server".base_url = "https://vector.im";
   };
 
-  livekitConfig = lib.optionalAttrs config.services.livekit.enable {
+  livekitConfig = optionalAttrs config.services.livekit.enable {
     "org.matrix.msc3575.proxy".url = baseUrl;
     "org.matrix.msc4143.rtc_foci" = [
       {
@@ -36,18 +36,16 @@ let
     return 200 '${builtins.toJSON data}';
   '';
 
-  inherit (lib) mkIf;
+  inherit (lib) mkIf optionalAttrs;
 in
 {
   imports = [
+    ./bridges
     ./coturn.nix
-    ./element-call.nix
+    ./livekit.nix
   ];
 
   config = mkIf cfg.enable {
-
-    services.livekit.enable = lib.mkDefault true;
-
     services.postgresql = {
       enable = true;
       initialScript = pkgs.writeText "synapse-init.sql" ''
