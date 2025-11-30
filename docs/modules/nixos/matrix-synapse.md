@@ -27,7 +27,10 @@ coturn:
     static-auth-secret: abc123
 matrix:
     registration-shared-secret: abc123
+livekit:
+    key: abc123
 ```
+_Had to add cmd to create livekit api secret + api key_
 
 ## DNS
 

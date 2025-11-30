@@ -4,14 +4,32 @@
   pkgs,
   ...
 }:
-
 let
   cfg = config.services.matrix-synapse;
-  fqdn = "${config.networking.domain}";
-  port = 8008; # add a custom option for this?
+  domain = config.networking.domain;
+  fqdn = domain;
+  port = 8008;
   baseUrl = "https://${fqdn}";
-  clientConfig."m.homeserver".base_url = baseUrl;
+
+  baseClientConfig = {
+    "m.homeserver".base_url = baseUrl;
+    "m.identity_server".base_url = "https://vector.im";
+  };
+
+  livekitConfig = lib.optionalAttrs config.services.livekit.enable {
+    "org.matrix.msc3575.proxy".url = baseUrl;
+    "org.matrix.msc4143.rtc_foci" = [
+      {
+        type = "livekit";
+        livekit_service_url = baseUrl + "/livekit/jwt";
+      }
+    ];
+  };
+
+  clientConfig = baseClientConfig // livekitConfig;
+
   serverConfig."m.server" = "${fqdn}:443";
+
   mkWellKnown = data: ''
     default_type application/json;
     add_header Access-Control-Allow-Origin *;
@@ -22,11 +40,14 @@ let
 in
 {
   imports = [
-    ./bridges
     ./coturn.nix
+    ./element-call.nix
   ];
 
   config = mkIf cfg.enable {
+
+    services.livekit.enable = lib.mkDefault true;
+
     services.postgresql = {
       enable = true;
       initialScript = pkgs.writeText "synapse-init.sql" ''
@@ -41,7 +62,7 @@ in
     services.matrix-synapse = {
       settings = {
         registration_shared_secret_path = config.sops.secrets."matrix/registration-shared-secret".path;
-        server_name = config.networking.domain;
+        server_name = domain;
         public_baseurl = baseUrl;
         listeners = [
           {
@@ -74,18 +95,18 @@ in
     services.nginx.virtualHosts."${fqdn}" = {
       enableACME = true;
       forceSSL = true;
+
       locations."= /.well-known/matrix/server".extraConfig = mkWellKnown serverConfig;
       locations."= /.well-known/matrix/client".extraConfig = mkWellKnown clientConfig;
-      locations."/_matrix".proxyPass = "http://localhost:${toString port}";
-      locations."/_synapse".proxyPass = "http://localhost:${toString port}";
+
+      locations."/_matrix".proxyPass = "http://127.0.0.1:${toString port}";
+      locations."/_synapse".proxyPass = "http://127.0.0.1:${toString port}";
     };
 
-    sops = {
-      secrets."matrix/registration-shared-secret" = {
-        owner = "matrix-synapse";
-        group = "matrix-synapse";
-        mode = "0440";
-      };
+    sops.secrets."matrix/registration-shared-secret" = {
+      owner = "matrix-synapse";
+      group = "matrix-synapse";
+      mode = "0440";
     };
   };
 }
