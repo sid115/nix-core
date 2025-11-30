@@ -54,22 +54,14 @@ in
       };
     };
 
-    sops =
-      let
-        owner = "miniflux";
-        mode = "0600";
-      in
-      {
-        secrets."miniflux/admin-password" = {
-          inherit owner mode;
-        };
-        templates."miniflux/admin-credentials" = {
-          inherit owner mode;
-          content = ''
-            ADMIN_USERNAME=${cfg.config.ADMIN_USERNAME}
-            ADMIN_PASSWORD=${config.sops.placeholder."miniflux/admin-password"}
-          '';
-        };
+    sops = {
+      secrets."miniflux/admin-password" = { };
+      templates."miniflux/admin-credentials" = {
+        content = ''
+          ADMIN_USERNAME=${cfg.config.ADMIN_USERNAME}
+          ADMIN_PASSWORD=${config.sops.placeholder."miniflux/admin-password"}
+        '';
       };
+    };
   };
 }
