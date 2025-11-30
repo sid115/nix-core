@@ -24,10 +24,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.shellAliases = {
-      ts = "${cfg.package}/bin/tailscale";
-    };
-
     services.tailscale = {
       authKeyFile = config.sops.secrets."tailscale/auth-key".path;
       extraSetFlags = optional cfg.enableSSH "--ssh";
@@ -36,6 +32,12 @@ in
       ]
       ++ optional cfg.enableSSH "--ssh";
     };
+
+    environment.shellAliases = {
+      ts = "${cfg.package}/bin/tailscale";
+    };
+
+    networking.firewall.trustedInterfaces = [ cfg.interfaceName ];
 
     sops.secrets."tailscale/auth-key" = { };
   };
