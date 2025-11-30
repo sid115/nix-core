@@ -17,6 +17,6 @@ in
   };
 
   home.shellAliases = {
-    ssh = "kitten ssh"; # copy terminfo
+    s = "kitten ssh"; # copy terminfo
   };
 }

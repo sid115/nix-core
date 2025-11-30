@@ -20,6 +20,7 @@
     pciutils
     psmisc
     rsync
+    tcpdump
     tldr
     tree
     unzip
