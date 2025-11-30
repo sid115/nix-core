@@ -10,13 +10,13 @@ View the [*nix-core* NixOS module on GitHub](https://github.com/sid115/nix-core/
 - [docs](https://matrix-org.github.io/synapse/latest/welcome_and_overview.html)
 - [coturn](https://github.com/coturn/coturn)
 
-## Register users
+## Setup
 
-```bash
-register_new_matrix_user -u USERNAME -p PASSWORD
-```
+### DNS
 
-## Sops
+Make sure you have a CNAME record for `turn` pointing to your domain.
+
+### Sops
 
 Provide the following entries to your secrets.yaml:
 
@@ -27,11 +27,39 @@ coturn:
     static-auth-secret: abc123
 matrix:
     registration-shared-secret: abc123
+livekit:
+    key: abc123
+```
+Generate the livekit key with:
+
+```bash
+nix-shell -p livekit --run "livekit-server generate-keys | tail -1 | awk '{print $3}'"
 ```
 
-## DNS
+## Config
 
-Make sure you have a CNAME record for `turn` pointing to your domain.
+```nix
+{
+  imports = [inputs.core.nixosModules.matrix-synapse ];
+
+  networking.domain = "example.tld";
+  
+  services.matrix-synapse = {
+    enable = true;
+    # see below
+    bridges = {
+      whatsapp = {
+        enable = true;
+        admin = "@you:example.tld";
+      };
+      signal = {
+        enable = true;
+        admin = "@you:example.tld";
+      };
+    };
+  };
+}
+```
 
 ## Bridges
 
@@ -73,6 +101,14 @@ The `config.yaml` for each bridge is managed through `services.mautrix-BRIDGE.se
 1. Scan QR code
 1. Switch puppets: `login-matrix ACCESS_TOKEN`
     - Get your token with: Settings > Help & About > Advanced > Access Token
+
+## Administration
+
+### Register users
+
+```bash
+register_new_matrix_user -u USERNAME -p PASSWORD
+```
 
 ## Troubleshooting
 
