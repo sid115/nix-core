@@ -56,13 +56,14 @@ nav:
           - mailserver: modules/nixos/mailserver.md
           - matrix-synapse: modules/nixos/matrix-synapse.md
           - mcpo: modules/nixos/mcpo.md
+          - miniflux: modules/nixos/miniflux.md
           - nextcloud: modules/nixos/nextcloud.md
           - nix-serve: modules/nixos/nix-serve.md
           - normalUsers: modules/nixos/normalUsers.md
           - ntfy-sh: modules/nixos/ntfy-sh.md
           - nvidia: modules/nixos/nvidia.md
-          - open-webui: modules/nixos/open-webui.md
           - open-webui-oci: modules/nixos/open-webui-oci.md
+          - open-webui: modules/nixos/open-webui.md
           - peertube: modules/nixos/peertube.md
           - print-server: modules/nixos/print-server.md
           - radicale: modules/nixos/radicale.md
