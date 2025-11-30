@@ -26,6 +26,7 @@
   mailserver = import ./mailserver;
   matrix-synapse = import ./matrix-synapse;
   mcpo = import ./mcpo;
+  miniflux = import ./miniflux;
   nextcloud = import ./nextcloud;
   nginx = import ./nginx;
   nix-serve = import ./nix-serve;
