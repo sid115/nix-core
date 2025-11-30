@@ -42,7 +42,7 @@ in
       config = {
         ADMIN_USERNAME = mkDefault "admin";
         CREATE_ADMIN = mkDefault 1;
-        LISTEN_ADDR = mkDefault "127.0.0.1:8085";
+        LISTEN_ADDR = mkDefault "0.0.0.0:8085";
       };
     };
 
@@ -50,7 +50,7 @@ in
       enableACME = cfg.reverseProxy.forceSSL;
       forceSSL = cfg.reverseProxy.forceSSL;
       locations."/" = {
-        proxyPass = mkDefault "http://${toString cfg.config.LISTEN_ADDR}";
+        proxyPass = mkDefault "http://${cfg.config.LISTEN_ADDR}";
       };
     };
 
