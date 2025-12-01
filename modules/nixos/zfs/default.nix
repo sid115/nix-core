@@ -15,7 +15,35 @@
 # $ sudo -i ssh-keygen -t rsa -b 4096 -f /root/.ssh/zfs-replication
 
 let
-  inherit (lib) mkDefault mkForce;
+  cfg = config.services.zfs;
+
+  pushURLFile = config.sops.secrets."zfs/kuma-push-url".path;
+  notifyScript =
+    name:
+    pkgs.writeShellScript "zfs-kuma-${name}" ''
+      if [ ! -f "${pushURLFile}" ]; then
+        echo "File ${pushURLFile} not found. Skipping."
+        exit 1
+      fi
+
+      PUSH_URL=$(cat "${pushURLFile}" | tr -d '\n')
+
+      if [ "$EXIT_STATUS" == "0" ]; then
+        STATUS_PARAMS="status=up&msg=OK"
+      else
+        STATUS_PARAMS="status=down&msg=${name}+failed"
+      fi
+
+      if [[ "$PUSH_URL" == *"?"* ]]; then
+        GLUE="&"
+      else
+        GLUE="?"
+      fi
+
+      ${pkgs.curl}/bin/curl -fsS "$PUSH_URL$GLUE$STATUS_PARAMS&ping="
+    '';
+
+  inherit (lib) mkDefault mkForce optionalAttrs;
 in
 {
   boot.supportedFilesystems = [ "zfs" ];
@@ -49,18 +77,33 @@ in
     followDelete = mkDefault true;
   };
 
-  services.zfs.zed = {
-    enableMail = config.mailserver.enable;
-    settings = {
-      ZED_EMAIL_ADDR = mkDefault "postmaster@${config.networking.domain}";
-      ZED_EMAIL_PROG = mkDefault "sendmail";
-      ZED_EMAIL_OPTS = mkDefault "-t -f root@localhost";
-      ZED_NOTIFY_VERBOSE = mkDefault "1";
-      ZED_NOTIFY_DATA = mkDefault "1";
-      ZED_NOTIFY_ERROR = mkDefault "1";
-      ZED_NOTIFY_WARNING = mkDefault "1";
+  systemd.services = {
+    zfs-replication.serviceConfig = {
+      ExecStopPost = [ "${notifyScript "replication"}" ];
     };
+    zfs-snapshot-frequent.serviceConfig =
+      optionalAttrs cfg.autoSnapshot.frequent > 0 {
+        ExecStopPost = [ "${notifyScript "frequent+snapshot"}" ];
+      };
+    zfs-snapshot-hourly.serviceConfig =
+      optionalAttrs cfg.autoSnapshot.hourly > 0 {
+        ExecStopPost = [ "${notifyScript "hourly+snapshot"}" ];
+      };
+    zfs-snapshot-daily.serviceConfig =
+      optionalAttrs cfg.autoSnapshot.daily > 0 {
+        ExecStopPost = [ "${notifyScript "daily+snapshot"}" ];
+      };
+    zfs-snapshot-weekly.serviceConfig =
+      optionalAttrs cfg.autoSnapshot.weekly > 0 {
+        ExecStopPost = [ "${notifyScript "weekly+snapshot"}" ];
+      };
+    zfs-snapshot-monthly.serviceConfig =
+      optionalAttrs cfg.autoSnapshot.monthly > 0 {
+        ExecStopPost = [ "${notifyScript "monthly+snapshot"}" ];
+      };
   };
 
   environment.systemPackages = with pkgs; [ lz4 ];
+
+  sops.secrets."zfs/kuma-push-url" = { };
 }
