@@ -8,6 +8,7 @@
   jq,
   ...
 }:
+
 let
   revision = "1161";
 
@@ -45,7 +46,7 @@ buildNpmPackage rec {
   npmDepsHash = "sha256-a56gDzZCo95vQUO57uFwMc9g/7jweYdCKqx64W8D1T8=";
 
   postPatch = ''
-    jq 'del(.scripts.postinstall) | del(.scripts."install-browser")' package.json > package.json.tmp && mv package.json.tmp package.json
+    ${jq}/bin/jq 'del(.scripts.postinstall) | del(.scripts."install-browser")' package.json > package.json.tmp && mv package.json.tmp package.json
   '';
 
   makeWrapperArgs = [
