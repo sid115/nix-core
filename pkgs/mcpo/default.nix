@@ -7,14 +7,14 @@
 
 python3.pkgs.buildPythonApplication rec {
   pname = "mcpo";
-  version = "0.0.16";
+  version = "0.0.19";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "open-webui";
     repo = "mcpo";
     rev = "v${version}";
-    hash = "sha256-T4eAhPgm1ysf/+ZmqZxAoc0SwQbkl8x8lBGwamMYcpU=";
+    hash = "sha256-ZfTVMrXXEsEKHmeG4850Hq3MEpQA/3WMpAVZS0zvp1I=";
   };
 
   build-system = [
@@ -31,6 +31,11 @@ python3.pkgs.buildPythonApplication rec {
     python-dotenv
     typer
     uvicorn
+    watchdog
+  ];
+
+  pythonRelaxDeps = [
+    "mcp"
   ];
 
   pythonImportsCheck = [

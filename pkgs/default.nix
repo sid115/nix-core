@@ -20,5 +20,4 @@
   trelis-gitingest-mcp = pkgs.callPackage ./trelis-gitingest-mcp { };
 
   # marker-pdf = pkgs.callPackage ./marker-pdf { }; # FIXME
-  # visual-paradigm-community = pkgs.callPackage ./visual-paradigm-community { }; # FIXME
 }

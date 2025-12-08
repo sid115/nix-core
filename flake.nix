@@ -42,16 +42,15 @@
       packages = forAllSystems (
         system:
         let
-          basePkgs = import ./pkgs { pkgs = nixpkgs.legacyPackages.${system}; };
-          extraPkgs =
+          allArchs = import ./pkgs { pkgs = nixpkgs.legacyPackages.${system}; };
+          x64only =
             if system == "x86_64-linux" then
               {
-                open-webui = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/open-webui { };
               }
             else
               { };
         in
-        basePkgs // extraPkgs
+        allArchs // x64only
       );
 
       overlays = import ./overlays { inherit inputs; };

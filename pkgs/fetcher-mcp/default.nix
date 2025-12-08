@@ -5,9 +5,9 @@
   makeWrapper,
   playwright-driver,
   linkFarm,
+  jq,
   ...
 }:
-
 let
   revision = "1161";
 
@@ -19,30 +19,42 @@ let
 
   browsers-headless-only = linkFarm "playwright-browsers-headless-only" [
     {
-      name = "chromium_headless_shell-${revision}";
+      name = "chromium-${revision}";
       path = chromium-headless-shell;
     }
   ];
 in
 buildNpmPackage rec {
   pname = "fetcher-mcp";
-  version = "unstable-2025-06-26";
+  version = "0.3.6";
 
   src = fetchFromGitHub {
     owner = "jae-jae";
     repo = "fetcher-mcp";
-    rev = "652ec7b4f79020fea4924d1edb916d1dbf8755fe";
-    hash = "sha256-9tkZnY0d10ECoqp6gs1qTYbZFS6WqFtjwTAR+tHajng=";
+    rev = "4f4ad0f723367a7b0d3215c01d04282d573e6980";
+    hash = "sha256-4Hh2H2ANBHOYYl3I1BqrkdCPNF/1hgv649CqAy7aiYw=";
   };
 
-  npmDepsHash = "sha256-1Pw+W3OdtGmgu1n4nacwaX77nfRUdWWkorn/xuiBhkA=";
+  env.PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1";
 
-  nativeBuildInputs = [ makeWrapper ];
+  nativeBuildInputs = [
+    makeWrapper
+    jq
+  ];
+
+  npmDepsHash = "sha256-a56gDzZCo95vQUO57uFwMc9g/7jweYdCKqx64W8D1T8=";
+
+  postPatch = ''
+    jq 'del(.scripts.postinstall) | del(.scripts."install-browser")' package.json > package.json.tmp && mv package.json.tmp package.json
+  '';
 
   makeWrapperArgs = [
     "--set"
     "PLAYWRIGHT_BROWSERS_PATH"
     "${browsers-headless-only}"
+    # "--set"
+    # "PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS"
+    # "true"
   ];
 
   meta = {

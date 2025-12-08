@@ -6,13 +6,13 @@
 
 python3.pkgs.buildPythonApplication rec {
   pname = "arxiv-mcp-server";
-  version = "0.2.11";
+  version = "0.3.1";
   pyproject = true;
 
   src = fetchPypi {
     pname = "arxiv_mcp_server";
     inherit version;
-    hash = "sha256-JDA7b8fDGvlDgWSEPTi37OtMFPhWvuMsAwZ1mELj/yg=";
+    hash = "sha256-yGNetU7el6ZXsavD8uvO17OZtaPuYgzkxiVEk402GUs=";
   };
 
   build-system = [
@@ -36,9 +36,6 @@ python3.pkgs.buildPythonApplication rec {
   ];
 
   optional-dependencies = with python3.pkgs; {
-    dev = [
-      black
-    ];
     test = [
       aioresponses
       pytest
@@ -47,6 +44,10 @@ python3.pkgs.buildPythonApplication rec {
       pytest-mock
     ];
   };
+
+  pythonRemoveDeps = [
+    "black"
+  ];
 
   pythonImportsCheck = [
     "arxiv_mcp_server"
