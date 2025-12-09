@@ -7,11 +7,13 @@
 let
   cfg = config.services.gitea;
   domain = config.networking.domain;
-  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
+  subdomain = cfg.reverseProxy.subdomain;
+  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
 
   inherit (lib)
     elemAt
     mkDefault
+    mkEnableOption
     mkIf
     mkOption
     types
@@ -19,15 +21,18 @@ let
 in
 {
   options.services.gitea = {
-    subdomain = mkOption {
-      type = types.str;
-      default = "git";
-      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-    };
-    forceSSL = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Force SSL for Nginx virtual host.";
+    reverseProxy = {
+      enable = mkEnableOption "Nginx reverse proxy for gitea";
+      subdomain = mkOption {
+        type = types.str;
+        default = "git";
+        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
+      };
+      forceSSL = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Force SSL for Nginx virtual host.";
+      };
     };
   };
 
@@ -39,8 +44,9 @@ in
         service.DISABLE_REGISTRATION = mkDefault true;
         server = {
           DOMAIN = mkDefault fqdn;
-          ROOT_URL = mkDefault "https://${fqdn}";
-          HTTP_ADDR = mkDefault "127.0.0.1";
+          ROOT_URL = mkDefault (if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}");
+          HTTP_ADDR = mkDefault "0.0.0.0";
+          HTTP_PORT = mkDefault 3000;
           SSH_PORT = mkDefault (elemAt config.services.openssh.ports 0);
           DEFAULT_THEME = mkDefault "arc-green";
         };
@@ -51,12 +57,16 @@ in
 
     systemd.tmpfiles.rules = [ "d ${cfg.stateDir} 0755 ${cfg.user} ${cfg.group} -" ];
 
-    security.acme.certs."${fqdn}".postRun = mkIf cfg.forceSSL "systemctl restart gitea.service";
+    security.acme.certs."${fqdn}".postRun = mkIf (
+      with cfg.reverseProxy; enable && forceSSL
+    ) "systemctl restart gitea.service";
 
-    services.nginx.virtualHosts."${fqdn}" = {
-      enableACME = cfg.forceSSL;
-      forceSSL = cfg.forceSSL;
-      locations."/".proxyPass = mkDefault ("http://localhost:${toString cfg.settings.server.HTTP_PORT}");
+    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
+      enableACME = cfg.reverseProxy.forceSSL;
+      forceSSL = cfg.reverseProxy.forceSSL;
+      locations."/" = {
+        proxyPass = mkDefault (with cfg.settings.server; "http://${HTTP_ADDR}:${toString HTTP_PORT}");
+      };
     };
 
     services.postgresql = {
