@@ -6,13 +6,13 @@
 
 python3.pkgs.buildPythonApplication rec {
   pname = "blender-mcp";
-  version = "1.3.1";
+  version = "1.4.0";
   pyproject = true;
 
   src = fetchPypi {
     pname = "blender_mcp";
     inherit version;
-    hash = "sha256-tMtfqO6bXewWxeDXLPHP8KDZhpU8UIQK5O3AXfyAxkA=";
+    hash = "sha256-0+bWXhw8/DXC6aFQJiSwU7BqsfhoY+pUdIfOEVMStqQ=";
   };
 
   build-system = [

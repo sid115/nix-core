@@ -4,17 +4,13 @@
   baibot = import ./baibot;
   bluetooth = import ./bluetooth;
   cifsMount = import ./cifsMount;
-  cockpit = import ./cockpit;
   common = import ./common;
   device = import ./device;
   firefly-iii = import ./firefly-iii;
   ftp-webserver = import ./ftp-webserver;
   gitea = import ./gitea;
-  grafana = import ./grafana;
-  guacamole = import ./guacamole;
   headplane = import ./headplane;
   headscale = import ./headscale;
-  home-assistant-oci = import ./home-assistant-oci;
   hydra = import ./hydra;
   hyprland = import ./hyprland;
   i2pd = import ./i2pd;
@@ -22,7 +18,6 @@
   instaloader = import ./instaloader;
   jellyfin = import ./jellyfin;
   jirafeau = import ./jirafeau;
-  krdpserver = import ./krdpserver;
   mailserver = import ./mailserver;
   matrix-synapse = import ./matrix-synapse;
   mcpo = import ./mcpo;
@@ -34,7 +29,6 @@
   ntfy-sh = import ./ntfy-sh;
   nvidia = import ./nvidia;
   ollama = import ./ollama;
-  open-webui = import ./open-webui;
   open-webui-oci = import ./open-webui-oci;
   openssh = import ./openssh;
   peertube = import ./peertube;
@@ -44,15 +38,10 @@
   searx = import ./searx;
   sops = import ./sops;
   tailscale = import ./tailscale;
-  torrenting = import ./torrenting;
-  tt-rss = import ./tt-rss;
   uptime-kuma = import ./uptime-kuma;
   uptime-kuma-agent = import ./uptime-kuma-agent;
   vaultwarden = import ./vaultwarden;
   virtualisation = import ./virtualisation;
   webPage = import ./webPage;
-  wg-client = import ./wg-client;
-  wg-server = import ./wg-server;
   windows-oci = import ./windows-oci;
-  xrdp = import ./xrdp;
 }
