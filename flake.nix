@@ -35,6 +35,7 @@
         {
           install = mkApp "install" "Install a NixOS configuration.";
           create = mkApp "create" "Create a new NixOS configuration.";
+          deploy = mkApp "deploy" "Deploy NixOS configurations in your flake.";
           update-packages = mkApp "update-packages" "Update all packages in this flake.";
         }
       );
