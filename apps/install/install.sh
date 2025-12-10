@@ -162,7 +162,7 @@ if [[ -d "$CLONE_DIR"/hosts/"$HOSTNAME" ]]; then
     exit 1
   fi 
 
-  Check_partitioning || ( echo "Error: Partitioning check failed." && exit 1 )
+  Check_partitioning
   Install || ( echo "Error: Installation failed." && exit 1 )
 else
   echo "Error: Configuration for host '$HOSTNAME' does not exist."
