@@ -54,6 +54,7 @@ let
     };
 
   inherit (lib)
+    elemAt
     escapeShellArg
     foldl'
     getExe
@@ -122,14 +123,19 @@ in
 
   config = mkIf cfg.enable {
     services.ntfy-sh.settings = {
-      base-url = mkIf cfg.reverseProxy.enable (mkDefault (if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}"));
-      listen-http = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1:${toString port}" else "0.0.0.0:${toString port}");
+      base-url = mkIf cfg.reverseProxy.enable (
+        mkDefault (if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}")
+      );
+      listen-http = mkDefault (
+        if cfg.reverseProxy.enable then "127.0.0.1:${toString port}" else "0.0.0.0:${toString port}"
+      );
     };
 
     services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
       enableACME = cfg.reverseProxy.forceSSL;
       forceSSL = cfg.reverseProxy.forceSSL;
-      locations."/".proxyPass = mkDefault "http://127.0.0.1${elemAt (splitString ":" cfg.settings.listen-http) 1}";
+      locations."/".proxyPass =
+        mkDefault "http://127.0.0.1${elemAt (splitString ":" cfg.settings.listen-http) 1}";
     };
 
     systemd = {
