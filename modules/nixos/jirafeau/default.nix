@@ -41,7 +41,7 @@ in
       nginxConfig = mkIf cfg.reverseProxy.enable {
         enableACME = cfg.reverseProxy.forceSSL;
         forceSSL = cfg.reverseProxy.forceSSL;
-        listenAddresses = [ "127.0.0.1" ];
+        listenAddresses = if cfg.reverseProxy.enable then [ "127.0.0.1" ] else [ "0.0.0.0" ];
         serverName = fqdn;
       };
     };

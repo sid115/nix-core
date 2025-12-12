@@ -10,6 +10,7 @@ let
   domain = config.networking.domain;
   subdomain = cfg.reverseProxy.subdomain;
   fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
+  port = 2586;
 
   check-domain = pkgs.writeShellApplication rec {
     name = "check-domain";
@@ -61,6 +62,7 @@ let
     mkEnableOption
     mkIf
     mkOption
+    splitString
     types
     ;
 
@@ -120,14 +122,14 @@ in
 
   config = mkIf cfg.enable {
     services.ntfy-sh.settings = {
-      base-url = mkDefault (if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}");
-      listen-http = mkDefault ":2586";
+      base-url = mkIf cfg.reverseProxy.enable (mkDefault (if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}"));
+      listen-http = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1:${toString port}" else "0.0.0.0:${toString port}");
     };
 
     services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
       enableACME = cfg.reverseProxy.forceSSL;
       forceSSL = cfg.reverseProxy.forceSSL;
-      locations."/".proxyPass = mkDefault "http://127.0.0.1${cfg.settings.listen-http}";
+      locations."/".proxyPass = mkDefault "http://127.0.0.1${elemAt (splitString ":" cfg.settings.listen-http) 1}";
     };
 
     systemd = {
