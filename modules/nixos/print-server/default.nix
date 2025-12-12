@@ -8,7 +8,9 @@
 let
   cfg = config.services.print-server;
   domain = config.networking.domain;
-  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
+  subdomain = cfg.reverseProxy.subdomain;
+  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
+  port = "631";
 
   inherit (lib)
     mkDefault
@@ -21,21 +23,25 @@ in
 {
   options.services.print-server = {
     enable = mkEnableOption "print server";
-    subdomain = mkOption {
-      type = types.str;
-      default = "print";
-      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-    };
-    forceSSL = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Force SSL for Nginx virtual host.";
+    reverseProxy = {
+      enable = mkEnableOption "Nginx reverse proxy for print-server";
+      subdomain = mkOption {
+        type = types.str;
+        default = "print";
+        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
+      };
+      forceSSL = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Force SSL for Nginx virtual host.";
+      };
     };
   };
 
   config = mkIf cfg.enable {
     services.printing = {
       enable = true;
+      listenAddresses = [ "*:${port}" ];
       webInterface = true;
       tempDir = "/tmp/cups";
       allowFrom = [ "all" ];
@@ -70,10 +76,10 @@ in
       openFirewall = true;
     };
 
-    services.nginx.virtualHosts.${fqdn} = {
-      forceSSL = cfg.forceSSL;
-      enableACME = cfg.forceSSL;
-      locations."/".proxyPass = mkDefault "http://localhost:631";
+    services.nginx.virtualHosts.${fqdn} = mkIf cfg.reverseProxy.enable {
+      forceSSL = cfg.reverseProxy.forceSSL;
+      enableACME = cfg.reverseProxy.forceSSL;
+      locations."/".proxyPass = mkDefault "http://127.0.0.1:${port}";
     };
   };
 }

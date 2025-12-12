@@ -3,10 +3,12 @@
 let
   cfg = config.services.vaultwarden;
   domain = config.networking.domain;
-  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
+  subdomain = cfg.reverseProxy.subdomain;
+  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkDefault
+    mkEnableOption
     mkIf
     mkOption
     types
@@ -14,15 +16,18 @@ let
 in
 {
   options.services.vaultwarden = {
-    subdomain = mkOption {
-      type = types.str;
-      default = "pass";
-      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-    };
-    forceSSL = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Force SSL for Nginx virtual host.";
+    reverseProxy = {
+      enable = mkEnableOption "Nginx reverse proxy for vaultwarden";
+      subdomain = mkOption {
+        type = types.str;
+        default = "pass";
+        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
+      };
+      forceSSL = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Force SSL for Nginx virtual host.";
+      };
     };
   };
 
@@ -30,8 +35,8 @@ in
     services.vaultwarden = {
       config = {
         ADMIN_TOKEN_FILE = mkDefault config.sops.secrets."vaultwarden/admin-token".path;
-        DOMAIN = if cfg.forceSSL then (mkDefault "https://${fqdn}") else (mkDefault "http://${fqdn}");
-        ROCKET_ADDRESS = mkDefault "127.0.0.1";
+        DOMAIN = mkDefault (if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}");
+        ROCKET_ADDRESS = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
         ROCKET_PORT = mkDefault 8222;
         SIGNUPS_ALLOWED = mkDefault false;
 
@@ -45,9 +50,9 @@ in
       };
     };
 
-    services.nginx.virtualHosts."${fqdn}" = {
-      enableACME = cfg.forceSSL;
-      forceSSL = cfg.forceSSL;
+    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
+      enableACME = cfg.reverseProxy.forceSSL;
+      forceSSL = cfg.reverseProxy.forceSSL;
       locations."/".proxyPass = "http://127.0.0.1:${toString cfg.config.ROCKET_PORT}";
     };
 
