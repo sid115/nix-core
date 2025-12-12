@@ -8,7 +8,8 @@
 let
   cfg = config.services.nextcloud;
   domain = config.networking.domain;
-  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
+  subdomain = cfg.reverseProxy.subdomain;
+  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
   mailserver = config.mailserver;
 
   package = pkgs.nextcloud31.overrideAttrs (old: rec {
@@ -21,6 +22,7 @@ let
 
   inherit (lib)
     mkDefault
+    mkEnableOption
     mkIf
     mkOption
     types
@@ -28,15 +30,18 @@ let
 in
 {
   options.services.nextcloud = {
-    subdomain = mkOption {
-      type = types.str;
-      default = "nc";
-      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-    };
-    forceSSL = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Force SSL for Nginx virtual host.";
+    reverseProxy = {
+      enable = mkEnableOption "Nginx reverse proxy for Nextcloud";
+      subdomain = mkOption {
+        type = types.str;
+        default = "nc";
+        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
+      };
+      forceSSL = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Force SSL for Nginx virtual host.";
+      };
     };
   };
 
@@ -49,7 +54,7 @@ in
     services.nextcloud = {
       inherit package;
       hostName = fqdn;
-      https = cfg.forceSSL;
+      https = cfg.reverseProxy.forceSSL;
       config = {
         adminuser = mkDefault "nextcloud";
         adminpassFile = mkDefault "/etc/secrets/nextcloud-initial-admin-pass";
@@ -95,9 +100,9 @@ in
       secretFile = mkDefault config.sops.templates."nextcloud".path;
     };
 
-    services.nginx.virtualHosts.${cfg.hostName} = {
-      forceSSL = cfg.forceSSL;
-      enableACME = cfg.forceSSL;
+    services.nginx.virtualHosts.${cfg.hostName} = mkIf cfg.reverseProxy.enable {
+      forceSSL = cfg.reverseProxy.forceSSL;
+      enableACME = cfg.reverseProxy.forceSSL;
     };
 
     sops =

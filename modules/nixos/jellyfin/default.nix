@@ -8,10 +8,12 @@
 let
   cfg = config.services.jellyfin;
   domain = config.networking.domain;
-  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
+  subdomain = cfg.reverseProxy.subdomain;
+  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkDefault
+    mkEnableOption
     mkIf
     mkOption
     types
@@ -19,15 +21,18 @@ let
 in
 {
   options.services.jellyfin = {
-    subdomain = mkOption {
-      type = types.str;
-      default = "jf";
-      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-    };
-    forceSSL = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Force SSL for Nginx virtual host.";
+    reverseProxy = {
+      enable = mkEnableOption "Nginx reverse proxy for Jellyfin";
+      subdomain = mkOption {
+        type = types.str;
+        default = "jf";
+        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
+      };
+      forceSSL = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Force SSL for Nginx virtual host.";
+      };
     };
     libraries = mkOption {
       type = types.listOf types.str;
@@ -59,12 +64,14 @@ in
         "Z ${cfg.dataDir}/libraries 0770 ${cfg.user} ${cfg.group} -"
       ];
 
-    services.nginx.virtualHosts."${fqdn}" = {
-      forceSSL = cfg.forceSSL;
-      enableACME = cfg.forceSSL;
-      locations."/".proxyPass = mkDefault "http://localhost:8096";
+    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
+      forceSSL = cfg.reverseProxy.forceSSL;
+      enableACME = cfg.reverseProxy.forceSSL;
+      locations."/".proxyPass = mkDefault "http://127.0.0.1:8096";
     };
 
-    security.acme.certs."${fqdn}".postRun = mkIf cfg.forceSSL "systemctl restart jellyfin.service";
+    security.acme.certs."${fqdn}".postRun = mkIf (
+      with cfg.reverseProxy; enable && forceSSL
+    ) "systemctl restart jellyfin.service";
   };
 }

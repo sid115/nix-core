@@ -7,10 +7,12 @@
 let
   cfg = config.services.immich;
   domain = config.networking.domain;
-  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
+  subdomain = cfg.reverseProxy.subdomain;
+  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkDefault
+    mkEnableOption
     mkIf
     mkOption
     types
@@ -18,31 +20,35 @@ let
 in
 {
   options.services.immich = {
-    subdomain = mkOption {
-      type = types.str;
-      default = "gallery";
-      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-    };
-    forceSSL = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Force SSL for Nginx virtual host.";
+    reverseProxy = {
+      enable = mkEnableOption "Nginx reverse proxy for immich";
+      subdomain = mkOption {
+        type = types.str;
+        default = "gallery";
+        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
+      };
+      forceSSL = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Force SSL for Nginx virtual host.";
+      };
     };
   };
 
   config = mkIf cfg.enable {
     services.immich = {
       port = mkDefault 2283;
+      host = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
       secretsFile = config.sops.templates."immich/secrets-file".path;
       settings = {
-        server.externalDomain = if cfg.forceSSL then "https://${fqdn}" else "http://${fqdn}";
+        server.externalDomain = if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}";
       };
     };
 
-    services.nginx.virtualHosts.${fqdn} = {
-      forceSSL = cfg.forceSSL;
-      enableACME = cfg.forceSSL;
-      locations."/".proxyPass = mkDefault "http://localhost:${builtins.toString cfg.port}";
+    services.nginx.virtualHosts.${fqdn} = mkIf cfg.reverseProxy.enable {
+      forceSSL = cfg.reverseProxy.forceSSL;
+      enableACME = cfg.reverseProxy.forceSSL;
+      locations."/".proxyPass = mkDefault "http://127.0.0.1:${toString cfg.port}";
     };
 
     sops =

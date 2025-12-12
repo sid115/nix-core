@@ -3,10 +3,12 @@
 let
   cfg = config.services.searx;
   domain = config.networking.domain;
-  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
+  subdomain = cfg.reverseProxy.subdomain;
+  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkDefault
+    mkEnableOption
     mkForce
     mkIf
     mkOption
@@ -15,15 +17,18 @@ let
 in
 {
   options.services.searx = {
-    subdomain = mkOption {
-      type = types.str;
-      default = "srx";
-      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-    };
-    forceSSL = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Force SSL for Nginx virtual host.";
+    reverseProxy = {
+      enable = mkEnableOption "Nginx reverse proxy for searx";
+      subdomain = mkOption {
+        type = types.str;
+        default = "srx";
+        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
+      };
+      forceSSL = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Force SSL for Nginx virtual host.";
+      };
     };
   };
 
@@ -39,10 +44,10 @@ in
         contact_url = mkDefault false;
         enable_metrics = mkDefault false;
         server = {
-          bind_address = mkDefault "127.0.0.1";
+          bind_address = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
           port = mkDefault 8787;
           secret_key = mkDefault "@SEARX_SECRET_KEY@";
-          base_url = mkDefault "https://${fqdn}";
+          base_url = mkDefault (if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}");
           limiter = mkDefault true;
         };
         search = {
@@ -69,10 +74,10 @@ in
       };
     };
 
-    services.nginx.virtualHosts."${fqdn}" = {
-      enableACME = cfg.forceSSL;
-      forceSSL = cfg.forceSSL;
-      locations."/".proxyPass = mkDefault "http://localhost:${toString cfg.settings.server.port}";
+    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
+      enableACME = cfg.reverseProxy.forceSSL;
+      forceSSL = cfg.reverseProxy.forceSSL;
+      locations."/".proxyPass = mkDefault "http://127.0.0.1:${toString cfg.settings.server.port}";
     };
 
     sops =

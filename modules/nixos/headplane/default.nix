@@ -8,11 +8,13 @@
 let
   cfg = config.services.headplane;
   domain = config.networking.domain;
-  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
+  subdomain = cfg.reverseProxy.subdomain;
+  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
   headscale = config.services.headscale;
 
   inherit (lib)
     mkDefault
+    mkEnableOption
     mkIf
     mkOption
     types
@@ -22,15 +24,18 @@ in
   imports = [ inputs.headplane.nixosModules.headplane ];
 
   options.services.headplane = {
-    subdomain = mkOption {
-      type = types.str;
-      default = "headplane";
-      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-    };
-    forceSSL = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Force SSL for Nginx virtual host.";
+    reverseProxy = {
+      enable = mkEnableOption "Nginx reverse proxy for headplane";
+      subdomain = mkOption {
+        type = types.str;
+        default = "headplane";
+        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
+      };
+      forceSSL = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Force SSL for Nginx virtual host.";
+      };
     };
   };
 
@@ -42,7 +47,7 @@ in
     services.headplane = {
       settings = {
         server = {
-          host = mkDefault "127.0.0.1";
+          host = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
           port = mkDefault 3000;
           cookie_secret_path = config.sops.secrets."headplane/cookie_secret".path;
         };
@@ -58,11 +63,11 @@ in
       };
     };
 
-    services.nginx.virtualHosts."${fqdn}" = {
-      forceSSL = cfg.forceSSL;
-      enableACME = cfg.forceSSL;
+    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
+      forceSSL = cfg.reverseProxy.forceSSL;
+      enableACME = cfg.reverseProxy.forceSSL;
       locations."/" = {
-        proxyPass = with cfg.settings.server; "http://${host}:${toString port}";
+        proxyPass = "http://127.0.0.1:${toString cfg.settings.server.port}";
         proxyWebsockets = true;
       };
     };

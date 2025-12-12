@@ -3,10 +3,12 @@
 let
   cfg = config.services.nix-serve;
   domain = config.networking.domain;
-  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
+  subdomain = cfg.reverseProxy.subdomain;
+  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkDefault
+    mkEnableOption
     mkIf
     mkOption
     types
@@ -14,20 +16,24 @@ let
 in
 {
   options.services.nix-serve = {
-    subdomain = mkOption {
-      type = types.str;
-      default = "cache";
-      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-    };
-    forceSSL = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Force SSL for Nginx virtual host.";
+    reverseProxy = {
+      enable = mkEnableOption "Nginx reverse proxy for nix-serve";
+      subdomain = mkOption {
+        type = types.str;
+        default = "cache";
+        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
+      };
+      forceSSL = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Force SSL for Nginx virtual host.";
+      };
     };
   };
 
   config = mkIf cfg.enable {
     services.nix-serve = {
+      bindAddress = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
       port = mkDefault 5005;
       secretKeyFile = config.sops.templates."nix-serve/cache-priv-key".path;
     };
@@ -42,10 +48,10 @@ in
       };
     };
 
-    services.nginx.virtualHosts."${fqdn}" = {
-      enableACME = cfg.forceSSL;
-      forceSSL = cfg.forceSSL;
-      locations."/".proxyPass = "http://${cfg.bindAddress}:${toString cfg.port}";
+    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
+      enableACME = cfg.reverseProxy.forceSSL;
+      forceSSL = cfg.reverseProxy.forceSSL;
+      locations."/".proxyPass = mkDefault "http://127.0.0.1:${toString cfg.port}";
     };
 
     sops =

@@ -11,15 +11,17 @@ let
   domain = config.networking.domain;
   mailserver = config.mailserver;
 
-  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
+  inherit (cfg.reverseProxy) subdomain importerSubdomain;
+  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
   importer-fqdn =
-    if (cfg.importer-subdomain != "") then
-      "${cfg.importer-subdomain}.${domain}"
+    if (importerSubdomain != "") then
+      "${importerSubdomain}.${domain}"
     else
       throw "No subdomain specified for Firefly-III data importer.";
 
   inherit (lib)
     mkDefault
+    mkEnableOption
     mkIf
     mkOption
     types
@@ -27,46 +29,51 @@ let
 in
 {
   options.services.firefly-iii = {
-    subdomain = mkOption {
-      type = types.str;
-      default = "finance";
-      description = "Subdomain for Nginx virtual host (Firefly-III). Leave empty for root domain.";
-    };
-    forceSSL = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Force SSL for Nginx virtual host.";
-    };
-    importer-subdomain = mkOption {
-      type = types.str;
-      default = "import.finance";
-      description = "Subdomain for Nginx virtual host (Firefly-III data importer).";
+    reverseProxy = {
+      enable = mkEnableOption "Nginx reverse proxy for Firefly-III";
+      subdomain = mkOption {
+        type = types.str;
+        default = "finance";
+        description = "Subdomain for Nginx virtual host (Firefly-III). Leave empty for root domain.";
+      };
+      importerSubdomain = mkOption {
+        type = types.str;
+        default = "import.finance";
+        description = "Subdomain for Nginx virtual host (Firefly-III data importer).";
+      };
+      forceSSL = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Force SSL for Nginx virtual host.";
+      };
     };
   };
 
   config = mkIf cfg.enable {
     services.firefly-iii = {
-      enableNginx = true;
+      enableNginx = cfg.reverseProxy.enable;
       virtualHost = fqdn;
       settings = {
         APP_ENV = "production";
-        APP_FORCE_ROOT = if cfg.forceSSL then "https://${cfg.virtualHost}" else "http://${cfg.virtualHost}";
-        APP_FORCE_SSL = cfg.forceSSL;
+        APP_FORCE_ROOT =
+          if cfg.reverseProxy.forceSSL then "https://${cfg.virtualHost}" else "http://${cfg.virtualHost}";
+        APP_FORCE_SSL = cfg.reverseProxy.forceSSL;
         APP_KEY_FILE = config.sops.templates."firefly-iii/appkey".path;
-        APP_URL = if cfg.forceSSL then "https://${cfg.virtualHost}" else "http://${cfg.virtualHost}";
-        DB_CONNECTION = "mysql";
-        DB_DATABASE = "firefly";
-        DB_HOST = "localhost";
-        DB_PASSWORD = "";
-        DB_PORT = 3306;
-        DB_USERNAME = "firefly-iii";
-        TRUSTED_PROXIES = "**";
+        APP_URL =
+          if cfg.reverseProxy.forceSSL then "https://${cfg.virtualHost}" else "http://${cfg.virtualHost}";
+        DB_CONNECTION = mkDefault "mysql";
+        DB_DATABASE = mkDefault "firefly";
+        DB_HOST = mkDefault "localhost";
+        DB_PASSWORD = mkDefault "";
+        DB_PORT = mkDefault 3306;
+        DB_USERNAME = mkDefault "firefly-iii";
+        TRUSTED_PROXIES = mkDefault "**";
 
         MAIL_MAILER = "smtp";
         MAIL_HOST = mkDefault mailserver.fqdn;
         MAIL_PORT = mkDefault 465;
-        MAIL_FROM = mkDefault "${cfg.subdomain}@${domain}";
-        MAIL_USERNAME = mkDefault "${cfg.subdomain}@${domain}";
+        MAIL_FROM = mkDefault "${cfg.reverseProxy.subdomain}@${domain}";
+        MAIL_USERNAME = mkDefault "${cfg.reverseProxy.subdomain}@${domain}";
         MAIL_PASSWORD_FILE = config.sops.secrets."firefly-iii/smtp-password".path;
         MAIL_ENCRYPTION = mkDefault "ssl";
       };
@@ -74,7 +81,7 @@ in
 
     services.firefly-iii-data-importer = {
       enable = mkDefault true;
-      enableNginx = true;
+      enableNginx = cfg.reverseProxy.enable;
       virtualHost = importer-fqdn;
       settings = {
         APP_ENV = mkDefault "local";
@@ -88,14 +95,14 @@ in
       "d ${importer-cfg.dataDir} 0755 ${importer-cfg.user} ${config.services.nginx.group} -"
     ];
 
-    services.nginx.virtualHosts = {
+    services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
       "${cfg.virtualHost}" = {
-        enableACME = cfg.forceSSL;
-        forceSSL = cfg.forceSSL;
+        enableACME = cfg.reverseProxy.forceSSL;
+        forceSSL = cfg.reverseProxy.forceSSL;
       };
       "${importer-cfg.virtualHost}" = {
-        enableACME = cfg.forceSSL;
-        forceSSL = cfg.forceSSL;
+        enableACME = cfg.reverseProxy.forceSSL;
+        forceSSL = cfg.reverseProxy.forceSSL;
       };
     };
 
