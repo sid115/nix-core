@@ -31,7 +31,7 @@ in
     };
   };
 
-  config = {
+  config = mkIf cfg.enable {
     services.jirafeau = {
       hostName = fqdn;
       extraConfig = mkDefault ''

@@ -94,7 +94,7 @@ in
       forceSSL = cfg.reverseProxy.forceSSL;
       enableACME = cfg.reverseProxy.forceSSL;
       locations."/" = {
-        proxyPass = mkDefault "http://${cfg.address}:${toString cfg.port}";
+        proxyPass = mkDefault "http://127.0.0.1:${toString cfg.port}";
         proxyWebsockets = true;
       };
     };

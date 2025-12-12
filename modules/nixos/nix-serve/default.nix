@@ -20,7 +20,7 @@ in
       enable = mkEnableOption "Nginx reverse proxy for nix-serve";
       subdomain = mkOption {
         type = types.str;
-        default = "rss";
+        default = "cache";
         description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
       };
       forceSSL = mkOption {

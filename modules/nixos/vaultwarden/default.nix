@@ -35,7 +35,7 @@ in
     services.vaultwarden = {
       config = {
         ADMIN_TOKEN_FILE = mkDefault config.sops.secrets."vaultwarden/admin-token".path;
-        DOMAIN = if cfg.forceSSL then (mkDefault "https://${fqdn}") else (mkDefault "http://${fqdn}");
+        DOMAIN = mkDefault (if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}");
         ROCKET_ADDRESS = mkDefault "0.0.0.0";
         ROCKET_PORT = mkDefault 8222;
         SIGNUPS_ALLOWED = mkDefault false;

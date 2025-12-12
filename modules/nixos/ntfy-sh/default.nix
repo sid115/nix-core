@@ -118,7 +118,7 @@ in
     };
   };
 
-  config = {
+  config = mkIf cfg.enable {
     services.ntfy-sh.settings = {
       base-url = mkDefault (if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}");
       listen-http = mkDefault ":2586";
