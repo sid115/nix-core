@@ -47,7 +47,7 @@ in
     services.headplane = {
       settings = {
         server = {
-          host = mkDefault "0.0.0.0";
+          host = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
           port = mkDefault 3000;
           cookie_secret_path = config.sops.secrets."headplane/cookie_secret".path;
         };

@@ -45,7 +45,7 @@ in
         server = {
           DOMAIN = mkDefault fqdn;
           ROOT_URL = mkDefault (if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}");
-          HTTP_ADDR = mkDefault "0.0.0.0";
+          HTTP_ADDR = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
           HTTP_PORT = mkDefault 3000;
           SSH_PORT = mkDefault (elemAt config.services.openssh.ports 0);
           DEFAULT_THEME = mkDefault "arc-green";

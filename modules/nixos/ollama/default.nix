@@ -34,7 +34,7 @@ in
 
   config = mkIf cfg.enable {
     services.ollama = {
-      host = mkDefault "0.0.0.0";
+      host = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
       user = mkDefault "ollama";
       group = mkDefault "ollama";
     };

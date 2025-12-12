@@ -69,7 +69,7 @@ in
     };
 
     services.headscale = {
-      address = mkDefault "0.0.0.0";
+      address = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
       port = mkDefault 8077;
       settings = {
         policy.path = "/etc/${acl}";

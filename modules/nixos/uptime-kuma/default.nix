@@ -34,7 +34,7 @@ in
   config = mkIf cfg.enable {
     services.uptime-kuma = {
       settings = {
-        HOST = mkDefault "0.0.0.0";
+        HOST = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
         PORT = mkDefault "3001";
       };
     };

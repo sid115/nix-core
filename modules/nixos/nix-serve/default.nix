@@ -33,7 +33,7 @@ in
 
   config = mkIf cfg.enable {
     services.nix-serve = {
-      bindAddress = mkDefault "0.0.0.0";
+      bindAddress = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
       port = mkDefault 5005;
       secretKeyFile = config.sops.templates."nix-serve/cache-priv-key".path;
     };

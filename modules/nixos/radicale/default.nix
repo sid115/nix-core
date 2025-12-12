@@ -52,7 +52,7 @@ in
       settings = {
         server = {
           hosts = [
-            "0.0.0.0:${port}"
+            "${if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0"}:${port}"
           ];
           max_connections = mkDefault 20;
           max_content_length = mkDefault 500000000;

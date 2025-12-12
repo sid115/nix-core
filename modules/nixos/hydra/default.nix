@@ -35,7 +35,7 @@ in
   config = mkIf cfg.enable {
     services.hydra = {
       port = mkDefault 3344;
-      listenHost = mkDefault "0.0.0.0";
+      listenHost = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
       hydraURL = fqdn;
       useSubstitutes = mkDefault true;
 

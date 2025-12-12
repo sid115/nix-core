@@ -38,7 +38,7 @@ in
   config = mkIf cfg.enable {
     services.immich = {
       port = mkDefault 2283;
-      host = mkDefault "0.0.0.0";
+      host = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
       secretsFile = config.sops.templates."immich/secrets-file".path;
       settings = {
         server.externalDomain = if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}";

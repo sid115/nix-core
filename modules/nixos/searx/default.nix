@@ -44,7 +44,7 @@ in
         contact_url = mkDefault false;
         enable_metrics = mkDefault false;
         server = {
-          bind_address = mkDefault "0.0.0.0";
+          bind_address = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
           port = mkDefault 8787;
           secret_key = mkDefault "@SEARX_SECRET_KEY@";
           base_url = mkDefault (if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}");
