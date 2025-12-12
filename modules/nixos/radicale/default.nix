@@ -8,12 +8,14 @@
 let
   cfg = config.services.radicale;
   domain = config.networking.domain;
-  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
+  subdomain = cfg.reverseProxy.subdomain;
+  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
   port = "5232";
 
   inherit (lib)
     concatLines
     mkDefault
+    mkEnableOption
     mkIf
     mkOption
     types
@@ -30,15 +32,18 @@ in
       ];
       description = "List of users for Radicale. Each user must have a corresponding entry in the SOPS file under 'radicale/<user>'";
     };
-    subdomain = mkOption {
-      type = types.str;
-      default = "dav";
-      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-    };
-    forceSSL = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Force SSL for Nginx virtual host.";
+    reverseProxy = {
+      enable = mkEnableOption "Nginx reverse proxy for Radicale";
+      subdomain = mkOption {
+        type = types.str;
+        default = "dav";
+        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
+      };
+      forceSSL = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Force SSL for Nginx virtual host.";
+      };
     };
   };
 
@@ -47,7 +52,7 @@ in
       settings = {
         server = {
           hosts = [
-            "127.0.0.1:${port}"
+            "0.0.0.0:${port}"
           ];
           max_connections = mkDefault 20;
           max_content_length = mkDefault 500000000;
@@ -65,10 +70,10 @@ in
       };
     };
 
-    services.nginx.virtualHosts."${fqdn}" = {
+    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
+      forceSSL = cfg.reverseProxy.forceSSL;
+      enableACME = cfg.reverseProxy.forceSSL;
       locations."/".proxyPass = "http://127.0.0.1:${port}";
-      forceSSL = cfg.forceSSL;
-      enableACME = cfg.forceSSL;
     };
 
     environment.systemPackages = [

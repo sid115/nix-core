@@ -21,7 +21,7 @@ in
 {
   options.services.miniflux = {
     reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for Open WebUI.";
+      enable = mkEnableOption "Nginx reverse proxy for Miniflux.";
       subdomain = mkOption {
         type = types.str;
         default = "rss";
@@ -42,7 +42,7 @@ in
       config = {
         ADMIN_USERNAME = mkDefault "admin";
         CREATE_ADMIN = mkDefault 1;
-        LISTEN_ADDR = mkDefault "0.0.0.0:8085";
+        PORT = mkDefault 8085; # overrides LISTEN_ADDR
       };
     };
 
@@ -50,7 +50,7 @@ in
       enableACME = cfg.reverseProxy.forceSSL;
       forceSSL = cfg.reverseProxy.forceSSL;
       locations."/" = {
-        proxyPass = mkDefault "http://${cfg.config.LISTEN_ADDR}";
+        proxyPass = mkDefault "http://127.0.0.1:${toString cfg.config.PORT}";
       };
     };
 

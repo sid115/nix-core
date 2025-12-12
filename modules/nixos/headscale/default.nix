@@ -7,11 +7,13 @@
 let
   cfg = config.services.headscale;
   domain = config.networking.domain;
-  fqdn = if cfg.subdomain == "" then domain else "${cfg.subdomain}.${domain}";
+  subdomain = cfg.reverseProxy.subdomain;
+  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
   acl = "headscale/acl.hujson";
 
   inherit (lib)
     mkDefault
+    mkEnableOption
     mkIf
     mkOption
     optional
@@ -21,15 +23,18 @@ let
 in
 {
   options.services.headscale = {
-    subdomain = mkOption {
-      type = types.str;
-      default = "headscale";
-      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-    };
-    forceSSL = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Force SSL for Nginx virtual host.";
+    reverseProxy = {
+      enable = mkEnableOption "Nginx reverse proxy for headscale";
+      subdomain = mkOption {
+        type = types.str;
+        default = "headscale";
+        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
+      };
+      forceSSL = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Force SSL for Nginx virtual host.";
+      };
     };
     openFirewall = mkOption {
       type = types.bool;
@@ -41,7 +46,7 @@ in
   config = mkIf cfg.enable {
     assertions = [
       {
-        assertion = !cfg.settings.derp.server.enable || cfg.forceSSL;
+        assertion = !cfg.settings.derp.server.enable || cfg.reverseProxy.forceSSL;
         message = "nix-core/nixos/headscale: DERP requires TLS";
       }
       {
@@ -64,13 +69,13 @@ in
     };
 
     services.headscale = {
-      address = mkDefault "127.0.0.1";
+      address = mkDefault "0.0.0.0";
       port = mkDefault 8077;
       settings = {
         policy.path = "/etc/${acl}";
         database.type = "sqlite"; # postgres is highly discouraged as it is only supported for legacy reasons
-        server_url = if cfg.forceSSL then "https://${fqdn}" else "http://${fqdn}";
-        derp.server.enable = cfg.forceSSL;
+        server_url = if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}";
+        derp.server.enable = cfg.reverseProxy.forceSSL;
         dns = {
           magic_dns = mkDefault true;
           base_domain = mkDefault "headscale.internal";
@@ -85,9 +90,9 @@ in
       };
     };
 
-    services.nginx.virtualHosts.${fqdn} = {
-      forceSSL = cfg.forceSSL;
-      enableACME = cfg.forceSSL;
+    services.nginx.virtualHosts.${fqdn} = mkIf cfg.reverseProxy.enable {
+      forceSSL = cfg.reverseProxy.forceSSL;
+      enableACME = cfg.reverseProxy.forceSSL;
       locations."/" = {
         proxyPass = mkDefault "http://${cfg.address}:${toString cfg.port}";
         proxyWebsockets = true;

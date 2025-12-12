@@ -3,11 +3,13 @@
 let
   cfg = config.services.hydra;
   domain = config.networking.domain;
-  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
+  subdomain = cfg.reverseProxy.subdomain;
+  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
   mailserver = config.mailserver;
 
   inherit (lib)
     mkDefault
+    mkEnableOption
     mkIf
     mkOption
     types
@@ -15,21 +17,25 @@ let
 in
 {
   options.services.hydra = {
-    subdomain = mkOption {
-      type = types.str;
-      default = "hydra";
-      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-    };
-    forceSSL = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Force SSL for Nginx virtual host.";
+    reverseProxy = {
+      enable = mkEnableOption "Nginx reverse proxy for hydra";
+      subdomain = mkOption {
+        type = types.str;
+        default = "hydra";
+        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
+      };
+      forceSSL = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Force SSL for Nginx virtual host.";
+      };
     };
   };
 
   config = mkIf cfg.enable {
     services.hydra = {
       port = mkDefault 3344;
+      listenHost = mkDefault "0.0.0.0";
       hydraURL = fqdn;
       useSubstitutes = mkDefault true;
 
@@ -43,10 +49,10 @@ in
       "git+ssh://github.com/"
     ];
 
-    services.nginx.virtualHosts."${cfg.hydraURL}" = {
-      enableACME = cfg.forceSSL;
-      forceSSL = cfg.forceSSL;
-      locations."/".proxyPass = "http://localhost:${toString cfg.port}";
+    services.nginx.virtualHosts."${cfg.hydraURL}" = mkIf cfg.reverseProxy.enable {
+      enableACME = cfg.reverseProxy.forceSSL;
+      forceSSL = cfg.reverseProxy.forceSSL;
+      locations."/".proxyPass = mkDefault "http://127.0.0.1:${toString cfg.port}";
     };
 
     mailserver.loginAccounts = mkIf mailserver.enable {

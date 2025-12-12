@@ -3,10 +3,12 @@
 let
   cfg = config.services.ollama;
   domain = config.networking.domain;
-  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
+  subdomain = cfg.reverseProxy.subdomain;
+  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkDefault
+    mkEnableOption
     mkForce
     mkIf
     mkOption
@@ -15,38 +17,44 @@ let
 in
 {
   options.services.ollama = {
-    subdomain = mkOption {
-      type = types.str;
-      default = "ollama";
-      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-    };
-    forceSSL = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Force SSL for Nginx virtual host.";
+    reverseProxy = {
+      enable = mkEnableOption "Nginx reverse proxy for ollama";
+      subdomain = mkOption {
+        type = types.str;
+        default = "ollama";
+        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
+      };
+      forceSSL = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Force SSL for Nginx virtual host.";
+      };
     };
   };
 
   config = mkIf cfg.enable {
     services.ollama = {
+      host = mkDefault "0.0.0.0";
       user = mkDefault "ollama";
       group = mkDefault "ollama";
     };
 
-    services.nginx.virtualHosts."${fqdn}" = {
-      forceSSL = cfg.forceSSL;
-      enableACME = cfg.forceSSL;
+    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
+      forceSSL = cfg.reverseProxy.forceSSL;
+      enableACME = cfg.reverseProxy.forceSSL;
       locations."/" = {
-        proxyPass = mkDefault "http://localhost:${toString cfg.port}";
+        proxyPass = mkDefault "http://127.0.0.1:${toString cfg.port}";
         proxyWebsockets = mkDefault true;
         recommendedProxySettings = mkForce false;
         extraConfig = ''
-          proxy_set_header Host localhost:${toString cfg.port};
+          proxy_set_header Host ${cfg.host}:${toString cfg.port};
         '';
       };
     };
 
-    security.acme.certs."${fqdn}".postRun = mkIf cfg.forceSSL "systemctl restart ollama.service";
+    security.acme.certs."${fqdn}".postRun = mkIf (
+      with cfg.reverseProxy; enable && forceSSL
+    ) "systemctl restart ollama.service";
 
     systemd.tmpfiles.rules = [
       "d ${cfg.home} 0755 ${cfg.user} ${cfg.group} -"

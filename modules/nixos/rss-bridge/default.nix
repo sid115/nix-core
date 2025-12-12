@@ -3,9 +3,11 @@
 let
   cfg = config.services.rss-bridge;
   domain = config.networking.domain;
-  fqdn = if (cfg.subdomain != "") then "${cfg.subdomain}.${domain}" else domain;
+  subdomain = cfg.reverseProxy.subdomain;
+  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
 
   inherit (lib)
+    mkEnableOption
     mkIf
     mkOption
     types
@@ -13,15 +15,18 @@ let
 in
 {
   options.services.rss-bridge = {
-    subdomain = mkOption {
-      type = types.str;
-      default = "rss";
-      description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-    };
-    forceSSL = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Force SSL for Nginx virtual host.";
+    reverseProxy = {
+      enable = mkEnableOption "Nginx reverse proxy for RSS-Bridge.";
+      subdomain = mkOption {
+        type = types.str;
+        default = "rss";
+        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
+      };
+      forceSSL = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Force SSL for Nginx virtual host.";
+      };
     };
   };
 
@@ -35,9 +40,9 @@ in
 
     systemd.tmpfiles.rules = [ "d ${cfg.dataDir} 0755 ${cfg.user} ${cfg.group} -" ];
 
-    services.nginx.virtualHosts."${fqdn}" = {
-      forceSSL = cfg.forceSSL;
-      enableACME = cfg.forceSSL;
+    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
+      forceSSL = cfg.reverseProxy.forceSSL;
+      enableACME = cfg.reverseProxy.forceSSL;
     };
   };
 }

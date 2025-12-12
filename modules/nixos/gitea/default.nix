@@ -65,7 +65,7 @@ in
       enableACME = cfg.reverseProxy.forceSSL;
       forceSSL = cfg.reverseProxy.forceSSL;
       locations."/" = {
-        proxyPass = mkDefault (with cfg.settings.server; "http://${HTTP_ADDR}:${toString HTTP_PORT}");
+        proxyPass = mkDefault "http://127.0.0.1:${toString cfg.settings.server.HTTP_PORT}";
       };
     };
 
