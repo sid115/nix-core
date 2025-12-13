@@ -36,6 +36,7 @@
   radicale = import ./radicale;
   rss-bridge = import ./rss-bridge;
   searx = import ./searx;
+  smtp-relay = import ./smtp-relay;
   sops = import ./sops;
   tailscale = import ./tailscale;
   uptime-kuma = import ./uptime-kuma;
