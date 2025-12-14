@@ -135,7 +135,7 @@ in
       enableACME = cfg.reverseProxy.forceSSL;
       forceSSL = cfg.reverseProxy.forceSSL;
       locations."/".proxyPass =
-        mkDefault "http://127.0.0.1${elemAt (splitString ":" cfg.settings.listen-http) 1}";
+        mkDefault "http://127.0.0.1:${elemAt (splitString ":" cfg.settings.listen-http) 1}";
     };
 
     systemd = {
