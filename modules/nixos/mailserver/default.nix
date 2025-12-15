@@ -44,6 +44,12 @@ in
       stateVersion = mkDefault 1;
     };
 
+    security.acme = {
+      acceptTerms = true;
+      defaults.email = "postmaster@${config.networking.domain}";
+      defaults.webroot = "/var/lib/acme/acme-challenge";
+    };
+
     environment.systemPackages = [ pkgs.mailutils ];
   };
 }
