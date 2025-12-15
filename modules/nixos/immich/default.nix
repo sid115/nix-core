@@ -32,6 +32,11 @@ in
         default = true;
         description = "Force SSL for Nginx virtual host.";
       };
+      maxBodySize = mkOption {
+        type = types.str;
+        default = "5G";
+        description = "Maximum body size for uploads.";
+      };
     };
   };
 
@@ -49,6 +54,9 @@ in
       forceSSL = cfg.reverseProxy.forceSSL;
       enableACME = cfg.reverseProxy.forceSSL;
       locations."/".proxyPass = mkDefault "http://127.0.0.1:${toString cfg.port}";
+      extraConfig = ''
+        client_max_body_size ${cfg.reverseProxy.maxBodySize};
+      '';
     };
 
     sops =
