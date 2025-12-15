@@ -30,8 +30,10 @@ in
   config = mkIf cfg.enable {
     networking.firewall.allowedTCPPorts = [
       25
+      143
       465
       587
+      993
     ];
 
     security.acme.certs."${fqdn}" = {
@@ -68,6 +70,20 @@ in
         ];
         unverified_recipient_reject_code = 550;
       };
+    };
+
+    services.nginx = {
+      enable = true;
+      streamConfig = ''
+        server {
+          listen 143;
+          proxy_pass ${cfg.mailserverIP}:143;
+        }
+        server {
+          listen 993;
+          proxy_pass ${cfg.mailserverIP}:993;
+        }
+      '';
     };
   };
 }
