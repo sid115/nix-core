@@ -17,6 +17,7 @@ let
   inherit (lib)
     mkDefault
     mkOption
+    optionalString
     optionals
     strings
     types
@@ -60,6 +61,8 @@ in
         qemu.runAsRoot = mkDefault false;
         qemu.verbatimConfig = ''
           clear_emulation_capabilities = ${boolToZeroOne cfg.libvirtd.clearEmulationCapabilities}
+        ''
+        + optionalString (cfg.libvirtd.deviceACL != [ ]) ''
           cgroup_device_acl = [
             ${aclString}
           ]
