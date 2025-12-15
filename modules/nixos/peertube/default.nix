@@ -35,7 +35,6 @@ in
     services.peertube = {
       localDomain = fqdn;
       enableWebHttps = cfg.reverseProxy.forceSSL;
-      listenLocal = mkDefault false;
       configureNginx = mkDefault true;
       secrets.secretsFile = mkDefault config.sops.secrets."peertube/secret".path;
       database.createLocally = mkDefault true;
@@ -55,12 +54,11 @@ in
     services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
       enableACME = cfg.reverseProxy.forceSSL;
       forceSSL = cfg.reverseProxy.forceSSL;
-      locations."/".proxyPass = mkDefault "http://127.0.0.1:${toString cfg.listenWeb}";
     };
 
     sops.secrets."peertube/secret" = {
-      owner = "peertube";
-      group = "peertube";
+      owner = cfg.user;
+      group = cfg.group;
       mode = "0440";
     };
   };
