@@ -97,5 +97,7 @@ in
       enable = mkDefault true;
       tray = mkDefault "never";
     };
+
+    services.network-manager-applet.enable = mkDefault true;
   };
 }
