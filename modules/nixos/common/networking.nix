@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   isNotEmptyStr = str: builtins.isString str && str != "";
@@ -24,7 +29,13 @@ in
       # NetworkManager
       useDHCP = false;
       wireless.enable = false;
-      networkmanager.enable = true;
+      networkmanager = {
+        enable = true;
+        plugins = with pkgs; [
+          networkmanager-openconnect
+          networkmanager-openvpn
+        ];
+      };
     };
   };
 }
