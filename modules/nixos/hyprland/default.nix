@@ -20,8 +20,4 @@ in
   };
 
   services.udisks2.enable = mkDefault true;
-
-  environment.systemPackages = with pkgs; [
-    networkmanagerapplet
-  ];
 }
