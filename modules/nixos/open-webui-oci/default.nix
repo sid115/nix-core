@@ -131,7 +131,7 @@ in
       ];
       log-driver = "journald";
       extraOptions = [
-       "--network=host"
+        "--network=host"
       ];
     };
     systemd.services."podman-open-webui" = {
