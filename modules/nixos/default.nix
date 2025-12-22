@@ -1,5 +1,6 @@
 {
   amd = import ./amd;
+  anything-llm-oci = import ./anything-llm-oci;
   audio = import ./audio;
   baibot = import ./baibot;
   bluetooth = import ./bluetooth;

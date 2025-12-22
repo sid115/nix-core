@@ -10,7 +10,6 @@ let
   domain = config.networking.domain;
   subdomain = cfg.reverseProxy.subdomain;
   fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
-  internalPort = "8080";
 
   defaultEnv = {
     ANONYMIZED_TELEMETRY = "False";
@@ -54,7 +53,7 @@ in
     enable = mkEnableOption "Open WebUI container with Podman.";
     port = mkOption {
       type = types.port;
-      default = 8080;
+      default = 3000;
       description = "Which port the Open-WebUI server listens to.";
     };
     environment = mkOption {
@@ -118,7 +117,7 @@ in
         defaultEnv
         // cfg.environment
         // {
-          PORT = internalPort;
+          PORT = "${toString cfg.port}";
           CORS_ALLOW_ORIGIN = concatStringsSep ";" [
             baseUrl
             "http://localhost:${toString cfg.port}"
@@ -130,14 +129,9 @@ in
       volumes = [
         "open-webui_open-webui:/app/backend/data:rw"
       ];
-      ports = [
-        "${toString cfg.port}:${internalPort}/tcp"
-      ];
       log-driver = "journald";
       extraOptions = [
-        "--add-host=host.docker.internal:host-gateway"
-        "--network-alias=open-webui"
-        "--network=open-webui_default"
+        "--network=host"
       ];
     };
     systemd.services."podman-open-webui" = {
