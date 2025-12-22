@@ -52,9 +52,9 @@ in
       };
     };
 
-    security.acme.certs."${fqdn}".postRun = mkIf (
-      with cfg.reverseProxy; enable && forceSSL
-    ) "systemctl restart ollama.service";
+    security.acme.certs = mkIf (with cfg.reverseProxy; enable && forceSSL) {
+      "${fqdn}".postRun = "systemctl restart ollama.service";
+    };
 
     systemd.tmpfiles.rules = [
       "d ${cfg.home} 0755 ${cfg.user} ${cfg.group} -"

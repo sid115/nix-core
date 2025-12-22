@@ -57,9 +57,9 @@ in
 
     systemd.tmpfiles.rules = [ "d ${cfg.stateDir} 0755 ${cfg.user} ${cfg.group} -" ];
 
-    security.acme.certs."${fqdn}".postRun = mkIf (
-      with cfg.reverseProxy; enable && forceSSL
-    ) "systemctl restart gitea.service";
+    security.acme.certs = mkIf (with cfg.reverseProxy; enable && forceSSL) {
+      "${fqdn}".postRun = "systemctl restart gitea.service";
+    };
 
     services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
       enableACME = cfg.reverseProxy.forceSSL;
