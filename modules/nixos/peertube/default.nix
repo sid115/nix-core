@@ -47,9 +47,9 @@ in
       };
     };
 
-    security.acme.certs."${fqdn}".postRun = mkIf (
-      with cfg.reverseProxy; enable && forceSSL
-    ) "systemctl restart peertube.service";
+    security.acme.certs = mkIf (with cfg.reverseProxy; enable && forceSSL) {
+      "${fqdn}".postRun = "systemctl restart peertube.service";
+    };
 
     services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
       enableACME = cfg.reverseProxy.forceSSL;
