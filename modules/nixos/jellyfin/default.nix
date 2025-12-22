@@ -70,8 +70,8 @@ in
       locations."/".proxyPass = mkDefault "http://127.0.0.1:8096";
     };
 
-    security.acme.certs."${fqdn}".postRun = mkIf (
-      with cfg.reverseProxy; enable && forceSSL
-    ) "systemctl restart jellyfin.service";
+    security.acme.certs = mkIf (cfg.reverseProxy.enable && cfg.reverseProxy.forceSSL) {
+      "${fqdn}".postRun = "systemctl restart jellyfin.service";
+    };
   };
 }
