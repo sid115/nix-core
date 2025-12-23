@@ -8,7 +8,7 @@ on:
 
 jobs:
   flake-check:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     env:
       NIXPKGS_ALLOW_UNFREE: 1
