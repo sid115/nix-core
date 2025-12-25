@@ -27,13 +27,12 @@ in
   };
 
   config = mkIf cfg.enable {
-    networking.firewall.allowedTCPPorts = optionals (
-      [
+    networking.firewall.allowedTCPPorts =
+      optionals [
         cfg.openFirewall
         80
       ]
-      ++ optional cfg.forceSSL 443
-    );
+      ++ optional cfg.forceSSL 443;
 
     services.nginx = {
       recommendedOptimisation = mkDefault true;
