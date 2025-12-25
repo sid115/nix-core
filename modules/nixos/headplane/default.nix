@@ -70,6 +70,12 @@ in
         proxyPass = "http://127.0.0.1:${toString cfg.settings.server.port}";
         proxyWebsockets = true;
       };
+      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
+        config.security.acme.certs."${fqdn}".directory
+      }/cert.pem";
+      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
+        config.security.acme.certs."${fqdn}".directory
+      }/key.pem";
     };
 
     sops.secrets =

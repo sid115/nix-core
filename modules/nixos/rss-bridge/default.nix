@@ -43,6 +43,12 @@ in
     services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
       forceSSL = cfg.reverseProxy.forceSSL;
       enableACME = cfg.reverseProxy.forceSSL;
+      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
+        config.security.acme.certs."${fqdn}".directory
+      }/cert.pem";
+      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
+        config.security.acme.certs."${fqdn}".directory
+      }/key.pem";
     };
   };
 }

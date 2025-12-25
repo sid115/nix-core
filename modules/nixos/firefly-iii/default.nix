@@ -99,10 +99,22 @@ in
       "${cfg.virtualHost}" = {
         enableACME = cfg.reverseProxy.forceSSL;
         forceSSL = cfg.reverseProxy.forceSSL;
+        sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
+          config.security.acme.certs."${fqdn}".directory
+        }/cert.pem";
+        sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
+          config.security.acme.certs."${fqdn}".directory
+        }/key.pem";
       };
       "${importer-cfg.virtualHost}" = {
         enableACME = cfg.reverseProxy.forceSSL;
         forceSSL = cfg.reverseProxy.forceSSL;
+        sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
+          config.security.acme.certs."${importer-fqdn}".directory
+        }/cert.pem";
+        sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
+          config.security.acme.certs."${importer-fqdn}".directory
+        }/key.pem";
       };
     };
 
