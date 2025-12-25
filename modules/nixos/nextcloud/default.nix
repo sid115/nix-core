@@ -12,13 +12,13 @@ let
   fqdn = if (cfg.reverseProxy.enable && subdomain != "") then "${subdomain}.${domain}" else domain;
   mailserver = config.mailserver;
 
-  package = pkgs.nextcloud31.overrideAttrs (old: rec {
-    version = "31.0.7";
-    src = pkgs.fetchurl {
-      url = "https://download.nextcloud.com/server/releases/nextcloud-${version}.tar.bz2";
-      hash = "sha256-ACpdA64Fp/DDBWlH1toLeaRNPXIPVyj+UVWgxaO07Gk=";
-    };
-  });
+  # package = pkgs.nextcloud31.overrideAttrs (old: rec {
+  #   version = "31.0.7";
+  #   src = pkgs.fetchurl {
+  #     url = "https://download.nextcloud.com/server/releases/nextcloud-${version}.tar.bz2";
+  #     hash = "sha256-ACpdA64Fp/DDBWlH1toLeaRNPXIPVyj+UVWgxaO07Gk=";
+  #   };
+  # });
 
   inherit (lib)
     mkDefault
@@ -52,7 +52,7 @@ in
     };
 
     services.nextcloud = {
-      inherit package;
+      # inherit package;
       hostName = fqdn;
       https = if cfg.reverseProxy.eanble then cfg.reverseProxy.forceSSL else mkDefault false;
       config = {
