@@ -7,6 +7,7 @@ let
     mkDefault
     mkIf
     mkOption
+    optional
     types
     ;
 in
@@ -21,9 +22,9 @@ in
 
   config = mkIf cfg.enable {
     networking.firewall.allowedTCPPorts = [
-      80 # ACME challenge
-      443
-    ];
+      80
+    ]
+    ++ optional cfg.forceSSL 443;
 
     services.nginx = {
       recommendedOptimisation = mkDefault true;
