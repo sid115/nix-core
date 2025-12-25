@@ -4,7 +4,7 @@ let
   cfg = config.services.searx;
   domain = config.networking.domain;
   subdomain = cfg.reverseProxy.subdomain;
-  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
+  fqdn = if (cfg.reverseProxy.enable && subdomain != "") then "${subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkDefault
@@ -47,7 +47,12 @@ in
           bind_address = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
           port = mkDefault 8787;
           secret_key = mkDefault "@SEARX_SECRET_KEY@";
-          base_url = mkDefault (if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}");
+          base_url = mkDefault (
+            if config.services.nginx.virtualHosts."${fqdn}".forceSSL then
+              "https://${fqdn}"
+            else
+              "http://${fqdn}"
+          );
           limiter = mkDefault true;
         };
         search = {
