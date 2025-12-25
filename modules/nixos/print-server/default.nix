@@ -9,7 +9,7 @@ let
   cfg = config.services.print-server;
   domain = config.networking.domain;
   subdomain = cfg.reverseProxy.subdomain;
-  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
+  fqdn = if (cfg.reverseProxy.enable && subdomain != "") then "${subdomain}.${domain}" else domain;
   port = "631";
 
   inherit (lib)
@@ -23,6 +23,11 @@ in
 {
   options.services.print-server = {
     enable = mkEnableOption "print server";
+    openFirewall = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Open firewall for printing and avahi service.";
+    };
     reverseProxy = {
       enable = mkEnableOption "Nginx reverse proxy for print-server";
       subdomain = mkOption {
@@ -49,7 +54,7 @@ in
         Address @LOCAL
       '';
       clientConf = '''';
-      openFirewall = true;
+      openFirewall = cfg.openFirewall;
       drivers = with pkgs; [
         brlaser
         brgenml1lpr
@@ -73,7 +78,7 @@ in
     services.avahi = {
       enable = true;
       nssmdns4 = true;
-      openFirewall = true;
+      openFirewall = cfg.openFirewall;
     };
 
     services.nginx.virtualHosts.${fqdn} = mkIf cfg.reverseProxy.enable {

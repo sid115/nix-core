@@ -7,6 +7,7 @@ let
     mkDefault
     mkIf
     mkOption
+    optional
     types
     ;
 in
@@ -14,16 +15,22 @@ in
   options.services.nginx = {
     forceSSL = mkOption {
       type = types.bool;
-      default = true;
+      default = false;
       description = "Force SSL for Nginx virtual host.";
+    };
+    openFirewall = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Whether to open the firewall for HTTP (and HTTPS if forceSSL is enabled).";
     };
   };
 
   config = mkIf cfg.enable {
-    networking.firewall.allowedTCPPorts = [
-      80 # ACME challenge
-      443
-    ];
+    networking.firewall.allowedTCPPorts =
+      mkIf cfg.openFirewall [
+        80
+      ]
+      ++ optional cfg.forceSSL 443;
 
     services.nginx = {
       recommendedOptimisation = mkDefault true;

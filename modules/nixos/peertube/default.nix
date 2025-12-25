@@ -4,7 +4,7 @@ let
   cfg = config.services.peertube;
   domain = config.networking.domain;
   subdomain = cfg.reverseProxy.subdomain;
-  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
+  fqdn = if (cfg.reverseProxy.enable && subdomain != "") then "${subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkDefault
@@ -34,7 +34,7 @@ in
   config = mkIf cfg.enable {
     services.peertube = {
       localDomain = fqdn;
-      enableWebHttps = cfg.reverseProxy.forceSSL;
+      enableWebHttps = config.services.nginx.virtualHosts."${fqdn}".forceSSL;
       configureNginx = mkDefault true;
       secrets.secretsFile = mkDefault config.sops.secrets."peertube/secret".path;
       database.createLocally = mkDefault true;

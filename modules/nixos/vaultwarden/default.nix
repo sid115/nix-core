@@ -4,7 +4,7 @@ let
   cfg = config.services.vaultwarden;
   domain = config.networking.domain;
   subdomain = cfg.reverseProxy.subdomain;
-  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
+  fqdn = if (cfg.reverseProxy.enable && subdomain != "") then "${subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkDefault
@@ -35,7 +35,12 @@ in
     services.vaultwarden = {
       config = {
         ADMIN_TOKEN_FILE = mkDefault config.sops.secrets."vaultwarden/admin-token".path;
-        DOMAIN = mkDefault (if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}");
+        DOMAIN = mkDefault (
+          if config.services.nginx.virtualHosts."${fqdn}".forceSSL then
+            "https://${fqdn}"
+          else
+            "http://${fqdn}"
+        );
         ROCKET_ADDRESS = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
         ROCKET_PORT = mkDefault 8222;
         SIGNUPS_ALLOWED = mkDefault false;

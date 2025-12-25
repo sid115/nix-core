@@ -9,7 +9,7 @@ let
   cfg = config.services.open-webui-oci;
   domain = config.networking.domain;
   subdomain = cfg.reverseProxy.subdomain;
-  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
+  fqdn = if (cfg.reverseProxy.enable && subdomain != "") then "${subdomain}.${domain}" else domain;
 
   defaultEnv = {
     ANONYMIZED_TELEMETRY = "False";

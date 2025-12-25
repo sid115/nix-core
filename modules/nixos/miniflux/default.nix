@@ -8,7 +8,7 @@ let
   cfg = config.services.miniflux;
   domain = config.networking.domain;
   subdomain = cfg.reverseProxy.subdomain;
-  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
+  fqdn = if (cfg.reverseProxy.enable && subdomain != "") then "${subdomain}.${domain}" else domain;
   port = 8085;
 
   inherit (lib)

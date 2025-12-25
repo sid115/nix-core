@@ -9,16 +9,16 @@ let
   cfg = config.services.nextcloud;
   domain = config.networking.domain;
   subdomain = cfg.reverseProxy.subdomain;
-  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
+  fqdn = if (cfg.reverseProxy.enable && subdomain != "") then "${subdomain}.${domain}" else domain;
   mailserver = config.mailserver;
 
-  package = pkgs.nextcloud31.overrideAttrs (old: rec {
-    version = "31.0.7";
-    src = pkgs.fetchurl {
-      url = "https://download.nextcloud.com/server/releases/nextcloud-${version}.tar.bz2";
-      hash = "sha256-ACpdA64Fp/DDBWlH1toLeaRNPXIPVyj+UVWgxaO07Gk=";
-    };
-  });
+  # package = pkgs.nextcloud31.overrideAttrs (old: rec {
+  #   version = "31.0.7";
+  #   src = pkgs.fetchurl {
+  #     url = "https://download.nextcloud.com/server/releases/nextcloud-${version}.tar.bz2";
+  #     hash = "sha256-ACpdA64Fp/DDBWlH1toLeaRNPXIPVyj+UVWgxaO07Gk=";
+  #   };
+  # });
 
   inherit (lib)
     mkDefault
@@ -52,9 +52,9 @@ in
     };
 
     services.nextcloud = {
-      inherit package;
+      # inherit package;
       hostName = fqdn;
-      https = cfg.reverseProxy.forceSSL;
+      https = if cfg.reverseProxy.eanble then cfg.reverseProxy.forceSSL else mkDefault false;
       config = {
         adminuser = mkDefault "nextcloud";
         adminpassFile = mkDefault "/etc/secrets/nextcloud-initial-admin-pass";
@@ -71,12 +71,12 @@ in
         syslog_tag = mkDefault "Nextcloud";
 
         # SMTP with SSL/TLS
-        mail_domain = mkDefault config.networking.domain;
+        mail_domain = mkDefault domain;
         mail_from_address = mkDefault "nextcloud"; # @domain.tld gets added automatically
         mail_smtpauth = mkDefault true;
         mail_smtphost = mkDefault mailserver.fqdn;
         mail_smtpmode = mkDefault "smtp";
-        mail_smtpname = mkDefault "nextcloud@${config.networking.domain}";
+        mail_smtpname = mkDefault "nextcloud@${domain}";
         mail_smtpport = mkDefault 465;
         mail_smtpsecure = mkDefault "ssl";
         mail_smtptimeout = mkDefault 30;

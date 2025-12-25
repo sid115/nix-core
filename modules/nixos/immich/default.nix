@@ -8,7 +8,7 @@ let
   cfg = config.services.immich;
   domain = config.networking.domain;
   subdomain = cfg.reverseProxy.subdomain;
-  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
+  fqdn = if (cfg.reverseProxy.enable && subdomain != "") then "${subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkDefault
@@ -46,11 +46,12 @@ in
       host = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
       secretsFile = config.sops.templates."immich/secrets-file".path;
       settings = {
-        server.externalDomain = if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}";
+        server.externalDomain =
+          if config.nginx.virtualHosts."${fqdn}".forceSSL then "https://${fqdn}" else "http://${fqdn}";
       };
     };
 
-    services.nginx.virtualHosts.${fqdn} = mkIf cfg.reverseProxy.enable {
+    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
       forceSSL = cfg.reverseProxy.forceSSL;
       enableACME = cfg.reverseProxy.forceSSL;
       locations."/".proxyPass = mkDefault "http://127.0.0.1:${toString cfg.port}";

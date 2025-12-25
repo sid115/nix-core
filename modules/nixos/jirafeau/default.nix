@@ -4,7 +4,7 @@ let
   cfg = config.services.jirafeau;
   domain = config.networking.domain;
   subdomain = cfg.reverseProxy.subdomain;
-  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
+  fqdn = if (cfg.reverseProxy.enable && subdomain != "") then "${subdomain}.${domain}" else domain;
 
   inherit (lib)
     mkDefault
@@ -38,10 +38,10 @@ in
         $cfg['style'] = 'dark-courgette';
         $cfg['maximal_upload_size'] = 4096;
       '';
-      nginxConfig = mkIf cfg.reverseProxy.enable {
-        enableACME = cfg.reverseProxy.forceSSL;
-        forceSSL = cfg.reverseProxy.forceSSL;
-        listenAddresses = if cfg.reverseProxy.enable then [ "127.0.0.1" ] else [ "0.0.0.0" ];
+      nginxConfig = {
+        enableACME = if cfg.reverseProxy.enable then cfg.reverseProxy.forceSSL else mkDefault false;
+        forceSSL = if cfg.reverseProxy.enable then cfg.reverseProxy.forceSSL else mkDefault false;
+        listenAddresses = if cfg.reverseProxy.enable then [ "127.0.0.1" ] else mkDefault [ "0.0.0.0" ];
         serverName = fqdn;
       };
     };

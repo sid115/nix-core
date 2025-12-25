@@ -8,7 +8,7 @@ let
   cfg = config.services.headscale;
   domain = config.networking.domain;
   subdomain = cfg.reverseProxy.subdomain;
-  fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
+  fqdn = if (cfg.reverseProxy.enable && subdomain != "") then "${subdomain}.${domain}" else domain;
   acl = "headscale/acl.hujson";
 
   inherit (lib)
@@ -74,7 +74,8 @@ in
       settings = {
         policy.path = "/etc/${acl}";
         database.type = "sqlite"; # postgres is highly discouraged as it is only supported for legacy reasons
-        server_url = if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}";
+        server_url =
+          if config.nginx.virtualHosts."${fqdn}".forceSSL then "https://${fqdn}" else "http://${fqdn}";
         derp.server.enable = cfg.reverseProxy.forceSSL;
         dns = {
           magic_dns = mkDefault true;
@@ -90,7 +91,7 @@ in
       };
     };
 
-    services.nginx.virtualHosts.${fqdn} = mkIf cfg.reverseProxy.enable {
+    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
       forceSSL = cfg.reverseProxy.forceSSL;
       enableACME = cfg.reverseProxy.forceSSL;
       locations."/" = {
