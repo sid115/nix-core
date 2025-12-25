@@ -40,7 +40,7 @@ in
       inherit fqdn;
 
       domains = mkDefault [ config.networking.domain ];
-      certificateScheme = mkDefault "acme-nginx";
+      x509.useACMEHost = fqdn;
       stateVersion = mkDefault 1;
     };
 
