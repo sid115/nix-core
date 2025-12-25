@@ -27,9 +27,8 @@ in
   };
 
   config = mkIf cfg.enable {
-    networking.firewall.allowedTCPPorts = optionals (
+    networking.firewall.allowedTCPPorts = optionals cfg.openFirewall (
       [
-        cfg.openFirewall
         80
       ]
       ++ optional cfg.forceSSL 443
