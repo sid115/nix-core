@@ -54,7 +54,7 @@ in
     services.nextcloud = {
       # inherit package;
       hostName = fqdn;
-      https = if cfg.reverseProxy.eanble then cfg.reverseProxy.forceSSL else mkDefault false;
+      https = if cfg.reverseProxy.enable then cfg.reverseProxy.forceSSL else mkDefault false;
       config = {
         adminuser = mkDefault "nextcloud";
         adminpassFile = mkDefault "/etc/secrets/nextcloud-initial-admin-pass";
