@@ -75,7 +75,10 @@ in
         policy.path = "/etc/${acl}";
         database.type = "sqlite"; # postgres is highly discouraged as it is only supported for legacy reasons
         server_url =
-          if config.nginx.virtualHosts."${fqdn}".forceSSL then "https://${fqdn}" else "http://${fqdn}";
+          if config.services.nginx.virtualHosts."${fqdn}".forceSSL then
+            "https://${fqdn}"
+          else
+            "http://${fqdn}";
         derp.server.enable = cfg.reverseProxy.forceSSL;
         dns = {
           magic_dns = mkDefault true;

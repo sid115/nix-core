@@ -47,7 +47,10 @@ in
       secretsFile = config.sops.templates."immich/secrets-file".path;
       settings = {
         server.externalDomain =
-          if config.nginx.virtualHosts."${fqdn}".forceSSL then "https://${fqdn}" else "http://${fqdn}";
+          if config.services.nginx.virtualHosts."${fqdn}".forceSSL then
+            "https://${fqdn}"
+          else
+            "http://${fqdn}";
       };
     };
 
