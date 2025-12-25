@@ -8,6 +8,7 @@ let
     mkIf
     mkOption
     optional
+    optionals
     types
     ;
 in
@@ -26,11 +27,13 @@ in
   };
 
   config = mkIf cfg.enable {
-    networking.firewall.allowedTCPPorts =
-      mkIf cfg.openFirewall [
+    networking.firewall.allowedTCPPorts = optionals (
+      [
+        cfg.openFirewall
         80
       ]
-      ++ optional cfg.forceSSL 443;
+      ++ optional cfg.forceSSL 443
+    );
 
     services.nginx = {
       recommendedOptimisation = mkDefault true;
