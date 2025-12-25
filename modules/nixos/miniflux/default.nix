@@ -54,6 +54,12 @@ in
       locations."/" = {
         proxyPass = mkDefault "http://127.0.0.1:${toString cfg.config.PORT}";
       };
+      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
+        config.security.acme.certs."${fqdn}".directory
+      }/cert.pem";
+      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
+        config.security.acme.certs."${fqdn}".directory
+      }/key.pem";
     };
 
     sops = {

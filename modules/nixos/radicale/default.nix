@@ -74,6 +74,12 @@ in
       forceSSL = cfg.reverseProxy.forceSSL;
       enableACME = cfg.reverseProxy.forceSSL;
       locations."/".proxyPass = "http://127.0.0.1:${port}";
+      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
+        config.security.acme.certs."${fqdn}".directory
+      }/cert.pem";
+      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
+        config.security.acme.certs."${fqdn}".directory
+      }/key.pem";
     };
 
     environment.systemPackages = [

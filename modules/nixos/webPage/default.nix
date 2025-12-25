@@ -44,6 +44,8 @@ in
       forceSSL = cfg.forceSSL;
       root = cfg.webRoot;
       locations."/".index = "index.html";
+      sslCertificate = mkIf cfg.forceSSL "${config.security.acme.certs."${fqdn}".directory}/cert.pem";
+      sslCertificateKey = mkIf cfg.forceSSL "${config.security.acme.certs."${fqdn}".directory}/key.pem";
     };
 
     systemd.tmpfiles.rules = [ "d ${cfg.webRoot} 0755 ${nginxUser} ${nginxUser} -" ];

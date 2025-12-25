@@ -68,6 +68,12 @@ in
       forceSSL = cfg.reverseProxy.forceSSL;
       enableACME = cfg.reverseProxy.forceSSL;
       locations."/".proxyPass = mkDefault "http://127.0.0.1:8096";
+      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
+        config.security.acme.certs."${fqdn}".directory
+      }/cert.pem";
+      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
+        config.security.acme.certs."${fqdn}".directory
+      }/key.pem";
     };
 
     security.acme.certs = mkIf (with cfg.reverseProxy; enable && forceSSL) {

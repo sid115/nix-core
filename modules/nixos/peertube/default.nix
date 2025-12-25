@@ -54,6 +54,12 @@ in
     services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
       enableACME = cfg.reverseProxy.forceSSL;
       forceSSL = cfg.reverseProxy.forceSSL;
+      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
+        config.security.acme.certs."${fqdn}".directory
+      }/cert.pem";
+      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
+        config.security.acme.certs."${fqdn}".directory
+      }/key.pem";
     };
 
     sops.secrets."peertube/secret" = {

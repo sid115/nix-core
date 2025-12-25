@@ -139,6 +139,12 @@ in
       forceSSL = cfg.reverseProxy.forceSSL;
       locations."/".proxyPass =
         mkDefault "http://127.0.0.1:${elemAt (splitString ":" cfg.settings.listen-http) 1}";
+      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
+        config.security.acme.certs."${fqdn}".directory
+      }/cert.pem";
+      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
+        config.security.acme.certs."${fqdn}".directory
+      }/key.pem";
     };
 
     systemd = {

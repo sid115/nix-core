@@ -45,6 +45,8 @@ in
       };
       forceSSL = cfg.forceSSL;
       enableACME = cfg.forceSSL;
+      sslCertificate = mkIf cfg.forceSSL "${config.security.acme.certs."${fqdn}".directory}/cert.pem";
+      sslCertificateKey = mkIf cfg.forceSSL "${config.security.acme.certs."${fqdn}".directory}/key.pem";
     };
 
     systemd.tmpfiles.rules = [ "d ${cfg.root} 0755 ${nginx.user} ${nginx.group}" ];
