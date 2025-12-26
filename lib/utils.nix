@@ -10,6 +10,15 @@ let
     ;
 in
 {
+  mkMailIntegrationOption = serviceName: {
+    enable = mkEnableOption "Mail integration for ${serviceName}.";
+    smtpHost = mkOption {
+      type = types.str;
+      default = "localhost";
+      description = "SMTP host for sending emails.";
+    };
+  };
+
   mkReverseProxyOption = serviceName: subdomain: {
     enable = mkEnableOption "Nginx reverse proxy for ${serviceName}.";
     subdomain = mkOption {
