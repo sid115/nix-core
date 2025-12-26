@@ -10,6 +10,15 @@ let
     ;
 in
 {
+  mkMailIntegrationOption = serviceName: {
+    enable = mkEnableOption "Mail integration for ${serviceName}.";
+    smtpHost = mkOption {
+      type = types.str;
+      default = "localhost";
+      description = "SMTP host for sending emails.";
+    };
+  };
+
   mkReverseProxyOption = serviceName: subdomain: {
     enable = mkEnableOption "Nginx reverse proxy for ${serviceName}.";
     subdomain = mkOption {
@@ -43,6 +52,7 @@ in
     {
       config,
       fqdn ? config.networking.domain,
+      address ? "127.0.0.1",
       port ? null,
       ssl ? false,
       proxyWebsockets ? false,
@@ -55,7 +65,7 @@ in
       forceSSL = ssl;
       locations = mkIf (port != null) {
         "/" = {
-          proxyPass = mkDefault "http://127.0.0.1:${builtins.toString port}";
+          proxyPass = mkDefault "http://${address}:${builtins.toString port}";
           inherit proxyWebsockets recommendedProxySettings extraConfig;
         };
       };

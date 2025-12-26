@@ -18,23 +18,14 @@ View the [*nix-core* NixOS module on GitHub](https://github.com/sid115/nix-core/
 
 ## Sops
 
-Provide the following entries to your secrets.yaml for email support:
+Provide the following entries to your secrets.yaml if you enabled `mailIntegration`:
 
 > Replace `abc123` with your actual secrets
 
 ```yaml
 nextcloud:
     smtp-password: abc123 # for email support (local or external mailserver)
-    hashed-smtp-password: abc123 # for email support (local mailserver only)
 ```
-
-Generate the hashed password with:
-
-```shell
-nix-shell -p mkpasswd --run 'mkpasswd -sm bcrypt'
-```
-
-> For more info, see our mailserver module.
 
 ## Config
 

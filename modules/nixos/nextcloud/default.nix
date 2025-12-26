@@ -10,7 +10,6 @@ let
   domain = config.networking.domain;
   subdomain = cfg.reverseProxy.subdomain;
   fqdn = if (cfg.reverseProxy.enable && subdomain != "") then "${subdomain}.${domain}" else domain;
-  mailserver = config.mailserver;
 
   # package = pkgs.nextcloud31.overrideAttrs (old: rec {
   #   version = "31.0.7";
@@ -26,12 +25,14 @@ let
     ;
 
   inherit (lib.utils)
+    mkMailIntegrationOption
     mkReverseProxyOption
     mkVirtualHost
     ;
 in
 {
   options.services.nextcloud = {
+    mailIntegration = mkMailIntegrationOption "Nextcloud";
     reverseProxy = mkReverseProxyOption "Nextcloud" "nc";
   };
 
@@ -60,19 +61,20 @@ in
         loglevel = mkDefault 2;
         syslog_tag = mkDefault "Nextcloud";
 
+        maintenance_window_start = 2; # 2am UTC
+        default_phone_region = mkDefault "DE";
+      }
+      // mkIf cfg.mailIntegration.enable {
         # SMTP with SSL/TLS
         mail_domain = mkDefault domain;
         mail_from_address = mkDefault "nextcloud"; # @domain.tld gets added automatically
         mail_smtpauth = mkDefault true;
-        mail_smtphost = mkDefault mailserver.fqdn;
+        mail_smtphost = mkDefault cfg.mailIntegration.smtpHost;
         mail_smtpmode = mkDefault "smtp";
         mail_smtpname = mkDefault "nextcloud@${domain}";
         mail_smtpport = mkDefault 465;
         mail_smtpsecure = mkDefault "ssl";
         mail_smtptimeout = mkDefault 30;
-
-        maintenance_window_start = 2; # 2am UTC
-        default_phone_region = mkDefault "DE";
       };
       phpOptions = {
         catch_workers_output = "yes";
@@ -87,7 +89,7 @@ in
         output_buffering = "0";
         short_open_tag = "Off";
       };
-      secretFile = mkDefault config.sops.templates."nextcloud".path;
+      secretFile = mkIf cfg.mailIntegration.enable config.sops.templates."nextcloud".path;
     };
 
     services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
@@ -97,7 +99,7 @@ in
       };
     };
 
-    sops =
+    sops = mkIf cfg.mailIntegration.enable (
       let
         owner = "nextcloud";
         group = "nextcloud";
@@ -107,23 +109,13 @@ in
         secrets."nextcloud/smtp-password" = {
           inherit owner group mode;
         };
-        secrets."nextcloud/hashed-smtp-password" = mkIf mailserver.enable {
-          inherit owner group mode;
-        };
         templates."nextcloud" = {
           inherit owner group mode;
           content = ''
             {"mail_smtppassword":"${config.sops.placeholder."nextcloud/smtp-password"}"}
           '';
         };
-      };
-
-    mailserver = mkIf mailserver.enable {
-      loginAccounts = {
-        "nextcloud@${config.networking.domain}" = {
-          hashedPasswordFile = config.sops.secrets."nextcloud/hashed-smtp-password".path;
-        };
-      };
-    };
+      }
+    );
   };
 }
