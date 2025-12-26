@@ -12,6 +12,7 @@ let
     ;
 
   inherit (lib.utils)
+    mkMailIntegrationOption
     mkReverseProxyOption
     mkVirtualHost
     mkUrl
@@ -19,6 +20,7 @@ let
 in
 {
   options.services.vaultwarden = {
+    mailIntegration = mkMailIntegrationOption "Vaultwarden";
     reverseProxy = mkReverseProxyOption "Vaultwarden" "pass";
   };
 
@@ -33,10 +35,11 @@ in
         ROCKET_ADDRESS = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
         ROCKET_PORT = mkDefault 8222;
         SIGNUPS_ALLOWED = mkDefault false;
-
+      }
+      // mkIf cfg.mailIntegration.enable {
         SMTP_FROM = mkDefault "vaultwarden@${domain}";
         SMTP_FROM_NAME = mkDefault "${domain} Vaultwarden server";
-        SMTP_HOST = mkDefault "mail.${domain}";
+        SMTP_HOST = cfg.mailIntegration.smtpHost;
         SMTP_PORT = mkDefault 587;
         SMTP_SECURITY = mkDefault "starttls";
         SMTP_USERNAME = mkDefault "vaultwarden@${domain}";
@@ -52,10 +55,6 @@ in
       };
     };
 
-    mailserver.loginAccounts."vaultwarden@${domain}".hashedPasswordFile =
-      mkIf config.mailserver.enable
-        config.sops.secrets."vaultwarden/hashed-smtp-password".path;
-
     sops =
       let
         owner = "vaultwarden";
@@ -66,10 +65,7 @@ in
         secrets."vaultwarden/admin-token" = {
           inherit owner group mode;
         };
-        secrets."vaultwarden/smtp-password" = {
-          inherit owner group mode;
-        };
-        secrets."vaultwarden/hashed-smtp-password" = mkIf config.mailserver.enable {
+        secrets."vaultwarden/smtp-password" = mkIf cfg.mailIntegration.enable {
           inherit owner group mode;
         };
       };

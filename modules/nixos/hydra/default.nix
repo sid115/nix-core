@@ -5,7 +5,6 @@ let
   domain = config.networking.domain;
   subdomain = cfg.reverseProxy.subdomain;
   fqdn = if (cfg.reverseProxy.enable && subdomain != "") then "${subdomain}.${domain}" else domain;
-  mailserver = config.mailserver;
 
   inherit (lib)
     mkDefault
@@ -13,13 +12,14 @@ let
     ;
 
   inherit (lib.utils)
+    mkMailIntegrationOption
     mkReverseProxyOption
-    mkUrl
     mkVirtualHost
     ;
 in
 {
   options.services.hydra = {
+    mailIntegration = mkMailIntegrationOption "Hydra";
     reverseProxy = mkReverseProxyOption "Hydra" "hydra";
   };
 
@@ -29,9 +29,10 @@ in
       listenHost = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
       hydraURL = fqdn;
       useSubstitutes = mkDefault true;
-
-      notificationSender = mkDefault "hydra@${config.networking.domain}";
-      smtpHost = mkDefault mailserver.fqdn;
+    }
+    // mkIf cfg.mailIntegration.enable {
+      notificationSender = mkDefault "hydra@${domain}";
+      smtpHost = cfg.mailIntegration.smtpHost;
     };
 
     nix.settings.allowed-uris = [
@@ -47,13 +48,7 @@ in
       ssl = cfg.reverseProxy.forceSSL;
     });
 
-    mailserver.loginAccounts = mkIf mailserver.enable {
-      "${cfg.notificationSender}" = {
-        hashedPasswordFile = config.sops.secrets."hydra/hashed-smtp-password".path;
-      };
-    };
-
-    sops =
+    sops = mkIf cfg.mailIntegration.enable (
       let
         owner = "hydra";
         group = "hydra";
@@ -63,9 +58,7 @@ in
         secrets."hydra/smtp-password" = {
           inherit owner group mode;
         };
-        secrets."hydra/hashed-smtp-password" = mkIf mailserver.enable {
-          inherit owner group mode;
-        };
-      };
+      }
+    );
   };
 }
