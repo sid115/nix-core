@@ -8,39 +8,28 @@ let
 
   inherit (lib)
     mkDefault
-    mkEnableOption
     mkIf
-    mkOption
-    types
+    ;
+
+  inherit (lib.utils)
+    mkReverseProxyOption
+    mkVirtualHost
+    mkUrl
     ;
 in
 {
   options.services.vaultwarden = {
-    reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for vaultwarden";
-      subdomain = mkOption {
-        type = types.str;
-        default = "pass";
-        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-      };
-      forceSSL = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Force SSL for Nginx virtual host.";
-      };
-    };
+    reverseProxy = mkReverseProxyOption "Vaultwarden" "pass";
   };
 
   config = mkIf cfg.enable {
     services.vaultwarden = {
       config = {
         ADMIN_TOKEN_FILE = mkDefault config.sops.secrets."vaultwarden/admin-token".path;
-        DOMAIN = mkDefault (
-          if config.services.nginx.virtualHosts."${fqdn}".forceSSL then
-            "https://${fqdn}"
-          else
-            "http://${fqdn}"
-        );
+        DOMAIN = mkDefault (mkUrl {
+          inherit fqdn;
+          ssl = with cfg.reverseProxy; enable && forceSSL;
+        });
         ROCKET_ADDRESS = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
         ROCKET_PORT = mkDefault 8222;
         SIGNUPS_ALLOWED = mkDefault false;
@@ -55,16 +44,12 @@ in
       };
     };
 
-    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
-      enableACME = cfg.reverseProxy.forceSSL;
-      forceSSL = cfg.reverseProxy.forceSSL;
-      locations."/".proxyPass = "http://127.0.0.1:${toString cfg.config.ROCKET_PORT}";
-      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/cert.pem";
-      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/key.pem";
+    services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
+      "${fqdn}" = mkVirtualHost {
+        inherit config fqdn;
+        port = cfg.config.ROCKET_PORT;
+        ssl = cfg.reverseProxy.forceSSL;
+      };
     };
 
     mailserver.loginAccounts."vaultwarden@${domain}".hashedPasswordFile =

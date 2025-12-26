@@ -8,33 +8,23 @@ let
 
   inherit (lib)
     mkDefault
-    mkEnableOption
     mkIf
-    mkOption
-    types
+    ;
+
+  inherit (lib.utils)
+    mkReverseProxyOption
+    mkVirtualHost
     ;
 in
 {
   options.services.peertube = {
-    reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for PeerTube";
-      subdomain = mkOption {
-        type = types.str;
-        default = "vid";
-        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-      };
-      forceSSL = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Force SSL for Nginx virtual host.";
-      };
-    };
+    reverseProxy = mkReverseProxyOption "PeerTube" "vid";
   };
 
   config = mkIf cfg.enable {
     services.peertube = {
       localDomain = fqdn;
-      enableWebHttps = config.services.nginx.virtualHosts."${fqdn}".forceSSL;
+      enableWebHttps = mkDefault (with cfg.reverseProxy; enable && forceSSL);
       configureNginx = mkDefault true;
       secrets.secretsFile = mkDefault config.sops.secrets."peertube/secret".path;
       database.createLocally = mkDefault true;
@@ -51,15 +41,11 @@ in
       "${fqdn}".postRun = "systemctl restart peertube.service";
     };
 
-    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
-      enableACME = cfg.reverseProxy.forceSSL;
-      forceSSL = cfg.reverseProxy.forceSSL;
-      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/cert.pem";
-      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/key.pem";
+    services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
+      "${fqdn}" = mkVirtualHost {
+        inherit config fqdn;
+        ssl = cfg.reverseProxy.forceSSL;
+      };
     };
 
     sops.secrets."peertube/secret" = {

@@ -12,26 +12,20 @@ let
 
   inherit (lib)
     mkDefault
-    mkEnableOption
     mkIf
     mkOption
     types
     ;
+
+  inherit (lib.utils)
+    mkReverseProxyOption
+    mkUrl
+    mkVirtualHost
+    ;
 in
 {
   options.services.immich = {
-    reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for immich";
-      subdomain = mkOption {
-        type = types.str;
-        default = "gallery";
-        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-      };
-      forceSSL = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Force SSL for Nginx virtual host.";
-      };
+    reverseProxy = mkReverseProxyOption "Immich" "gallery" // {
       maxBodySize = mkOption {
         type = types.str;
         default = "5G";
@@ -46,27 +40,25 @@ in
       host = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
       secretsFile = config.sops.templates."immich/secrets-file".path;
       settings = {
-        server.externalDomain =
-          if config.services.nginx.virtualHosts."${fqdn}".forceSSL then
-            "https://${fqdn}"
-          else
-            "http://${fqdn}";
+        server.externalDomain = mkUrl {
+          inherit fqdn;
+          ssl = with cfg.reverseProxy; enable && forceSSL;
+        };
       };
     };
 
-    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
-      forceSSL = cfg.reverseProxy.forceSSL;
-      enableACME = cfg.reverseProxy.forceSSL;
-      locations."/".proxyPass = mkDefault "http://127.0.0.1:${toString cfg.port}";
-      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/cert.pem";
-      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/key.pem";
-      extraConfig = ''
-        client_max_body_size ${cfg.reverseProxy.maxBodySize};
-      '';
+    services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
+      "${fqdn}" =
+        mkVirtualHost {
+          inherit config fqdn;
+          port = cfg.port;
+          ssl = cfg.reverseProxy.forceSSL;
+        }
+        // {
+          extraConfig = ''
+            client_max_body_size ${cfg.reverseProxy.maxBodySize};
+          '';
+        };
     };
 
     sops =

@@ -10,7 +10,7 @@ let
   domain = config.networking.domain;
   subdomain = cfg.reverseProxy.subdomain;
   fqdn = if (cfg.reverseProxy.enable && subdomain != "") then "${subdomain}.${domain}" else domain;
-  port = "5232";
+  port = 5232;
 
   inherit (lib)
     concatLines
@@ -19,6 +19,11 @@ let
     mkIf
     mkOption
     types
+    ;
+
+  inherit (lib.utils)
+    mkReverseProxyOption
+    mkVirtualHost
     ;
 in
 {
@@ -32,19 +37,7 @@ in
       ];
       description = "List of users for Radicale. Each user must have a corresponding entry in the SOPS file under 'radicale/<user>'";
     };
-    reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for Radicale";
-      subdomain = mkOption {
-        type = types.str;
-        default = "dav";
-        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-      };
-      forceSSL = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Force SSL for Nginx virtual host.";
-      };
-    };
+    reverseProxy = mkReverseProxyOption "Radicale" "dav";
   };
 
   config = mkIf cfg.enable {
@@ -52,7 +45,7 @@ in
       settings = {
         server = {
           hosts = [
-            "${if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0"}:${port}"
+            "${if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0"}:${builtins.toString port}"
           ];
           max_connections = mkDefault 20;
           max_content_length = mkDefault 500000000;
@@ -70,16 +63,11 @@ in
       };
     };
 
-    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
-      forceSSL = cfg.reverseProxy.forceSSL;
-      enableACME = cfg.reverseProxy.forceSSL;
-      locations."/".proxyPass = "http://127.0.0.1:${port}";
-      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/cert.pem";
-      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/key.pem";
+    services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
+      "${fqdn}" = mkVirtualHost {
+        inherit config fqdn port;
+        ssl = cfg.reverseProxy.forceSSL;
+      };
     };
 
     environment.systemPackages = [
