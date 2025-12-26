@@ -20,20 +20,11 @@ sudo -u hydra hydra-create-user YOU --full-name YOU --email-address 'YOU@EXAMPLE
 
 ## Sops
 
-Provide the following entries to your secrets.yaml for email support:
+Provide the following entries to your secrets.yaml if you enabled `mailIntegration`:
 
 > Replace `abc123` with your actual secrets
 
 ```yaml
 hydra:
-    smtp-password: abc123 # for email support (local or external mailserver)
-    hashed-smtp-password: abc123 # for email support (local mailserver only)
+    smtp-password: abc123
 ```
-
-Generate the hashed password with:
-
-```shell
-nix-shell -p mkpasswd --run 'mkpasswd -sm bcrypt'
-```
-
-> For more info, see our mailserver module.
