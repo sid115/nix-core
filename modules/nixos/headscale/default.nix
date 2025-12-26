@@ -13,29 +13,22 @@ let
 
   inherit (lib)
     mkDefault
-    mkEnableOption
     mkIf
     mkOption
     optional
     optionals
     types
     ;
+
+  inherit (lib.utils)
+    mkReverseProxyOption
+    mkUrl
+    mkVirtualHost
+    ;
 in
 {
   options.services.headscale = {
-    reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for headscale";
-      subdomain = mkOption {
-        type = types.str;
-        default = "headscale";
-        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-      };
-      forceSSL = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Force SSL for Nginx virtual host.";
-      };
-    };
+    reverseProxy = mkReverseProxyOption "Headscale" "headscale";
     openFirewall = mkOption {
       type = types.bool;
       default = false;
@@ -74,11 +67,10 @@ in
       settings = {
         policy.path = "/etc/${acl}";
         database.type = "sqlite"; # postgres is highly discouraged as it is only supported for legacy reasons
-        server_url =
-          if config.services.nginx.virtualHosts."${fqdn}".forceSSL then
-            "https://${fqdn}"
-          else
-            "http://${fqdn}";
+        server_url = mkUrl {
+          inherit fqdn;
+          ssl = with cfg.reverseProxy; enable && forceSSL;
+        };
         derp.server.enable = cfg.reverseProxy.forceSSL;
         dns = {
           magic_dns = mkDefault true;
@@ -94,19 +86,13 @@ in
       };
     };
 
-    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
-      forceSSL = cfg.reverseProxy.forceSSL;
-      enableACME = cfg.reverseProxy.forceSSL;
-      locations."/" = {
-        proxyPass = mkDefault "http://127.0.0.1:${toString cfg.port}";
+    services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
+      "${fqdn}" = mkVirtualHost {
+        inherit config fqdn;
+        port = cfg.port;
+        ssl = cfg.reverseProxy.forceSSL;
         proxyWebsockets = true;
       };
-      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/cert.pem";
-      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/key.pem";
     };
 
     networking.firewall = mkIf cfg.openFirewall {

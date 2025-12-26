@@ -8,28 +8,19 @@ let
 
   inherit (lib)
     mkDefault
-    mkEnableOption
     mkForce
     mkIf
-    mkOption
-    types
+    ;
+
+  inherit (lib.utils)
+    mkReverseProxyOption
+    mkVirtualHost
+    mkUrl
     ;
 in
 {
   options.services.searx = {
-    reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for searx";
-      subdomain = mkOption {
-        type = types.str;
-        default = "srx";
-        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-      };
-      forceSSL = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Force SSL for Nginx virtual host.";
-      };
-    };
+    reverseProxy = mkReverseProxyOption "Searx" "srx";
   };
 
   config = mkIf cfg.enable {
@@ -47,12 +38,10 @@ in
           bind_address = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
           port = mkDefault 8787;
           secret_key = mkDefault "@SEARX_SECRET_KEY@";
-          base_url = mkDefault (
-            if config.services.nginx.virtualHosts."${fqdn}".forceSSL then
-              "https://${fqdn}"
-            else
-              "http://${fqdn}"
-          );
+          base_url = mkDefault (mkUrl {
+            inherit fqdn;
+            ssl = with cfg.reverseProxy; enable && forceSSL;
+          });
           limiter = mkDefault true;
         };
         search = {
@@ -79,16 +68,12 @@ in
       };
     };
 
-    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
-      enableACME = cfg.reverseProxy.forceSSL;
-      forceSSL = cfg.reverseProxy.forceSSL;
-      locations."/".proxyPass = mkDefault "http://127.0.0.1:${toString cfg.settings.server.port}";
-      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/cert.pem";
-      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/key.pem";
+    services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
+      "${fqdn}" = mkVirtualHost {
+        inherit config fqdn;
+        port = cfg.settings.server.port;
+        ssl = cfg.reverseProxy.forceSSL;
+      };
     };
 
     sops =

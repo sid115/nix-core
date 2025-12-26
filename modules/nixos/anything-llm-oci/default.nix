@@ -27,6 +27,11 @@ let
     optional
     types
     ;
+
+  inherit (lib.utils)
+    mkReverseProxyOption
+    mkVirtualHost
+    ;
 in
 {
   options.services.anything-llm-oci = {
@@ -56,27 +61,15 @@ in
           - SIG_SALT
       '';
     };
-    reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for AnythingLLM.";
-      subdomain = mkOption {
-        type = types.str;
-        default = "llm";
-        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-      };
-      forceSSL = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Force SSL for Nginx virtual host.";
-      };
-    };
+    reverseProxy = mkReverseProxyOption "AnythingLLM" "llm";
   };
 
   config = mkIf cfg.enable {
-    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
-      enableACME = cfg.reverseProxy.forceSSL;
-      forceSSL = cfg.reverseProxy.forceSSL;
-      locations."/" = {
-        proxyPass = mkDefault "http://127.0.0.1:${toString cfg.port}";
+    services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
+      "${fqdn}" = mkVirtualHost {
+        inherit config fqdn;
+        port = cfg.port;
+        ssl = cfg.reverseProxy.forceSSL;
         proxyWebsockets = true;
       };
     };

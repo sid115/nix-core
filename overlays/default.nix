@@ -1,6 +1,12 @@
 { inputs, ... }:
 
 {
+  default = final: prev: {
+    lib = prev.lib // {
+      utils = import ../lib/utils.nix { lib = prev.lib; };
+    };
+  };
+
   additions = final: _prev: import ../pkgs final.pkgs;
 
   modifications = final: prev: {

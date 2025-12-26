@@ -8,27 +8,16 @@ let
 
   inherit (lib)
     mkDefault
-    mkEnableOption
     mkIf
-    mkOption
-    types
+    ;
+
+  inherit (lib.utils)
+    mkReverseProxyOption
     ;
 in
 {
   options.services.jirafeau = {
-    reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for Jirafeau";
-      subdomain = mkOption {
-        type = types.str;
-        default = "share";
-        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-      };
-      forceSSL = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Force SSL for Nginx virtual host.";
-      };
-    };
+    reverseProxy = mkReverseProxyOption "Jirafeau" "share";
   };
 
   config = mkIf cfg.enable {
