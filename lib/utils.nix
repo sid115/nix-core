@@ -52,6 +52,7 @@ in
     {
       config,
       fqdn ? config.networking.domain,
+      address ? "127.0.0.1",
       port ? null,
       ssl ? false,
       proxyWebsockets ? false,
@@ -64,7 +65,7 @@ in
       forceSSL = ssl;
       locations = mkIf (port != null) {
         "/" = {
-          proxyPass = mkDefault "http://127.0.0.1:${builtins.toString port}";
+          proxyPass = mkDefault "http://${address}:${builtins.toString port}";
           inherit proxyWebsockets recommendedProxySettings extraConfig;
         };
       };
