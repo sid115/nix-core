@@ -14,29 +14,20 @@ let
 
   inherit (lib)
     mkDefault
-    mkEnableOption
     mkIf
-    mkOption
-    types
+    recursiveUpdate
+    ;
+
+  inherit (lib.utils)
+    mkReverseProxyOption
+    mkVirtualHost
     ;
 in
 {
   imports = [ inputs.headplane.nixosModules.headplane ];
 
   options.services.headplane = {
-    reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for headplane";
-      subdomain = mkOption {
-        type = types.str;
-        default = "headplane";
-        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-      };
-      forceSSL = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Force SSL for Nginx virtual host.";
-      };
-    };
+    reverseProxy = mkReverseProxyOption "Headplane" "headplane";
   };
 
   config = mkIf cfg.enable {
@@ -63,19 +54,13 @@ in
       };
     };
 
-    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
-      forceSSL = cfg.reverseProxy.forceSSL;
-      enableACME = cfg.reverseProxy.forceSSL;
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:${toString cfg.settings.server.port}";
+    services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
+      "${fqdn}" = mkVirtualHost {
+        inherit config fqdn;
+        port = cfg.settings.server.port;
+        ssl = cfg.reverseProxy.forceSSL;
         proxyWebsockets = true;
       };
-      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/cert.pem";
-      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/key.pem";
     };
 
     sops.secrets =

@@ -7,27 +7,17 @@ let
   fqdn = if (cfg.reverseProxy.enable && subdomain != "") then "${subdomain}.${domain}" else domain;
 
   inherit (lib)
-    mkEnableOption
     mkIf
-    mkOption
-    types
+    ;
+
+  inherit (lib.utils)
+    mkReverseProxyOption
+    mkVirtualHost
     ;
 in
 {
   options.services.rss-bridge = {
-    reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for RSS-Bridge.";
-      subdomain = mkOption {
-        type = types.str;
-        default = "rss";
-        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-      };
-      forceSSL = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Force SSL for Nginx virtual host.";
-      };
-    };
+    reverseProxy = mkReverseProxyOption "RSS-Bridge" "rss";
   };
 
   config = mkIf cfg.enable {
@@ -40,15 +30,11 @@ in
 
     systemd.tmpfiles.rules = [ "d ${cfg.dataDir} 0755 ${cfg.user} ${cfg.group} -" ];
 
-    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
-      forceSSL = cfg.reverseProxy.forceSSL;
-      enableACME = cfg.reverseProxy.forceSSL;
-      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/cert.pem";
-      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/key.pem";
+    services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
+      "${fqdn}" = mkVirtualHost {
+        inherit config fqdn;
+        ssl = cfg.reverseProxy.forceSSL;
+      };
     };
   };
 }
