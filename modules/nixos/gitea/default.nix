@@ -13,27 +13,18 @@ let
   inherit (lib)
     elemAt
     mkDefault
-    mkEnableOption
     mkIf
-    mkOption
-    types
+    ;
+
+  inherit (lib.utils)
+    mkReverseProxyOption
+    mkVirtualHost
+    mkUrl
     ;
 in
 {
   options.services.gitea = {
-    reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for gitea";
-      subdomain = mkOption {
-        type = types.str;
-        default = "git";
-        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-      };
-      forceSSL = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Force SSL for Nginx virtual host.";
-      };
-    };
+    reverseProxy = mkReverseProxyOption "Gitea" "git";
   };
 
   config = mkIf cfg.enable {
@@ -44,7 +35,10 @@ in
         service.DISABLE_REGISTRATION = mkDefault true;
         server = {
           DOMAIN = mkDefault fqdn;
-          ROOT_URL = mkDefault (if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}");
+          ROOT_URL = mkDefault (mkUrl {
+            inherit fqdn;
+            ssl = with cfg.reverseProxy; enable && forceSSL;
+          });
           HTTP_ADDR = mkDefault (if cfg.reverseProxy.enable then "127.0.0.1" else "0.0.0.0");
           HTTP_PORT = mkDefault 3000;
           SSH_PORT = mkDefault (elemAt config.services.openssh.ports 0);
@@ -61,18 +55,12 @@ in
       "${fqdn}".postRun = "systemctl restart gitea.service";
     };
 
-    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
-      enableACME = cfg.reverseProxy.forceSSL;
-      forceSSL = cfg.reverseProxy.forceSSL;
-      locations."/" = {
-        proxyPass = mkDefault "http://127.0.0.1:${toString cfg.settings.server.HTTP_PORT}";
+    services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
+      "${fqdn}" = mkVirtualHost {
+        inherit config fqdn;
+        port = cfg.settings.server.HTTP_PORT;
+        ssl = cfg.reverseProxy.forceSSL;
       };
-      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/cert.pem";
-      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/key.pem";
     };
 
     services.postgresql = {

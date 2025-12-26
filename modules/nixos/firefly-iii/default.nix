@@ -21,30 +21,24 @@ let
 
   inherit (lib)
     mkDefault
-    mkEnableOption
     mkIf
     mkOption
     types
     ;
+
+  inherit (lib.utils)
+    mkReverseProxyOption
+    mkVirtualHost
+    mkUrl
+    ;
 in
 {
   options.services.firefly-iii = {
-    reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for Firefly-III";
-      subdomain = mkOption {
-        type = types.str;
-        default = "finance";
-        description = "Subdomain for Nginx virtual host (Firefly-III). Leave empty for root domain.";
-      };
+    reverseProxy = mkReverseProxyOption "Firefly-III" "finance" // {
       importerSubdomain = mkOption {
         type = types.str;
         default = "import.finance";
         description = "Subdomain for Nginx virtual host (Firefly-III data importer).";
-      };
-      forceSSL = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Force SSL for Nginx virtual host.";
       };
     };
   };
@@ -55,12 +49,16 @@ in
       virtualHost = fqdn;
       settings = {
         APP_ENV = "production";
-        APP_FORCE_ROOT =
-          if cfg.reverseProxy.forceSSL then "https://${cfg.virtualHost}" else "http://${cfg.virtualHost}";
-        APP_FORCE_SSL = cfg.reverseProxy.forceSSL;
+        APP_FORCE_ROOT = mkUrl {
+          inherit fqdn;
+          ssl = with cfg.reverseProxy; enable && forceSSL;
+        };
+        APP_FORCE_SSL = with cfg.reverseProxy; enable && forceSSL;
         APP_KEY_FILE = config.sops.templates."firefly-iii/appkey".path;
-        APP_URL =
-          if cfg.reverseProxy.forceSSL then "https://${cfg.virtualHost}" else "http://${cfg.virtualHost}";
+        APP_URL = mkUrl {
+          inherit fqdn;
+          ssl = with cfg.reverseProxy; enable && forceSSL;
+        };
         DB_CONNECTION = mkDefault "mysql";
         DB_DATABASE = mkDefault "firefly";
         DB_HOST = mkDefault "localhost";
@@ -96,25 +94,15 @@ in
     ];
 
     services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
-      "${cfg.virtualHost}" = {
-        enableACME = cfg.reverseProxy.forceSSL;
-        forceSSL = cfg.reverseProxy.forceSSL;
-        sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
-          config.security.acme.certs."${fqdn}".directory
-        }/cert.pem";
-        sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
-          config.security.acme.certs."${fqdn}".directory
-        }/key.pem";
+      "${cfg.virtualHost}" = mkVirtualHost {
+        inherit config;
+        fqdn = cfg.virtualHost;
+        ssl = cfg.reverseProxy.forceSSL;
       };
-      "${importer-cfg.virtualHost}" = {
-        enableACME = cfg.reverseProxy.forceSSL;
-        forceSSL = cfg.reverseProxy.forceSSL;
-        sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
-          config.security.acme.certs."${importer-fqdn}".directory
-        }/cert.pem";
-        sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
-          config.security.acme.certs."${importer-fqdn}".directory
-        }/key.pem";
+      "${importer-cfg.virtualHost}" = mkVirtualHost {
+        inherit config;
+        fqdn = importer-cfg.virtualHost;
+        ssl = cfg.reverseProxy.forceSSL;
       };
     };
 

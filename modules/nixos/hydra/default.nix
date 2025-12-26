@@ -9,27 +9,18 @@ let
 
   inherit (lib)
     mkDefault
-    mkEnableOption
     mkIf
-    mkOption
-    types
+    ;
+
+  inherit (lib.utils)
+    mkReverseProxyOption
+    mkUrl
+    mkVirtualHost
     ;
 in
 {
   options.services.hydra = {
-    reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for hydra";
-      subdomain = mkOption {
-        type = types.str;
-        default = "hydra";
-        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-      };
-      forceSSL = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Force SSL for Nginx virtual host.";
-      };
-    };
+    reverseProxy = mkReverseProxyOption "Hydra" "hydra";
   };
 
   config = mkIf cfg.enable {
@@ -49,17 +40,12 @@ in
       "git+ssh://github.com/"
     ];
 
-    services.nginx.virtualHosts."${cfg.hydraURL}" = mkIf cfg.reverseProxy.enable {
-      enableACME = cfg.reverseProxy.forceSSL;
-      forceSSL = cfg.reverseProxy.forceSSL;
-      locations."/".proxyPass = mkDefault "http://127.0.0.1:${toString cfg.port}";
-      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/cert.pem";
-      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/key.pem";
-    };
+    services.nginx.virtualHosts."${cfg.hydraURL}" = mkIf cfg.reverseProxy.enable (mkVirtualHost {
+      inherit config;
+      fqdn = cfg.hydraURL;
+      port = cfg.port;
+      ssl = cfg.reverseProxy.forceSSL;
+    });
 
     mailserver.loginAccounts = mkIf mailserver.enable {
       "${cfg.notificationSender}" = {

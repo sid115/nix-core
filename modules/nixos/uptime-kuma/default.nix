@@ -8,27 +8,17 @@ let
 
   inherit (lib)
     mkDefault
-    mkEnableOption
     mkIf
-    mkOption
-    types
+    ;
+
+  inherit (lib.utils)
+    mkReverseProxyOption
+    mkVirtualHost
     ;
 in
 {
   options.services.uptime-kuma = {
-    reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for uptime-kuma";
-      subdomain = mkOption {
-        type = types.str;
-        default = "monitor";
-        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-      };
-      forceSSL = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Force SSL for Nginx virtual host.";
-      };
-    };
+    reverseProxy = mkReverseProxyOption "Uptime Kuma" "monitor";
   };
 
   config = mkIf cfg.enable {
@@ -39,18 +29,12 @@ in
       };
     };
 
-    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
-      forceSSL = cfg.reverseProxy.forceSSL;
-      enableACME = cfg.reverseProxy.forceSSL;
-      locations."/" = {
-        proxyPass = mkDefault "http://127.0.0.1:${cfg.settings.PORT}";
+    services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
+      "${fqdn}" = mkVirtualHost {
+        inherit config fqdn;
+        port = cfg.settings.PORT;
+        ssl = cfg.reverseProxy.forceSSL;
       };
-      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/cert.pem";
-      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/key.pem";
     };
   };
 }

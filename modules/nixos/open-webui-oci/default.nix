@@ -33,9 +33,15 @@ let
 
   baseUrl =
     if cfg.reverseProxy.enable then
-      (if cfg.reverseProxy.forceSSL then "https://${fqdn}" else "http://${fqdn}")
+      lib.utils.mkUrl {
+        inherit fqdn;
+        ssl = cfg.reverseProxy.forceSSL;
+      }
     else
-      "http://${fqdn}:${toString cfg.port}";
+      lib.utils.mkUrl {
+        inherit fqdn;
+        port = cfg.port;
+      };
 
   inherit (lib)
     concatStringsSep
@@ -46,6 +52,11 @@ let
     mkOverride
     optional
     types
+    ;
+
+  inherit (lib.utils)
+    mkReverseProxyOption
+    mkVirtualHost
     ;
 in
 {
@@ -70,35 +81,17 @@ in
       default = null;
       example = "config.sops.templates.open-webui-env.path";
     };
-    reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for Open WebUI.";
-      subdomain = mkOption {
-        type = types.str;
-        default = "ai";
-        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-      };
-      forceSSL = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Force SSL for Nginx virtual host.";
-      };
-    };
+    reverseProxy = mkReverseProxyOption "Open WebUI" "ai";
   };
 
   config = mkIf cfg.enable {
-    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
-      enableACME = cfg.reverseProxy.forceSSL;
-      forceSSL = cfg.reverseProxy.forceSSL;
-      locations."/" = {
-        proxyPass = mkDefault "http://127.0.0.1:${toString cfg.port}";
+    services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
+      "${fqdn}" = mkVirtualHost {
+        inherit config fqdn;
+        port = cfg.port;
+        ssl = cfg.reverseProxy.forceSSL;
         proxyWebsockets = true;
       };
-      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/cert.pem";
-      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/key.pem";
     };
 
     virtualisation.podman = {

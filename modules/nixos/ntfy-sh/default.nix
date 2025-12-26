@@ -15,7 +15,7 @@ let
   check-domain = pkgs.writeShellApplication rec {
     name = "check-domain";
     runtimeInputs = [ pkgs.curl ];
-    text = readFile ./${name}.sh;
+    text = builtins.readFile ./${name}.sh;
     meta.mainProgram = name;
   };
 
@@ -58,36 +58,22 @@ let
     escapeShellArg
     foldl'
     getExe
-    hasPrefix
     mkDefault
-    mkEnableOption
     mkIf
     mkOption
     splitString
     types
     ;
 
-  inherit (builtins)
-    readFile
-    stringLength
-    substring
+  inherit (lib.utils)
+    mkReverseProxyOption
+    mkUrl
+    mkVirtualHost
     ;
 in
 {
   options.services.ntfy-sh = {
-    reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for ntfy-sh";
-      subdomain = mkOption {
-        type = types.str;
-        default = "ntfy";
-        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-      };
-      forceSSL = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Force SSL for Nginx virtual host.";
-      };
-    };
+    reverseProxy = mkReverseProxyOption "ntfy-sh" "ntfy";
     notifiers = {
       monitor-domains = mkOption {
         type = types.listOf (
@@ -123,28 +109,21 @@ in
 
   config = mkIf cfg.enable {
     services.ntfy-sh.settings = {
-      base-url = mkDefault (
-        if config.services.nginx.virtualHosts."${fqdn}".forceSSL then
-          "https://${fqdn}"
-        else
-          "http://${fqdn}"
-      );
+      base-url = mkDefault (mkUrl {
+        inherit fqdn;
+        ssl = cfg.reverseProxy.forceSSL;
+      });
       listen-http = mkDefault (
         if cfg.reverseProxy.enable then "127.0.0.1:${toString port}" else "0.0.0.0:${toString port}"
       );
     };
 
-    services.nginx.virtualHosts."${fqdn}" = mkIf cfg.reverseProxy.enable {
-      enableACME = cfg.reverseProxy.forceSSL;
-      forceSSL = cfg.reverseProxy.forceSSL;
-      locations."/".proxyPass =
-        mkDefault "http://127.0.0.1:${elemAt (splitString ":" cfg.settings.listen-http) 1}";
-      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/cert.pem";
-      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/key.pem";
+    services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
+      "${fqdn}" = mkVirtualHost {
+        inherit config fqdn;
+        port = elemAt (splitString ":" cfg.settings.listen-http) 1;
+        ssl = cfg.reverseProxy.forceSSL;
+      };
     };
 
     systemd = {

@@ -22,27 +22,17 @@ let
 
   inherit (lib)
     mkDefault
-    mkEnableOption
     mkIf
-    mkOption
-    types
+    ;
+
+  inherit (lib.utils)
+    mkReverseProxyOption
+    mkVirtualHost
     ;
 in
 {
   options.services.nextcloud = {
-    reverseProxy = {
-      enable = mkEnableOption "Nginx reverse proxy for Nextcloud";
-      subdomain = mkOption {
-        type = types.str;
-        default = "nc";
-        description = "Subdomain for Nginx virtual host. Leave empty for root domain.";
-      };
-      forceSSL = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Force SSL for Nginx virtual host.";
-      };
-    };
+    reverseProxy = mkReverseProxyOption "Nextcloud" "nc";
   };
 
   config = mkIf cfg.enable {
@@ -100,15 +90,11 @@ in
       secretFile = mkDefault config.sops.templates."nextcloud".path;
     };
 
-    services.nginx.virtualHosts.${cfg.hostName} = mkIf cfg.reverseProxy.enable {
-      forceSSL = cfg.reverseProxy.forceSSL;
-      enableACME = cfg.reverseProxy.forceSSL;
-      sslCertificate = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/cert.pem";
-      sslCertificateKey = mkIf cfg.reverseProxy.forceSSL "${
-        config.security.acme.certs."${fqdn}".directory
-      }/key.pem";
+    services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
+      "${cfg.hostName}" = mkVirtualHost {
+        inherit config fqdn;
+        ssl = cfg.reverseProxy.forceSSL;
+      };
     };
 
     sops =
