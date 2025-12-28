@@ -69,7 +69,9 @@ in
           inherit proxyWebsockets recommendedProxySettings extraConfig;
         };
       };
-      sslCertificate = mkIf ssl "${config.security.acme.certs."${fqdn}".directory}/cert.pem";
-      sslCertificateKey = mkIf ssl "${config.security.acme.certs."${fqdn}".directory}/key.pem";
+      sslCertificate =
+        if ssl then "${config.security.acme.certs."${fqdn}".directory}/cert.pem" else "/dev/null";
+      sslCertificateKey =
+        if ssl then "${config.security.acme.certs."${fqdn}".directory}/key.pem" else "/dev/null";
     };
 }
