@@ -16,17 +16,8 @@ View the [*nix-core* NixOS module on GitHub](https://github.com/sid115/nix-core/
 ```yaml
 vaultwarden:
     admin-token: abc123
-    smtp-password: abc123 # for email support (local or external mailserver)
-    hashed-smtp-password: abc123 # for email support (local mailserver only)
+    smtp-password: abc123 # only set this if `mailIntegration` is enabled
 ```
-
-Generate the hashed smtp password with:
-
-```shell
-nix-shell -p mkpasswd --run 'mkpasswd -sm bcrypt'
-```
-
-> For more info, see our mailserver module.
 
 Optionally, you can store your admin token as an argon2 PHC string with the OWASP minimum recommended settings in sops. It is recommended to use an alphanumeric string only, as special characters may need to be escaped:
 

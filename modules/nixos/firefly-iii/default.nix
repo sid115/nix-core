@@ -9,7 +9,6 @@ let
   cfg = config.services.firefly-iii;
   importer-cfg = config.services.firefly-iii-data-importer;
   domain = config.networking.domain;
-  mailserver = config.mailserver;
 
   inherit (cfg.reverseProxy) subdomain importerSubdomain;
   fqdn = if (subdomain != "") then "${subdomain}.${domain}" else domain;
@@ -27,6 +26,7 @@ let
     ;
 
   inherit (lib.utils)
+    mkMailIntegrationOption
     mkReverseProxyOption
     mkVirtualHost
     mkUrl
@@ -34,6 +34,7 @@ let
 in
 {
   options.services.firefly-iii = {
+    mailIntegration = mkMailIntegrationOption "Firefly-III";
     reverseProxy = mkReverseProxyOption "Firefly-III" "finance" // {
       importerSubdomain = mkOption {
         type = types.str;
@@ -66,12 +67,13 @@ in
         DB_PORT = mkDefault 3306;
         DB_USERNAME = mkDefault "firefly-iii";
         TRUSTED_PROXIES = mkDefault "**";
-
+      }
+      // mkIf cfg.mailIntegration.enable {
         MAIL_MAILER = "smtp";
-        MAIL_HOST = mkDefault mailserver.fqdn;
+        MAIL_HOST = cfg.mailIntegration.smtpHost;
         MAIL_PORT = mkDefault 465;
-        MAIL_FROM = mkDefault "${cfg.reverseProxy.subdomain}@${domain}";
-        MAIL_USERNAME = mkDefault "${cfg.reverseProxy.subdomain}@${domain}";
+        MAIL_FROM = mkDefault "firefly-iii@${domain}";
+        MAIL_USERNAME = mkDefault "firefly-iii@${domain}";
         MAIL_PASSWORD_FILE = config.sops.secrets."firefly-iii/smtp-password".path;
         MAIL_ENCRYPTION = mkDefault "ssl";
       };
@@ -124,10 +126,6 @@ in
         ];
       };
 
-    mailserver.loginAccounts."${cfg.settings.MAIL_USERNAME}".hashedPasswordFile =
-      mkIf mailserver.enable
-        config.sops.secrets."firefly-iii/hashed-smtp-password".path;
-
     sops =
       let
         owner = cfg.user;
@@ -144,10 +142,7 @@ in
             base64:${config.sops.placeholder."firefly-iii/appkey"}
           '';
         };
-        secrets."firefly-iii/smtp-password" = mkIf mailserver.enable {
-          inherit owner group mode;
-        };
-        secrets."firefly-iii/hashed-smtp-password" = mkIf mailserver.enable {
+        secrets."firefly-iii/smtp-password" = mkIf cfg.mailIntegration.enable {
           inherit owner group mode;
         };
       };
