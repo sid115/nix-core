@@ -9,6 +9,7 @@ let
   inherit (lib)
     mkDefault
     mkIf
+    optionalAttrs
     ;
 
   inherit (lib.utils)
@@ -36,7 +37,7 @@ in
         ROCKET_PORT = mkDefault 8222;
         SIGNUPS_ALLOWED = mkDefault false;
       }
-      // mkIf cfg.mailIntegration.enable {
+      // optionalAttrs cfg.mailIntegration.enable {
         SMTP_FROM = mkDefault "vaultwarden@${domain}";
         SMTP_FROM_NAME = mkDefault "${domain} Vaultwarden server";
         SMTP_HOST = cfg.mailIntegration.smtpHost;
