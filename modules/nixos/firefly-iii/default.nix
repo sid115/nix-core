@@ -22,6 +22,7 @@ let
     mkDefault
     mkIf
     mkOption
+    optionalAttrs
     types
     ;
 
@@ -68,7 +69,7 @@ in
         DB_USERNAME = mkDefault "firefly-iii";
         TRUSTED_PROXIES = mkDefault "**";
       }
-      // mkIf cfg.mailIntegration.enable {
+      // optionalAttrs cfg.mailIntegration.enable {
         MAIL_MAILER = "smtp";
         MAIL_HOST = cfg.mailIntegration.smtpHost;
         MAIL_PORT = mkDefault 465;
