@@ -16,14 +16,18 @@
       self,
       nixpkgs,
       ...
-    }:
+    }@inputs:
     let
+      inherit (self) outputs;
+
       supportedSystems = [
         "x86_64-linux"
         "aarch64-linux"
       ];
 
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+
+      overlays = [ inputs.core.overlays.default ];
 
       mkApp = program: description: {
         type = "app";
@@ -32,11 +36,16 @@
       };
 
       mkNixosConfiguration =
-        system:
+        system: modules:
         nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = { inherit (self) inputs outputs; };
-          modules = [ ./config ];
+          inherit system modules;
+          specialArgs = {
+            inherit inputs outputs;
+            lib =
+              (import nixpkgs {
+                inherit system overlays;
+              }).lib;
+          };
         };
     in
     {
@@ -84,8 +93,8 @@
       nixosModules = import ./modules;
 
       nixosConfigurations = {
-        microvm-x86_64-linux = mkNixosConfiguration "x86_64-linux";
-        microvm-aarch64-linux = mkNixosConfiguration "aarch64-linux";
+        microvm-x86_64-linux = mkNixosConfiguration "x86_64-linux" [ ./config ];
+        microvm-aarch64-linux = mkNixosConfiguration "aarch64-linux" [ ./config ];
       };
     };
 }
