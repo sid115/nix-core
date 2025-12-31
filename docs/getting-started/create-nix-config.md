@@ -20,11 +20,11 @@ Available templates are:
 Alternatively, use this flake's create script:
 
 ```bash
-nix flake run "github:sid115/nix-core#create -- -t TEMPLATE -u YOUR_USER -h YOUR_HOSTNAME"
+nix run "github:sid115/nix-core#create" -- -t TEMPLATE -u YOUR_USER -h YOUR_HOSTNAME
 ```
 
 Check:
 
 ```bash
-nix flake run "github:sid115/nix-core#create -- --help"
+nix run "github:sid115/nix-core#create" -- --help
 ```
