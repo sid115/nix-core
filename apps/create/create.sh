@@ -117,7 +117,7 @@ GIT_EMAIL=${GIT_EMAIL:-"$USERNAME@$HOSTNAME"}
 # Apply template to flake directory
 mkdir -p "$FLAKE"
 cd "$FLAKE" || { echo "Error: Cannot change directory to $FLAKE"; exit 1; }
-nix flake init -t "github:sid115/nix-core#templates/$TEMPLATE"
+nix flake init -t "github:sid115/nix-core#templates.$TEMPLATE"
 
 # Move generated files
 rename_files "$FLAKE/hosts/HOSTNAME" "$FLAKE/hosts/$HOSTNAME"
