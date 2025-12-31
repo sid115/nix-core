@@ -29,7 +29,7 @@ Options:
     -h, --help                 Show this help message
 
 Available configuration templates:
-    hetzner-intel
+    hetzner-amd
     hyprland
     pi4
     server
@@ -57,17 +57,6 @@ rename_files() {
         echo "Error: Directory $from not found."
         exit 1
     fi
-}
-
-# Find and apply diff files
-apply_diffs() {
-    find "$FLAKE" -type f -name '*.diff' | while read -r diff_file; do
-        original_file="${diff_file%.diff}"
-        dirpath=$(dirname "$diff_file")
-        echo "Applying patch $diff_file to $original_file"
-        patch --directory "$dirpath" --input "$diff_file" "$(basename "$original_file")"
-        rm "$diff_file"
-    done
 }
 
 # Returns true if template uses Home Manager 
@@ -121,21 +110,14 @@ if [[ -z $USERNAME ]] || [[ -z $HOSTNAME ]] || [[ -z $TEMPLATE ]]; then
     exit 1
 fi
 
-# Check if the flake exists
-if [[ ! -d $FLAKE ]]; then
-    echo "Flake directory does not exist: $FLAKE"
-    exit 1
-fi
-
 # Assign default values for optional arguments
 GIT_NAME=${GIT_NAME:-$USERNAME}
 GIT_EMAIL=${GIT_EMAIL:-"$USERNAME@$HOSTNAME"}
 
-# Copy template to flake directory and fix permissions
-cp -n -r "$TEMPLATES_DIR"/"$TEMPLATE"/* "$FLAKE" || exit 1
-find "$FLAKE" -print0 | while IFS= read -r -d $'\0' file; do
-    chmod u+w "$file"
-done
+# Apply template to flake directory
+mkdir -p "$FLAKE"
+cd "$FLAKE" || { echo "Error: Cannot change directory to $FLAKE"; exit 1; }
+nix flake init -t "github:sid115/nix-core#templates.$TEMPLATE"
 
 # Move generated files
 rename_files "$FLAKE/hosts/HOSTNAME" "$FLAKE/hosts/$HOSTNAME"
@@ -149,8 +131,5 @@ recursive_replace "USERNAME" "$USERNAME" "$FLAKE"
 recursive_replace "HOSTNAME" "$HOSTNAME" "$FLAKE"
 recursive_replace "GIT_NAME" "$GIT_NAME" "$FLAKE"
 recursive_replace "GIT_EMAIL" "$GIT_EMAIL" "$FLAKE"
-
-# Apply diff files
-apply_diffs
 
 echo "Template $TEMPLATE successfully applied to $FLAKE."

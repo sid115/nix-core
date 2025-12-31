@@ -133,9 +133,25 @@
       };
 
       templates = {
-        nix-config = {
-          path = ./templates/nix-config;
-          description = "NixOS configuration with standalone Home Manager using nix-core.";
+        hetzner-amd = {
+          path = ./templates/nix-configs/hetzner-amd;
+          description = "Basic NixOS configuration for AMD based Hetzner VPS.";
+        };
+        hyprland = {
+          path = ./templates/nix-configs/hyprland;
+          description = "Basic NixOS configuration for clients running Hyprland with standalone Home Manager.";
+        };
+        pi4 = {
+          path = ./templates/nix-configs/pi4;
+          description = "Basic NixOS configuration for Raspberry Pi 4.";
+        };
+        server = {
+          path = ./templates/nix-configs/server;
+          description = "Basic NixOS configuration for servers.";
+        };
+        vm-uefi = {
+          path = ./templates/nix-configs/vm-uefi;
+          description = "Basic NixOS configuration for VMs (UEFI).";
         };
 
         microvm = {
