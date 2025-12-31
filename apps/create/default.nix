@@ -6,7 +6,7 @@
 
 stdenv.mkDerivation rec {
   pname = "create";
-  version = "1.0";
+  version = "2.0";
 
   src = ./.;
 
@@ -18,10 +18,6 @@ stdenv.mkDerivation rec {
 
     cp create.sh $out/bin/${pname}
     chmod +x $out/bin/${pname}
-
-    cp -r templates $out/share
-
-    sed -i "s|^TEMPLATES_DIR.*|TEMPLATES_DIR=$out/share/templates|" $out/bin/${pname}
   '';
 
   meta.mainProgram = "create";
