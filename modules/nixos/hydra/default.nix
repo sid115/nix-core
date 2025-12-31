@@ -9,6 +9,7 @@ let
   inherit (lib)
     mkDefault
     mkIf
+    optionalAttrs
     ;
 
   inherit (lib.utils)
@@ -30,7 +31,7 @@ in
       hydraURL = fqdn;
       useSubstitutes = mkDefault true;
     }
-    // mkIf cfg.mailIntegration.enable {
+    // optionalAttrs cfg.mailIntegration.enable {
       notificationSender = mkDefault "hydra@${domain}";
       smtpHost = cfg.mailIntegration.smtpHost;
     };

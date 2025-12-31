@@ -22,6 +22,7 @@ let
   inherit (lib)
     mkDefault
     mkIf
+    optionalAttrs
     ;
 
   inherit (lib.utils)
@@ -64,7 +65,7 @@ in
         maintenance_window_start = 2; # 2am UTC
         default_phone_region = mkDefault "DE";
       }
-      // mkIf cfg.mailIntegration.enable {
+      // optionalAttrs cfg.mailIntegration.enable {
         # SMTP with SSL/TLS
         mail_domain = mkDefault domain;
         mail_from_address = mkDefault "nextcloud"; # @domain.tld gets added automatically
