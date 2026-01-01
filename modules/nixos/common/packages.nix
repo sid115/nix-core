@@ -6,6 +6,7 @@
     dig
     fzf
     git
+    gptfdisk
     hydra-check
     iproute2
     jq
@@ -16,16 +17,22 @@
     nettools
     nix-init
     nixfmt-rfc-style
+    nixos-container
+    nmap
     nurl
+    p7zip
     pciutils
     psmisc
+    rclone
     rsync
     tcpdump
     tldr
+    tmux
     tree
     unzip
     usbutils
     wget
+    xxd
     zip
 
     # rebuild script
