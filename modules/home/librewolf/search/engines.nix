@@ -8,19 +8,19 @@ pkgs:
   };
 
   home-manager-options = {
-    url = "https://home-manager-options.extranix.com/?query={searchTerms}&release=master";
+    url = "https://home-manager-options.extranix.com/?query={searchTerms}&release=release-25.11";
     icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
     alias = "@hm";
   };
 
   nixpkgs = {
-    url = "https://search.nixos.org/packages?channel=unstable&query={searchTerms}";
+    url = "https://search.nixos.org/packages?channel=25.11&query={searchTerms}";
     icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
     alias = "@np";
   };
 
   nixos-options = {
-    url = "https://search.nixos.org/options?channel=unstable&query={searchTerms}";
+    url = "https://search.nixos.org/options?channel=25.11&query={searchTerms}";
     icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
     alias = "@no";
   };
