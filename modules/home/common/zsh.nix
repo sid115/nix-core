@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ config, lib, ... }:
 
 let
   inherit (lib) mkDefault;
@@ -6,6 +6,7 @@ in
 {
   programs.zsh = {
     enable = mkDefault true;
+    dotDir = "${config.xdg.configHome}/zsh";
     defaultKeymap = mkDefault "emacs";
     initContent = ''
       PROMPT='%F{green}%n%f@%F{blue}%m%f %B%1~%b > '

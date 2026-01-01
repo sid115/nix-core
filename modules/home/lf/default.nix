@@ -36,7 +36,7 @@ in
         ffmpegthumbnailer
         trash-cli
         xdg-utils
-        perl540Packages.MIMETypes
+        perl5Packages.MIMETypes
       ]
       ++ [
         vidthumb

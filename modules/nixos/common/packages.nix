@@ -13,7 +13,7 @@
     lm_sensors
     lsof
     neovim
-    netcat-openbsd
+    # netcat-openbsd # HOTFIX: does not build: https://hydra.nixos.org/build/317878771
     nettools
     nix-init
     nixfmt-rfc-style
