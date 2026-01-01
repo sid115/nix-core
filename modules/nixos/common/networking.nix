@@ -28,7 +28,6 @@ in
 
       # NetworkManager
       useDHCP = false;
-      wireless.enable = false;
       networkmanager = {
         enable = true;
         plugins = with pkgs; [
