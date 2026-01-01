@@ -10,7 +10,6 @@
     {
       self,
       nixpkgs,
-      home-manager,
       ...
     }@inputs:
     let
@@ -157,6 +156,10 @@
         microvm = {
           path = ./templates/microvm;
           description = "MicroVM NixOS configurations";
+        };
+        container = {
+          path = ./templates/container;
+          description = "Container NixOS configurations";
         };
 
         c-hello = {
