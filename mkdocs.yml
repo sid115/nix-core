@@ -42,6 +42,7 @@ nav:
           - firefly-iii: modules/nixos/firefly-iii.md
           - ftp-webserver: modules/nixos/ftp-webserver.md
           - gitea: modules/nixos/gitea.md
+          - gitlab: modules/nixos/gitlab.md
           - headplane: modules/nixos/headplane.md
           - headscale: modules/nixos/headscale.md
           - hydra: modules/nixos/hydra.md
