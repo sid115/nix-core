@@ -68,3 +68,20 @@ These flags might be useful:
 ### AppAPI default deploy daemon is not set
 
 This error is expected behavior. Disable the AppAPI app in the administration web interface.
+
+### Nextcloud is not installed
+
+During update or rollback, it may happen that `nextcloud-setup.service` and `nextcloud-update-db.service` fail with: 
+
+```
+Nextcloud is not installed - only a limited number of commands are available.
+```
+
+Add this to Nextcloud's config (`/var/lib/nextcloud/config/config.php` by default):
+
+```php
+  'installed' => true,
+  'maintenance' => false,
+```
+
+Rebuild your machine.
