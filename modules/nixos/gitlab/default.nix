@@ -27,6 +27,10 @@ in
 
       extraConfig = {
         gitlab = {
+          username_changing_enabled = mkDefault false;
+          email_from = mkIf cfg.mailIntegration.enable "gitlab@${domain}";
+          email_display_name = mkIf cfg.mailIntegration.enable "${fqdn} GitLab";
+          email_reply_to = mkIf cfg.mailIntegration.enable "no-reply@${domain}";
           default_theme = mkDefault 2; # dark mode
           default_projects_features = {
             wiki = mkDefault false;
@@ -36,6 +40,7 @@ in
           time_zone = mkDefault "Europe/Berlin";
           ssh_port = if openssh.enable then mkDefault (elemAt openssh.ports 0) else mkDefault 22;
         };
+        incoming_email.enable = mkDefault false;
       };
 
       smtp = mkIf cfg.mailIntegration.enable {
@@ -45,7 +50,6 @@ in
         username = "gitlab@${domain}";
         passwordFile = sops.secrets."gitlab/smtp-password".path;
         domain = domain;
-        authentication = "login";
         enableStartTLSAuto = false;
         tls = true;
       };
