@@ -54,6 +54,4 @@ Login as the default admin user "root" with the password you set above and creat
 
 ### Disable Sign-ups
 
-In the web UI, navigate to:
-
-_Admin Area_ > _Settings_ > _General_ > _Sign-up restrictions_ and uncheck _Sign-up enabled_.
+Visit: `https://SUBDOMAIN.DOMAIN.TLD/admin/application_settings/general#js-signup-settings`
