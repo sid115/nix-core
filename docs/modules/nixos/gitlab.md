@@ -55,3 +55,12 @@ Login as the default admin user "root" with the password you set above and creat
 ### Disable Sign-ups
 
 Visit: `https://SUBDOMAIN.DOMAIN.TLD/admin/application_settings/general#js-signup-settings`
+
+### Outbound mails do not work
+
+Test the mail send functionality with:
+
+```bash
+sudo -u gitlab gitlab-rails console -e production
+irb(main):001> Notify.test_email('YOU@DOMAIN.TLD', 'GitLab Test', 'GitLab Test').deliver_now
+```
