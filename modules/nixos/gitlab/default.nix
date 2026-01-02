@@ -64,6 +64,8 @@ in
       };
     };
 
+    systemd.tmpfiles.rules = [ "d ${cfg.statePath} 0755 ${cfg.user} ${cfg.group} -" ];
+
     services.nginx.virtualHosts = mkIf cfg.reverseProxy.enable {
       "${fqdn}" = {
         enableACME = cfg.reverseProxy.forceSSL;
