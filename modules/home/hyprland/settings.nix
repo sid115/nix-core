@@ -10,7 +10,7 @@ in
   "$mod" = cfg.modifier;
 
   windowrule = [
-    "center, floating:1, not class:^(Gimp)$, not class:^(Steam)$"
+    "center, floating:1, not class:^(Gimp)$, not class:^(steam)$"
     "float, title:^Open File"
     "float, title:^Save File"
     "noborder, onworkspace:w[t1]"
