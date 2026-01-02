@@ -10,6 +10,7 @@
   firefly-iii = import ./firefly-iii;
   ftp-webserver = import ./ftp-webserver;
   gitea = import ./gitea;
+  gitlab = import ./gitlab;
   headplane = import ./headplane;
   headscale = import ./headscale;
   hydra = import ./hydra;
