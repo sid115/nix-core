@@ -71,13 +71,16 @@ in
       x509.useACMEHost = config.mailserver.fqdn;
       stateVersion = mkDefault 1;
 
-      loginAccounts = genAttrs (attrNames cfg.accounts) (user: {
-        name = "${user}@${domain}";
-        aliases = map (alias: "${alias}@${domain}") (cfg.accounts.${user}.aliases or [ ]);
-        sendOnly = cfg.accounts.${user}.sendOnly;
-        quota = mkDefault "5G";
-        hashedPasswordFile = config.sops.secrets."mailserver/accounts/${user}".path;
-      });
+      loginAccounts = mapAttrs' (
+        user: accConf:
+        nameValuePair "${user}@${domain}" {
+          name = "${user}@${domain}";
+          aliases = map (alias: "${alias}@${domain}") (accConf.aliases or [ ]);
+          sendOnly = accConf.sendOnly;
+          quota = mkDefault "5G";
+          hashedPasswordFile = config.sops.secrets."mailserver/accounts/${user}".path;
+        }
+      ) cfg.accounts;
     };
 
     security.acme = {
