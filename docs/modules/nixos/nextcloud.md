@@ -62,3 +62,9 @@ These flags might be useful:
 - `-p err`: Show only error-level messages and above
 - `-f`: Follow logs in real-time
 - `--since today`: Show logs from today onwards
+
+## Troubleshooting
+
+### AppAPI default deploy daemon is not set
+
+This error is expected behavior. Disable the AppAPI app in the administration web interface.
